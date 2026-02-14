@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->char('employee_number', 6)->unique()->index();
             $table->string('name');
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
