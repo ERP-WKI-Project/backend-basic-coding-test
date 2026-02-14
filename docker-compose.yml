@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+    
+    # Application
+    app:
+        build:
+            context: .
+            dockerfile: docker/app.dockerfile
+        working_dir: /var/www
+        container_name: coding-test-app
+        volumes:
+            - ./:/var/www
+            - ./public:/var/www/public
+    # Web Server
+    web:
+        build:
+            context: .
+            dockerfile: docker/web.dockerfile
+        working_dir: /var/www
+        container_name: coding-test-web
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - "app"
+        ports:
+            - 8194:80
