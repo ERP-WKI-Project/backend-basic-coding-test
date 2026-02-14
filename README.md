@@ -50,3 +50,7 @@ Panduan singkat untuk mengerjakan tugas **Test 1** – **Test 5** pada repositor
 Dikarenakan penggunaan fitur spesifik PostgreSQL (seperti `ilike` untuk pencarian *case-insensitive*), pengujian **wajib** menggunakan database PostgreSQL.
 - Database SQLite (`:memory:`) tidak didukung untuk *Feature Test* yang melibatkan query pencarian.
 - Silakan ikuti instruksi pada bagian "Cara Menjalankan Test" di atas untuk konfigurasi `.env.testing`.
+
+## API Documentation (Postman)
+
+Collection Postman tersedia di: `postman_collection.json`. Anda dapat mengimpor file ini ke Postman untuk menguji endpoint API (Backoffice & Machine).
