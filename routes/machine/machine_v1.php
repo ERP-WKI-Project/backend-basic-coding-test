@@ -11,6 +11,6 @@ Route::middleware(['auth:sanctum', 'ability:' . ABILITY_MACHINE_SYSTEM])->group(
     Route::get('/profile', Machine\ProfileController::class)->name('profile.show');
 
     // Test 4: Manage log entry
-    // Route::get('log-entry', [Machine\LogEntryController::class, 'index'])->name('log-entry.index');
+    Route::get('log-entry', [Machine\LogEntryController::class, 'index'])->name('log-entry.index');
     // Route::post('log-entry', [Machine\LogEntryController::class, 'store'])->name('log-entry.store');
 });
