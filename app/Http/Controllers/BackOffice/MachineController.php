@@ -22,9 +22,7 @@ class MachineController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            MachineResource::collection($this->machineService->getAll())
-        );
+        return MachineResource::collection($this->machineService->getAll());
     }
 
     /**
@@ -35,10 +33,7 @@ class MachineController extends Controller
         $dto = MachineDto::fromArray($request->validated());
         $user = $this->machineService->create($dto);
 
-        return response()->json(
-            new MachineResource($user),
-            201
-        );
+        return new MachineResource($user);
     }
 
     /**
@@ -46,9 +41,7 @@ class MachineController extends Controller
      */
     public function show(string $id)
     {
-        return response()->json(
-            new MachineResource($this->machineService->findById($id))
-        );
+        return new MachineResource($this->machineService->findById($id));
     }
 
     /**
@@ -59,7 +52,7 @@ class MachineController extends Controller
         $dto = MachineDto::fromArray($request->validated());
         $user = $this->machineService->update($id, $dto);
 
-        return response()->json(new MachineResource($user));
+        return new MachineResource($user);
     }
 
     /**

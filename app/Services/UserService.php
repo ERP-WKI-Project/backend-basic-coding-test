@@ -4,17 +4,19 @@ namespace App\Services;
 
 use App\DTOs\UserDto;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Collection;
 
 class UserService
 {
-    public function getAll(): Collection
+    public function getAll(int $perPage = 10): LengthAwarePaginator
     {
-        return User::all();
+        return User::query()
+            ->latest()
+            ->paginate($perPage);
     }
 
-    public function findById($id): User
+    public function findById(int $id): User
     {
         return User::findOrFail($id);
     }
@@ -30,7 +32,6 @@ class UserService
     public function update(int $id, UserDTO $dto): User
     {
         $user = $this->findById($id);
-
         $data = $dto->toArray();
 
         if (!empty($dto->password)) {

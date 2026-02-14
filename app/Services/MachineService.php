@@ -4,16 +4,18 @@ namespace App\Services;
 
 use App\DTOs\MachineDto;
 use App\Models\Machine;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MachineService
 {
-    public function getAll(): Collection
+    public function getAll(int $perPage = 10): LengthAwarePaginator
     {
-        return Machine::all();
+        return Machine::query()
+            ->latest()
+            ->paginate($perPage);
     }
 
-    public function findById($id): Machine
+    public function findById(int $id): Machine
     {
         return Machine::findOrFail($id);
     }
@@ -28,7 +30,6 @@ class MachineService
     public function update(int $id, MachineDto $dto): Machine
     {
         $user = $this->findById($id);
-
         $data = $dto->toArray();
 
         $user->update($data);

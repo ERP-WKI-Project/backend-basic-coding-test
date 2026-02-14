@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-use App\Http\Requests\BackOffice\UserShift\CreateUpdateUserShiftRequest;
+use App\Http\Requests\BackOffice\UserShift\CreateUserShiftRequest;
 use App\Models\Shift;
 use App\Models\User;
 
@@ -21,13 +21,13 @@ readonly class UserShiftDto
         //
     }
 
-    public static function fromRequest(CreateUpdateUserShiftRequest $request): self
+    public static function fromArray(array $data): self
     {
         return new self(
-            user: User::findOrFail($request->user_id),
-            shift: Shift::findOrFail($request->shift_id),
-            machineCode: $request->machine_code,
-            shiftDate: $request->shift_date,
+            user: User::findOrFail($data['user_id']),
+            shift: Shift::findOrFail($data['shift_id']),
+            machineCode: $data['machine_code'],
+            shiftDate: $data['shift_date'],
         );
     }
 

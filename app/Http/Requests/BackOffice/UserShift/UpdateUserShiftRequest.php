@@ -4,7 +4,7 @@ namespace App\Http\Requests\BackOffice\UserShift;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUpdateUserShiftRequest extends FormRequest
+class UpdateUserShiftRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

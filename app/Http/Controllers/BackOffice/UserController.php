@@ -21,9 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            UserResource::collection($this->userService->getAll())
-        );
+        return UserResource::collection($this->userService->getAll());
     }
 
     /**
@@ -34,10 +32,7 @@ class UserController extends Controller
         $dto = UserDTO::fromArray($request->validated());
         $user = $this->userService->create($dto);
 
-        return response()->json(
-            new UserResource($user),
-            201
-        );
+        return new UserResource($user);
     }
 
     /**
@@ -45,9 +40,7 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        return response()->json(
-            new UserResource($this->userService->findById($id))
-        );
+        return new UserResource($this->userService->findById($id));
     }
 
     /**
@@ -58,7 +51,7 @@ class UserController extends Controller
         $dto = UserDTO::fromArray($request->validated());
         $user = $this->userService->update($id, $dto);
 
-        return response()->json(new UserResource($user));
+        return new UserResource($user);
     }
 
     /**

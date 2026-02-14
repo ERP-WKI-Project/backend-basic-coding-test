@@ -15,7 +15,7 @@ class UserShiftService
             ->paginate($perPage);
     }
 
-    public function findById($id): UserShift
+    public function findById(int $id): UserShift
     {
         return UserShift::findOrFail($id);
     }

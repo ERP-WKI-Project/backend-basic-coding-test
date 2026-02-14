@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\UserShiftDto;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BackOffice\UserShift\CreateUpdateUserShiftRequest;
+use App\Http\Requests\BackOffice\UserShift\CreateUserShiftRequest;
 use App\Http\Requests\BackOffice\UserShift\UpdateUserShiftRequest;
 use App\Http\Resources\BackOffice\UserShiftResource;
 use App\Services\UserShiftService;
@@ -28,9 +28,9 @@ class UserShiftController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateUpdateUserShiftRequest $request)
+    public function store(CreateUserShiftRequest $request)
     {
-        $dto = UserShiftDto::fromRequest($request);
+        $dto = UserShiftDto::fromArray($request->validated());
         $userShift = $this->userShiftService->create($dto);
 
         return new UserShiftResource($userShift);
@@ -47,9 +47,9 @@ class UserShiftController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateUpdateUserShiftRequest $request, string $id)
+    public function update(UpdateUserShiftRequest $request, string $id)
     {
-        $dto = UserShiftDto::fromRequest($request);
+        $dto = UserShiftDto::fromArray($request->validated());
         $userShift = $this->userShiftService->update($id, $dto);
 
         return new UserShiftResource($userShift);
