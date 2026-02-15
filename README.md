@@ -1,3 +1,13 @@
+## Dokumentasi
+
+### Auth untuk backoffice
+Tambahan auth login untuk backoffice agar bisa mendapat bearer token untuk akses endpoint-endpoint di path backoffice.
+
+### Postman Documentation
+https://documenter.getpostman.com/view/12200000/2sBXcBohZZ
+
+___
+
 ## ERP WKI – Basic Coding Test
 
 Panduan singkat untuk mengerjakan tugas **Test 1** – **Test 5** pada repository ini.
