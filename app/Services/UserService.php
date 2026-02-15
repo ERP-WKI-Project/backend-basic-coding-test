@@ -9,6 +9,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UserService
 {
+    public function findByEmployeeNumber(string $employeeNumber): ?User
+    {
+        return User::where('employee_number', $employeeNumber)->first();
+    }
+
     public function getAll(int $perPage = 15, ?string $search = null): LengthAwarePaginator
     {
         return User::query()
