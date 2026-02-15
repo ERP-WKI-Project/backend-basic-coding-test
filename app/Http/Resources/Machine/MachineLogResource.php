@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Machine;
 
+use App\Http\Resources\BackOffice\MachineResource;
 use App\Http\Resources\BackOffice\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,7 +18,7 @@ class MachineLogResource extends JsonResource
     {
         return [
             'ulid' => $this->ulid,
-            'machine_code' => $this->machine_code,
+            'machine' => new MachineResource($this->machine),
             'user' => new UserResource($this->user),
             'event' => $this->event,
             'log_message' => $this->log_message,
