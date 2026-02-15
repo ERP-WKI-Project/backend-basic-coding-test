@@ -13,8 +13,6 @@ class AuthService
         $user = $dto->user;
         $auth = AuthDto::success($user->createToken('auth_token', [\App\Enums\SystemAbility::BACKOFFICE->value])->plainTextToken);
 
-        dispatch(fn() => MachineLogService::addLog(MachineLogDto::fromAuth($dto, $auth)))->name('log_backoffice_auth_' . $user->employee_number . '_' . now()->format('YmdHis'));
-
         return $auth;
     }
 
