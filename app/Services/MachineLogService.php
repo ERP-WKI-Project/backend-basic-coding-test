@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTOs\MachineLogDto;
 use App\Models\MachineLog;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MachineLogService
 {
@@ -16,5 +17,12 @@ class MachineLogService
             'event' => $dto->event->value,
             'log_message' => $dto->logMessage,
         ]);
+    }
+
+    public static function getAll(int $perPage = 10): LengthAwarePaginator
+    {
+        return MachineLog::query()
+            ->latest()
+            ->paginate($perPage);
     }
 }
