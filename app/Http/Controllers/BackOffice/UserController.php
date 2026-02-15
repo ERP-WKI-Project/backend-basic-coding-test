@@ -24,32 +24,32 @@ class UserController extends Controller
     {
         $filters = $request->only(['search']);
         $users = $this->userService->getPaginatedUsers($filters, 10);
-        return UserResource::collection($users);
+        return $this->successResponse(UserResource::collection($users), 'Users retrieved successfully');
     }
 
     public function store(StoreUserRequest $request)
     {
         $user = $this->userService->createUser($request->validated());
 
-        return new UserResource($user);
+        return $this->successResponse(new UserResource($user), 'User created successfully', 201);
     }
 
     public function show(User $user)
     {
-        return new UserResource($user);
+        return $this->successResponse(new UserResource($user), 'User retrieved successfully');
     }
 
     public function update(UpdateUserRequest $request, User $user)
     {
         $user = $this->userService->updateUser($user, $request->validated());
 
-        return new UserResource($user);
+        return $this->successResponse(new UserResource($user), 'User updated successfully');
     }
 
     public function destroy(User $user)
     {
         $this->userService->deleteUser($user);
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return $this->successResponse(null, 'User deleted successfully');
     }
 }

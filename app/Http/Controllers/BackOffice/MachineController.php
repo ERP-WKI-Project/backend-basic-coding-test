@@ -24,32 +24,32 @@ class MachineController extends Controller
     {
         $filters = $request->only(['search', 'status']);
         $machines = $this->machineService->getPaginatedMachines($filters, 10);
-        return MachineResource::collection($machines);
+        return $this->successResponse(MachineResource::collection($machines), 'Machines retrieved successfully');
     }
 
     public function store(StoreMachineRequest $request)
     {
         $machine = $this->machineService->createMachine($request->validated());
 
-        return new MachineResource($machine);
+        return $this->successResponse(new MachineResource($machine), 'Machine created successfully', 201);
     }
 
     public function show(Machine $machine)
     {
-        return new MachineResource($machine);
+        return $this->successResponse(new MachineResource($machine), 'Machine retrieved successfully');
     }
 
     public function update(UpdateMachineRequest $request, Machine $machine)
     {
         $machine = $this->machineService->updateMachine($machine, $request->validated());
 
-        return new MachineResource($machine);
+        return $this->successResponse(new MachineResource($machine), 'Machine updated successfully');
     }
 
     public function destroy(Machine $machine)
     {
         $this->machineService->deleteMachine($machine);
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return $this->successResponse(null, 'Machine deleted successfully');
     }
 }
