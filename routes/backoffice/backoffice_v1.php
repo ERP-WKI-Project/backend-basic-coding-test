@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BackOffice;
+use Illuminate\Support\Facades\Route;
 
 Route::post('auth/login', [BackOffice\AuthController::class, 'login'])->name('auth.login');
 
 // Authenticated Routes
-Route::middleware(['auth:sanctum', 'ability:'. ABILITY_BACKOFFICE_SYSTEM])->group(function () {
+Route::middleware(['auth:sanctum', 'ability:' . ABILITY_BACKOFFICE_SYSTEM])->group(function () {
     Route::post('auth/logout', [BackOffice\AuthController::class, 'logout'])->name('auth.logout');
 
     // Test 1: Manage Users
-    // Route::apiResource('user', BackOffice\UserController::class)->names('user.');
+    Route::apiResource('users', BackOffice\UserController::class);
 
     // Test 2: Manage Machines
     // Route::apiResource('machine', BackOffice\MachineController::class)->names('machine.');
