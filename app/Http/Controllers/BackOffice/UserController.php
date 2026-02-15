@@ -67,6 +67,6 @@ class UserController extends Controller
     {
         $this->userService->delete($user);
 
-        return $this->deletedResponse(__('messages.user_deleted'));
+        return $this->successResponse(null, __('messages.user_deleted'));
     }
 }
