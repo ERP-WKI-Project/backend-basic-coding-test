@@ -1,0 +1,146 @@
+# Asumsi & Keputusan Teknis
+
+Dokumen ini berisi asumsi-asumsi yang diambil selama pengerjaan coding test, beserta alasan di balik setiap keputusan teknis.
+
+---
+
+## Asumsi Bisnis
+
+### 1. `employee_number` sebagai Identifier Publik
+
+`employee_number` diperlakukan sebagai **identifier publik** (bukan data rahasia), sehingga:
+
+- Diekspos di API response (`UserResource`)
+- Digunakan sebagai route key (`/api/backoffice/v1/users/{employee_number}`)
+- Tidak di-hash di database
+
+> **Catatan:** Jika `employee_number` bersifat sensitif (seperti PIN ATM), maka perlu:
+> - Di-hash di database
+> - Diganti route key-nya ke UUID/ULID
+> - Tidak diekspos di API response
+
+### 2. `email` Bersifat Opsional
+
+User dapat dibuat tanpa email (`nullable`). Konsekuensinya:
+
+- Login BackOffice menggunakan `employee_number` + `password` (bukan email)
+- Konsisten dengan Machine login yang juga menggunakan `employee_number` (PIN)
+
+### 3. Autentikasi BackOffice
+
+Login BackOffice menggunakan `employee_number` + `password`. Meskipun `employee_number` disebut sebagai PIN di modul Machine, dalam konteks ini PIN berfungsi sebagai **identifier** (seperti username/badge number), bukan sebagai secret. Alasannya:
+
+| Modul | Credential | Keterangan |
+|---|---|---|
+| **Machine** | PIN + `machine_code` | PIN = identifier, mesin fisik = verifikasi |
+| **BackOffice** | PIN + `password` | PIN = identifier, password = secret |
+
+- Semua user pasti memiliki `employee_number` (required), sedangkan `email` bersifat nullable
+- Pola ini sama dengan **username + password** pada umumnya — PIN hanya pengganti username
+
+### 4. Verifikasi Password via `Hash::check()`
+
+BackOffice auth menggunakan `Hash::check()` secara manual di Service, bukan `Auth::attempt()`. Alasan:
+
+- `Auth::attempt()` membuat session (stateful), tidak cocok untuk **stateless API** berbasis token
+- `Hash::check()` hanya memverifikasi password tanpa side-effect session
+- Konsisten dengan arsitektur Sanctum token-based
+
+---
+
+## Keputusan Arsitektur
+
+### 1. Service Layer Pattern
+
+Business logic dipisahkan dari Controller ke Service (`UserService`). Controller hanya bertanggung jawab untuk:
+
+- Menerima dan memvalidasi request (via Form Request)
+- Memanggil Service
+- Mengembalikan response (via API Resource)
+
+### 2. Data Transfer Object (DTO)
+
+Menggunakan `readonly class` dengan typed properties untuk transfer data antar layer:
+
+- `CreateUserDto` — data untuk membuat user baru
+- `UpdateUserDto` — data untuk memperbarui user, dengan flag `hasEmail` untuk membedakan field yang tidak dikirim vs dikirim sebagai `null`
+
+### 3. Partial Update yang Aman
+
+`UpdateUserDto::toArray()` menggunakan `array_filter` untuk hanya mengirim field yang eksplisit dikirim dalam request. Ini mencegah:
+
+- Field yang tidak dikirim ter-overwrite menjadi `null`
+- Hanya `email` yang boleh di-set ke `null` secara eksplisit (via flag `hasEmail`)
+
+### 4. Mass Assignment Protection
+
+Meskipun `BaseAuthenticatable` menggunakan `$guarded = []`, model `User` secara eksplisit mendefinisikan `$fillable` untuk membatasi field yang dapat di-mass-assign:
+
+```php
+protected $fillable = ['employee_number', 'name', 'email', 'password'];
+```
+
+### 5. Environment Parity untuk Testing
+
+Database testing menggunakan **PostgreSQL** (bukan SQLite in-memory) agar environment test identik dengan production. Konfigurasi:
+
+- `phpunit.xml` → `DB_CONNECTION=pgsql`, `DB_DATABASE=basic_coding_test_testing`
+- `.env.testing` → konfigurasi lengkap environment testing
+
+### 6. Standardized API Response
+
+Semua response menggunakan format konsisten via `ApiResponse` trait:
+
+```json
+{
+    "success": true,
+    "message": "Pesan operasi",
+    "data": { ... },
+    "errors": null
+}
+```
+
+---
+
+## Test Coverage
+
+### User Management (28 test, 137 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **Index** | 4 | List semua, search by name, search by employee_number, search kosong |
+| **Store** | 8 | Berhasil, tanpa email, password hashing, validasi kosong/duplikat/format/password |
+| **Show** | 2 | Detail user, 404 not found |
+| **Update** | 10 | Full update, partial update, self-update email/NIP, set null, validasi duplikat/format/password, 404 |
+| **Destroy** | 2 | Soft delete, 404 not found |
+| **Auth** | 2 | Unauthenticated (401) |
+
+### BackOffice Auth (7 test, 23 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **Login** | 5 | Berhasil, password salah (401), user not found (404), validasi kosong (422), format salah (422) |
+| **Logout** | 2 | Berhasil, tanpa token (401) |
+
+---
+
+## Tools & Konvensi
+
+| Tool | Fungsi |
+|---|---|
+| **Pest PHP** | Testing framework |
+| **Laravel Pint** | Code formatting (PSR-12/Laravel) |
+| **PostgreSQL** | Database (dev + test) |
+| **Sanctum** | API token authentication |
+
+### Commit Convention
+
+Menggunakan **Conventional Commits** dalam bahasa Indonesia:
+
+```
+feat: deskripsi fitur baru
+test: deskripsi test baru
+fix: deskripsi perbaikan bug
+style: formatting/linting
+chore: maintenance
+```
