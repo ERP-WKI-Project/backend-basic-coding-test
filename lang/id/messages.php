@@ -17,4 +17,12 @@ return [
     'machine_retrieved' => 'Detail mesin berhasil diambil.',
     'machine_updated' => 'Mesin berhasil diperbarui.',
     'machine_deleted' => 'Mesin berhasil dihapus.',
+
+    'user_shift_listed' => 'Daftar user shift berhasil diambil.',
+    'user_shift_created' => 'User shift berhasil dibuat.',
+    'user_shift_retrieved' => 'Detail user shift berhasil diambil.',
+    'user_shift_updated' => 'User shift berhasil diperbarui.',
+    'user_shift_deleted' => 'User shift berhasil dihapus.',
+
+    'shift_date_must_match_shift_day_of_week' => 'Tanggal shift harus sesuai dengan hari shift.',
 ];

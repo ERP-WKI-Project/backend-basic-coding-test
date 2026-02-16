@@ -56,6 +56,19 @@ Meskipun tabel `user_shifts` dan `machine_logs` sudah menggunakan `machine_code`
 
 ---
 
+### 6. Validasi Jadwal Shift (User Shift)
+
+Validasi jadwal shift sangat ketat untuk menjaga integritas data operasional:
+
+- **Konsistensi Hari**: `shift_date` wajib sesuai dengan `day_of_week` dari `shift_id` yang dipilih.
+    - Senin (1) harus dipasangkan dengan Shift Pagi/Siang yang aktif di hari Senin.
+    - Validasi ini berjalan saat `store` maupun `update` (bahkan saat partial update tanggal/shift saja).
+- **Unique Constraint**: 1 user hanya boleh memiliki 1 shift per tanggal.
+- **Active Machine Only**: `machine_code` hanya boleh diisi dengan mesin yang statusnya `ACTIVE`. Mesin `INACTIVE` akan ditolak (422).
+- **Integrity Check**: `user_id`, `shift_id`, dan `machine_code` divalidasi keberadaannya di database (Foreign Key check).
+
+---
+
 ## Keputusan Arsitektur
 
 ### 1. Service Layer Pattern
@@ -111,6 +124,17 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 ---
 
 ## Test Coverage
+
+### User Shift Management (19 test, 126 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **Index** | 4 | List semua, filter by user_id, filter by shift_id, filter by shift_date |
+| **Store** | 4 | Berhasil, validasi hari mismatch, double booking tanggal, foreign key tidak ada |
+| **Show** | 2 | Detail jadwal, 404 not found |
+| **Update** | 6 | Success update, mismatch hari/shift, conflict tanggal lain, self-update tanggal sama (ok), mesin inactive (gagal) |
+| **Destroy** | 2 | Berhasil hapus, 404 not found |
+| **Auth** | 1 | Unauthenticated (401) |
 
 ### User Management (28 test, 137 assertions)
 
