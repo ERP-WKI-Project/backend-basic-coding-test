@@ -46,6 +46,14 @@ BackOffice auth menggunakan `Hash::check()` secara manual di Service, bukan `Aut
 - `Hash::check()` hanya memverifikasi password tanpa side-effect session
 - Konsisten dengan arsitektur Sanctum token-based
 
+### 5. Struktur Data Machine
+
+Meskipun tabel `user_shifts` dan `machine_logs` sudah menggunakan `machine_code` sebagai identifier (string), tetap membuat tabel `machines` terpisah sebagai **Master Data**.
+
+- **Identifier**: Menggunakan `code` (string) sebagai route key API publik untuk mencegah data enumeration, sementara ID auto-increment murni untuk relasi internal database.
+- **Relasi**: Tidak menambahkan Foreign Key (FK) constraint ke tabel existing (`user_shifts`) untuk menghindari breaking changes pada data lama. Integritas data dijaga di level aplikasi.
+- **Status**: Menambahkan kolom `status` (`active`/`inactive`) untuk kontrol operasional sederhana (soft delete digunakan untuk arsip).
+
 ---
 
 ## Keputusan Arsitektur
@@ -121,6 +129,19 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 |---|---|---|
 | **Login** | 5 | Berhasil, password salah (401), user not found (404), validasi kosong (422), format salah (422) |
 | **Logout** | 2 | Berhasil, tanpa token (401) |
+
+---
+
+### Machine Management (19 test, 135 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **Index** | 4 | List semua, search by name/code, search kosong, paginasi valid |
+| **Store** | 5 | Berhasil, default active, validasi kosong/duplikat/format |
+| **Show** | 2 | Detail mesin, 404 not found |
+| **Update** | 5 | Full update, partial update, self-update code, validasi duplikat, 404 |
+| **Destroy** | 2 | Soft delete, 404 not found |
+| **Auth** | 1 | Unauthenticated (401) |
 
 ---
 
