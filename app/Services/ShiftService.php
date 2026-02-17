@@ -13,16 +13,18 @@ use Illuminate\Support\Facades\DB;
 
 class ShiftService
 {
-    protected Model $model;
-    protected Model $userShiftModel;
+    protected Shift $model;
+    protected UserShift $userShiftModel;
+    protected Machine $machineModel;
 
     /**
      * Create a new class instance.
      */
-    public function __construct(Shift $model, UserShift $userShiftModel)
+    public function __construct(Shift $model, UserShift $userShiftModel, Machine $machineModel)
     {
         $this->model = $model;
         $this->userShiftModel = $userShiftModel;
+        $this->machineModel = $machineModel;
     }
 
     public function getPaginatedUserShifts(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -56,7 +58,7 @@ class ShiftService
     {
         return DB::transaction(function () use ($data) {
             $shift = $this->model->findByUlid($data['shift_id']);
-            $machine = Machine::findByUlid($data['machine_id']);
+            $machine = $this->machineModel->findByUlid($data['machine_id']);
 
             $this->validateDayMatching($shift, $data['shift_date']);
 
@@ -79,7 +81,7 @@ class ShiftService
     {
         return DB::transaction(function () use ($userShift, $data) {
             $shift = $this->model->findByUlid($data['shift_id']);
-            $machine = Machine::findByUlid($data['machine_id']);
+            $machine = $this->machineModel->findByUlid($data['machine_id']);
 
             $this->validateDayMatching($shift, $data['shift_date']);
             $this->validateUserAvailability($userShift->user_id, $data['shift_date'], $userShift->id);
