@@ -47,6 +47,14 @@ class UserShift extends Model
     }
 
     /**
+     * Get the machine associated with this user shift.
+     */
+    public function machine(): BelongsTo
+    {
+        return $this->belongsTo(Machine::class, 'machine_code', 'machine_code');
+    }
+
+    /**
      * Create a new user shift
      */
     public static function createUserShift(array $data): self
@@ -117,5 +125,50 @@ class UserShift extends Model
         return self::where('user_id', $userId)
             ->whereBetween('shift_date', [$startDate, $endDate])
             ->get();
+    }
+
+    /**
+     * Check if user shift exists by id
+     */
+    public static function existsById(int $id): bool
+    {
+        return self::where('id', $id)->exists();
+    }
+
+    /**
+     * Get user shift with relationships by id
+     */
+    public static function getWithRelationsById(int $id): ?self
+    {
+        return self::with('shift', 'user', 'machine')->find($id);
+    }
+
+    /**
+     * Get user shifts paginated with relationships
+     * Can filter by userId, date, or date range
+     */
+    public static function getWithRelationsPaginated(
+        int $perPage = 15,
+        int $page = 1,
+        ?int $userId = null,
+        ?\DateTime $date = null,
+        ?\DateTime $startDate = null,
+        ?\DateTime $endDate = null
+    ) {
+        $query = self::with('shift', 'user', 'machine');
+
+        if ($userId !== null) {
+            $query->where('user_id', $userId);
+        }
+
+        if ($date !== null) {
+            $query->whereDate('shift_date', $date);
+        }
+
+        if ($startDate !== null && $endDate !== null) {
+            $query->whereBetween('shift_date', [$startDate, $endDate]);
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 }

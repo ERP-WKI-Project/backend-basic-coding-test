@@ -12,6 +12,7 @@ readonly class BaseResponseDto
         public string $message,
         public mixed $data = null,
         public array $errors = [],
+        public ?array $pagination = null,
     ) {
         //
     }
@@ -19,13 +20,14 @@ readonly class BaseResponseDto
     /**
      * Create success response
      */
-    public static function success(string $message, mixed $data = null): self
+    public static function success(string $message, mixed $data = null, ?array $pagination = null): self
     {
         return new self(
             status: true,
             message: $message,
             data: $data,
-            errors: []
+            errors: [],
+            pagination: $pagination
         );
     }
 
@@ -40,6 +42,14 @@ readonly class BaseResponseDto
             data: $data,
             errors: $errors
         );
+    }
+
+    /**
+     * Create error response (alias for failure)
+     */
+    public static function error(string $message, array $errors = [], mixed $data = null): self
+    {
+        return self::failure($message, $errors, $data);
     }
 
     /**
@@ -66,6 +76,10 @@ readonly class BaseResponseDto
 
         if (!empty($this->errors)) {
             $response['errors'] = $this->errors;
+        }
+
+        if ($this->pagination !== null) {
+            $response['pagination'] = $this->pagination;
         }
 
         return $response;
