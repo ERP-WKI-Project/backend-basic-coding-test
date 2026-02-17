@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Machine;
 use App\Models\Shift;
 use App\Models\User;
 use App\Models\UserShift;
@@ -23,6 +24,15 @@ class PresetForCodingTestSeeder extends Seeder
         ], [
             'name' => 'Dummy Employee',
             'email' => 'dummy@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Create a dummy machine user
+        $machineUser = User::firstOrCreate([
+            'employee_number' => '000002',
+        ], [
+            'name' => 'Machine User',
+            'email' => 'machine@example.com',
             'password' => bcrypt('password'),
         ]);
 
@@ -57,8 +67,15 @@ class PresetForCodingTestSeeder extends Seeder
             }
         }
 
+        Machine::firstOrCreate([
+            'machine_code' => 'MACHINE03',
+        ], [
+            'name' => 'Packaging Machine 01',
+            'is_active' => false,
+        ]);
+
         // Assign all shifts to the preset user for all days if not already assigned
-        if ($presetUser->shifts()->count() === 0) {
+        if ($machineUser->shifts()->count() === 0) {
             $shifts = Shift::where(function ($query) use ($dateTemplate) {
                 $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 1))), 0, 10) . '%');
                 $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 2))), 0, 10) . '%');
@@ -89,7 +106,7 @@ class PresetForCodingTestSeeder extends Seeder
                     'user_id' => $presetUser->id,
                     'shift_id' => $shift->id,
                     'shift_date' => $date,
-                    'machine_code' => 'FILLING-MACHINE-001',
+                    'machine_code' => 'MACHINE03',
                 ]);
             }
         }
