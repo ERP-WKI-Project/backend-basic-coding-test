@@ -1,5 +1,6 @@
 <?php
 
+use App\DTOs\UserDto;
 use App\Models\User;
 use App\Models\Shift;
 use App\Models\UserShift;
@@ -14,14 +15,14 @@ beforeEach(function () {
 
 describe('UserService - Create User', function () {
     test('creates user with hashed password', function () {
-        $userData = [
-            'employee_number' => '123456',
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'PlainPassword123!'
-        ];
+        $dto = new UserDto(
+            name: 'Test User',
+            email: 'test@example.com',
+            employeeNumber: '123456',
+            password: 'PlainPassword123!'
+        );
 
-        $user = $this->userService->createUser($userData);
+        $user = $this->userService->createUser($dto);
 
         expect($user)->toBeInstanceOf(User::class);
         expect($user->employee_number)->toBe('123456');
@@ -34,14 +35,14 @@ describe('UserService - Create User', function () {
     });
 
     test('creates user with email', function () {
-        $userData = [
-            'employee_number' => '654321',
-            'name' => 'Test User',
-            'email' => 'testuser@example.com',
-            'password' => 'SecurePass123!'
-        ];
+        $dto = new UserDto(
+            name: 'Test User',
+            email: 'testuser@example.com',
+            employeeNumber: '654321',
+            password: 'SecurePass123!'
+        );
 
-        $user = $this->userService->createUser($userData);
+        $user = $this->userService->createUser($dto);
 
         expect($user->employee_number)->toBe('654321');
         expect($user->email)->toBe('testuser@example.com');
@@ -51,13 +52,14 @@ describe('UserService - Create User', function () {
         // This should trigger an error due to duplicate
         User::factory()->create(['employee_number' => '999999']);
 
-        $userData = [
-            'employee_number' => '999999',
-            'name' => 'Duplicate User',
-            'password' => 'SecurePass123!'
-        ];
+        $dto = new UserDto(
+            name: 'Duplicate User',
+            email: 'duplicate@example.com',
+            employeeNumber: '999999',
+            password: 'SecurePass123!'
+        );
 
-        expect(fn() => $this->userService->createUser($userData))
+        expect(fn() => $this->userService->createUser($dto))
             ->toThrow(Exception::class);
     });
 });
@@ -67,7 +69,13 @@ describe('UserService - Update User', function () {
         $user = User::factory()->create($initialData);
         $originalPassword = $user->password;
 
-        $updatedUser = $this->userService->updateUser($user, $updateData);
+        $dto = UserDto::fromRequest(array_merge([
+            'name' => $user->name,
+            'email' => $user->email,
+            'employee_number' => $user->employee_number,
+        ], $updateData));
+
+        $updatedUser = $this->userService->updateUser($user, $dto);
 
         // Check expected values
         foreach ($expectations as $field => $expectedValue) {
@@ -179,14 +187,14 @@ describe('UserService - Restore User', function () {
 
 describe('UserService - Business Logic Validation', function () {
     test('transaction ensures data consistency on create', function () {
-        $userData = [
-            'employee_number' => '200001',
-            'name' => 'Transaction Test',
-            'email' => 'transaction@example.com',
-            'password' => 'SecurePass123!'
-        ];
+        $dto = new UserDto(
+            name: 'Transaction Test',
+            email: 'transaction@example.com',
+            employeeNumber: '200001',
+            password: 'SecurePass123!'
+        );
 
-        $user = $this->userService->createUser($userData);
+        $user = $this->userService->createUser($dto);
 
         // Verify all data saved correctly
         $this->assertDatabaseHas('users', [
@@ -201,10 +209,13 @@ describe('UserService - Business Logic Validation', function () {
     test('transaction ensures data consistency on update', function () {
         $user = User::factory()->create(['employee_number' => '200002']);
 
-        $updatedUser = $this->userService->updateUser($user, [
-            'name' => 'Updated in Transaction',
-            'email' => 'transaction@example.com'
-        ]);
+        $dto = new UserDto(
+            name: 'Updated in Transaction',
+            email: 'transaction@example.com',
+            employeeNumber: $user->employee_number,
+        );
+
+        $updatedUser = $this->userService->updateUser($user, $dto);
 
         // Verify all updates applied
         $this->assertDatabaseHas('users', [

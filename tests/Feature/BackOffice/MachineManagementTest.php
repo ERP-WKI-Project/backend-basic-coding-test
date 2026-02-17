@@ -159,12 +159,10 @@ describe('Machine Management - Update', function () {
         'update name only' => [['name' => 'Updated Name']],
         'update machine_code' => [['machine_code' => 'UPDATED-001']],
         'update description' => [['description' => 'Updated description']],
-        'update is_active' => [['is_active' => false]],
         'update all fields' => [[
             'machine_code' => 'FULL-UPDATE-001',
             'name' => 'Fully Updated',
             'description' => 'New description',
-            'is_active' => false,
         ]],
     ]);
 

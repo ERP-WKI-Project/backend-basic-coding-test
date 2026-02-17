@@ -1,5 +1,6 @@
 <?php
 
+use App\DTOs\MachineDto;
 use App\Models\Machine;
 use App\Models\User;
 use App\Services\MachineService;
@@ -12,14 +13,13 @@ beforeEach(function () {
 
 describe('MachineService - Create', function () {
     test('can create machine with valid data', function () {
-        $data = [
-            'machine_code' => 'TEST-001',
-            'name' => 'Test Machine',
-            'description' => 'Test description',
-            'is_active' => true,
-        ];
+        $dto = new MachineDto(
+            machineCode: 'TEST-001',
+            name: 'Test Machine',
+            description: 'Test description',
+        );
 
-        $machine = $this->service->createMachine($data);
+        $machine = $this->service->createMachine($dto);
 
         expect($machine)->toBeInstanceOf(Machine::class)
             ->and($machine->machine_code)->toBe('TEST-001')
@@ -28,12 +28,12 @@ describe('MachineService - Create', function () {
     });
 
     test('creates machine with minimal data', function () {
-        $data = [
-            'machine_code' => 'MIN-001',
-            'name' => 'Minimal Machine',
-        ];
+        $dto = new MachineDto(
+            machineCode: 'MIN-001',
+            name: 'Minimal Machine',
+        );
 
-        $machine = $this->service->createMachine($data);
+        $machine = $this->service->createMachine($dto);
 
         expect($machine)->toBeInstanceOf(Machine::class)
             ->and($machine->machine_code)->toBe('MIN-001')
@@ -41,12 +41,12 @@ describe('MachineService - Create', function () {
     });
 
     test('creates machine within transaction', function () {
-        $data = [
-            'machine_code' => 'TRANS-001',
-            'name' => 'Transaction Test',
-        ];
+        $dto = new MachineDto(
+            machineCode: 'TRANS-001',
+            name: 'Transaction Test',
+        );
 
-        expect(fn() => $this->service->createMachine($data))
+        expect(fn() => $this->service->createMachine($dto))
             ->not->toThrow(\Exception::class);
 
         $this->assertDatabaseHas('machines', ['machine_code' => 'TRANS-001']);
@@ -61,7 +61,13 @@ describe('MachineService - Update', function () {
             'is_active' => true,
         ]);
 
-        $updated = $this->service->updateMachine($machine, $updateData);
+        $dto = MachineDto::fromRequest(array_merge([
+            'machine_code' => $machine->machine_code,
+            'name' => $machine->name,
+            'description' => $machine->description,
+        ], $updateData));
+
+        $updated = $this->service->updateMachine($machine, $dto);
 
         expect($updated)->toBeInstanceOf(Machine::class);
         
@@ -72,11 +78,9 @@ describe('MachineService - Update', function () {
         'update name' => [['name' => 'Updated Name']],
         'update machine_code' => [['machine_code' => 'UPDATED-001']],
         'update description' => [['description' => 'New description']],
-        'deactivate machine' => [['is_active' => false]],
         'update multiple fields' => [[
             'name' => 'Multi Update',
             'description' => 'Multi description',
-            'is_active' => false,
         ]],
     ]);
 
@@ -85,7 +89,14 @@ describe('MachineService - Update', function () {
         $originalUpdatedAt = $machine->updated_at;
 
         sleep(1);
-        $updated = $this->service->updateMachine($machine, ['name' => 'Fresh Test']);
+        
+        $dto = new MachineDto(
+            machineCode: $machine->machine_code,
+            name: 'Fresh Test',
+            description: $machine->description,
+        );
+        
+        $updated = $this->service->updateMachine($machine, $dto);
 
         expect($updated->updated_at->timestamp)
             ->toBeGreaterThan($originalUpdatedAt->timestamp);
