@@ -18,8 +18,8 @@ class MachineResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at->toIso8601String(),
         ];
     }
 }

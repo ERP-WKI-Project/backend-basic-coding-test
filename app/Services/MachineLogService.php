@@ -25,8 +25,8 @@ class MachineLogService
             ->when($filters['machine_code'] ?? null, fn ($query, $code) => $query->where('machine_code', $code))
             ->when($filters['date'] ?? null, fn ($query, $date) => $query->whereDate('created_at', $date))
             ->when($search, fn ($query, $search) => $query->where(function ($q) use ($search) {
-                $q->where('event', 'like', "%{$search}%")
-                    ->orWhere('log_message', 'like', "%{$search}%");
+                $q->where('event', 'ilike', "%{$search}%")
+                    ->orWhere('log_message', 'ilike', "%{$search}%");
             }))
             ->latest()
             ->paginate($perPage);

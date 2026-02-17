@@ -11,11 +11,14 @@ beforeEach(function () {
 });
 
 test('login_success', function () {
-    $shiftId = Shift::query()
-        ->where('day_of_week', now()->dayOfWeekIso)
-        ->where('start_time', '<=', now()->toTimeString())
-        ->where('end_time', '>=', now()->addHours(1)->toTimeString())
-        ->value('id');
+    // Create a specific shift for this test to ensure it covers the current time
+    $shift = Shift::factory()->create([
+        'day_of_week' => now()->dayOfWeekIso,
+        'start_time' => now()->subHour()->toTimeString(),
+        'end_time' => now()->addHours(2)->toTimeString(),
+    ]);
+
+    $shiftId = $shift->id;
 
     UserShift::updateOrCreate([
         'user_id' => User::where('employee_number', '000001')->value('id'),

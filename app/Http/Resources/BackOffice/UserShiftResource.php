@@ -19,8 +19,8 @@ class UserShiftResource extends JsonResource
             'shift_id' => $this->shift_id,
             'shift_date' => $this->shift_date->format('Y-m-d'),
             'machine_code' => $this->machine_code,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at->toIso8601String(),
         ];
     }
 }

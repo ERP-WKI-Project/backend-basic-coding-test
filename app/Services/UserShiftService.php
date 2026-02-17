@@ -15,7 +15,7 @@ class UserShiftService
             ->when($filters['user_id'] ?? null, fn ($query) => $query->where('user_id', $filters['user_id']))
             ->when($filters['shift_id'] ?? null, fn ($query) => $query->where('shift_id', $filters['shift_id']))
             ->when($filters['shift_date'] ?? null, fn ($query) => $query->where('shift_date', $filters['shift_date']))
-            ->when($search, fn ($query) => $query->where('machine_code', 'like', "%{$search}%"))
+            ->when($search, fn ($query) => $query->where('machine_code', 'ilike', "%{$search}%"))
             ->with(['user', 'shift', 'machine'])
             ->orderBy('shift_date', 'desc')
             ->paginate($perPage);

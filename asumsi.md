@@ -106,12 +106,13 @@ Meskipun `BaseAuthenticatable` menggunakan `$guarded = []`, model `User` secara 
 protected $fillable = ['employee_number', 'name', 'email', 'password'];
 ```
 
-### 5. Environment Parity untuk Testing
+### 5. Testing Strategy
 
-Database testing menggunakan **PostgreSQL** (bukan SQLite in-memory) agar environment test identik dengan production. Konfigurasi:
-
-- `phpunit.xml` → `DB_CONNECTION=pgsql`, `DB_DATABASE=basic_coding_test_testing`
-- `.env.testing` → konfigurasi lengkap environment testing
+- **Environment Database**: Menggunakan **PostgreSQL** (bukan SQLite in-memory) agar identik dengan production.
+    - `phpunit.xml` → `DB_CONNECTION=pgsql`, `DB_DATABASE=basic_coding_test_testing`
+- **Time-Sensitive Tests**: Pengujian fitur yang bergantung pada waktu (seperti jadwal shift) menggunakan data dinamis di level *test case*, bukan data *seeder* statis.
+    - **Alasan**: Data *seeder* memiliki jam tetap (statis), yang dapat menyebabkan kegagalan test (*flaky*) jika dijalankan di luar jam operasional shift tersebut.
+    - **Implementasi**: Test case membuat shift sementara (`Shift::factory()`) yang jam-nya disesuaikan relatif dengan waktu eksekusi test (`now()`).
 
 ### 6. Standardized API Response
 
@@ -125,6 +126,8 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
     "errors": null
 }
 ```
+
+- **Date Format**: Semua field tanggal (`created_at`, `updated_at`) diformat menggunakan ISO 8601 (`toIso8601String()`) untuk konsistensi parsing di sisi client (frontend/mobile apps).
 
 ---
 
