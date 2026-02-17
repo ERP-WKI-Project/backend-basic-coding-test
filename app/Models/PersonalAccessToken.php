@@ -8,15 +8,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class PersonalAccessToken extends Model
 {
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'token',
-    ];
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

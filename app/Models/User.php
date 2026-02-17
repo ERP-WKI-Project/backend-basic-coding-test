@@ -73,9 +73,9 @@ class User extends Authenticatable
         return self::create($data);
     }
 
-    public static function getByEmailAndPassword(string $email, string $password): ?self
+    public static function getByNikAndPassword(string $nik, string $password): ?self
     {
-        $user = self::where('email', $email)->first();
+        $user = self::where('employee_number', $nik)->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             return null;
@@ -116,5 +116,32 @@ class User extends Authenticatable
     public static function getUserListPaginated(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
     {
         return self::query()->paginate($perPage, $columns);
+    }
+
+    public function createPersonalAccessToken(string $tokenName = 'auth-token'): array
+    {
+        $token = bin2hex(random_bytes(32));
+
+        $model = $this->personalAccessTokens()->create([
+            'name' => $tokenName,
+            'token' => hash('sha256', $token),
+            'abilities' => [ABILITY_BACKOFFICE_SYSTEM],
+            'expires_at' => now()->addHours(12),
+        ]);
+
+        return [
+            'token' => $token,
+            'model' => $model,
+        ];
+    }
+
+    public function revokeAllTokens(): void
+    {
+        $this->personalAccessTokens()->delete();
+    }
+
+    public function personalAccessTokens()
+    {
+        return $this->morphMany(PersonalAccessToken::class, 'tokenable');
     }
 }
