@@ -13,7 +13,7 @@ Route::middleware(['auth:sanctum', 'ability:' . ABILITY_BACKOFFICE_SYSTEM])->gro
     Route::apiResource('user', BackOffice\UserController::class)->names('user.');
 
     // Test 2: Manage Machines
-    // Route::apiResource('machine', BackOffice\MachineController::class)->names('machine.');
+    Route::apiResource('machine', BackOffice\MachineController::class)->names('machine.');
 
     // Test 3: Assign User Shifts
     // Route::apiResource('shift', BackOffice\ShiftController::class)->names('shift.');
