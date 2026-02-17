@@ -66,6 +66,11 @@ Validasi jadwal shift sangat ketat untuk menjaga integritas data operasional:
 - **Unique Constraint**: 1 user hanya boleh memiliki 1 shift per tanggal.
 - **Active Machine Only**: `machine_code` hanya boleh diisi dengan mesin yang statusnya `ACTIVE`. Mesin `INACTIVE` akan ditolak (422).
 - **Integrity Check**: `user_id`, `shift_id`, dan `machine_code` divalidasi keberadaannya di database (Foreign Key check).
+- **Historical Protection**: Jadwal yang sudah berlalu (`shift_date < today`) **TIDAK BOLEH** dihapus.
+    - *Alasan*: Menjaga riwayat jadwal untuk keperluan laporan (komparasi jadwal vs realisasi).
+- **Flexibility**: Sistem mengizinkan perubahan jadwal meskipun user sudah/sedang bekerja di shift tersebut.
+    - *Alasan*: Mengakomodasi koreksi kesalahan admin (human error) tanpa birokrasi sistem yang rumit.
+    - *Catatan Ideal*: Di environment production High-Security, seharusnya perubahan diblokir jika jam start_time sudah lewat.
 
 ### 7. Flexible Event Logging
 - **Keputusan**: Kolom `event` di tabel `machine_logs` disimpan sebagai `string` (varchar), bukan terbatas pada Enum.

@@ -104,7 +104,7 @@ describe('store', function () {
         $response->assertStatus(201)
             ->assertJsonFragment([
                 'success' => true,
-                'message' => 'Log entry created successfully.',
+                'message' => __('messages.log_entry_created'),
             ]);
 
         $this->assertDatabaseHas('machine_logs', [

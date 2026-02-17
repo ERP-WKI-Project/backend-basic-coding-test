@@ -71,6 +71,13 @@ class UserShiftController extends Controller
 
     public function destroy(UserShift $userShift): JsonResponse
     {
+        if ($userShift->shift_date->isBefore(today())) {
+            return $this->errorResponse(
+                __('messages.cannot_delete_past_shift'),
+                422
+            );
+        }
+
         $this->userShiftService->delete($userShift);
 
         return $this->successResponse(null, __('messages.user_shift_deleted'));

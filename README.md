@@ -39,3 +39,6 @@ Panduan singkat untuk mengerjakan tugas **Test 1** – **Test 5** pada repositor
 ### Setelah Selesai
 - Periksa kembali lint/error, formatting, dan logika sebelum membuat Pull Request.
 - Pastikan deskripsi PR menjelaskan ringkas perubahan utama, asumsi, serta cara tes yang sudah dijalankan.
+
+### Dokumentasi API
+- [Postman Documentation](https://documenter.getpostman.com/view/5408007/2sBXcBo3HR)

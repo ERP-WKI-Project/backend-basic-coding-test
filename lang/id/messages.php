@@ -23,6 +23,10 @@ return [
     'user_shift_retrieved' => 'Detail user shift berhasil diambil.',
     'user_shift_updated' => 'User shift berhasil diperbarui.',
     'user_shift_deleted' => 'User shift berhasil dihapus.',
+    'cannot_delete_past_shift' => 'Tidak dapat menghapus jadwal yang sudah berlalu.',
 
     'shift_date_must_match_shift_day_of_week' => 'Tanggal shift harus sesuai dengan hari shift.',
+    'log_entry_listed' => 'Daftar log entry berhasil diambil.',
+    'log_entry_created' => 'Log entry berhasil dibuat.',
+    'report_user_machine_activity_retrieved' => 'Laporan aktivitas user mesin berhasil diambil.',
 ];

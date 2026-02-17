@@ -28,7 +28,7 @@ class LogEntryController extends Controller
 
         return $this->collectionResponse(
             LogEntryResource::collection($logs),
-            'Log entries retrieved successfully.'
+            __('messages.log_entry_listed')
         );
     }
 
@@ -38,7 +38,7 @@ class LogEntryController extends Controller
 
         return $this->successResponse(
             new LogEntryResource($logEntry),
-            'Log entry created successfully.',
+            __('messages.log_entry_created'),
             201
         );
     }

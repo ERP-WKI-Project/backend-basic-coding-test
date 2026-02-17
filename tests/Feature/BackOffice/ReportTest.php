@@ -52,9 +52,9 @@ test('user machine activity report → mengembalikan data activity dalam rentang
                     'event',
                     'message',
                     'created_at',
-                ]
+                ],
             ],
-            'meta' => ['current_page', 'last_page', 'total']
+            'meta' => ['current_page', 'last_page', 'total'],
         ]);
 
     // Should only contain the recent log

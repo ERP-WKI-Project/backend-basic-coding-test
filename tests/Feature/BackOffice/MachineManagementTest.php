@@ -101,8 +101,6 @@ describe('store', function () {
             ->assertJsonValidationErrors(['code', 'name']);
     });
 
-
-
     test('mengembalikan error validasi 422 ketika code sudah terdaftar', function () {
         Machine::factory()->create(['code' => 'MCH-EXISTING']);
 

@@ -24,7 +24,7 @@ class ReportController extends Controller
 
         return $this->collectionResponse(
             UserMachineActivityResource::collection($reportData),
-            'User machine activity report retrieved successfully.'
+            __('messages.report_user_machine_activity_retrieved')
         );
     }
 }

@@ -319,6 +319,19 @@ describe('destroy', function () {
 
         $response->assertStatus(404);
     });
+
+    test('mengembalikan status 422 jika mencoba menghapus jadwal masa lalu', function () {
+        $userShift = UserShift::factory()->create([
+            'shift_date' => Carbon::yesterday()->format('Y-m-d'),
+        ]);
+
+        $response = $this->deleteJson("/api/backoffice/v1/user-shifts/{$userShift->id}");
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['message' => __('messages.cannot_delete_past_shift')]);
+
+        $this->assertDatabaseHas('user_shifts', ['id' => $userShift->id]);
+    });
 });
 
 describe('unauthenticated', function () {
