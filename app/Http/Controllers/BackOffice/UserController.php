@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackOffice;
 
+use App\DTOs\UserDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BackOffice\StoreUserRequest;
 use App\Http\Requests\BackOffice\UpdateUserRequest;
@@ -34,7 +35,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->userService->createUser($request->validated());
+        $dto = UserDto::fromRequest($request->validated());
+        $user = $this->userService->createUser($dto);
 
         return response()->json([
             'message' => 'User berhasil dibuat',
@@ -55,7 +57,15 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        $user = $this->userService->updateUser($user, $request->validated());
+        // Merge existing data with request data for partial updates
+        $data = array_merge([
+            'name' => $user->name,
+            'email' => $user->email,
+            'employee_number' => $user->employee_number,
+        ], $request->validated());
+        
+        $dto = UserDto::fromRequest($data);
+        $user = $this->userService->updateUser($user, $dto);
 
         return response()->json([
             'message' => 'User berhasil diupdate',

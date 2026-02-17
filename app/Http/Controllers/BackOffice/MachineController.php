@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackOffice;
 
+use App\DTOs\MachineDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BackOffice\StoreMachineRequest;
 use App\Http\Requests\BackOffice\UpdateMachineRequest;
@@ -31,7 +32,8 @@ class MachineController extends Controller
      */
     public function store(StoreMachineRequest $request): JsonResponse
     {
-        $machine = $this->machineService->createMachine($request->validated());
+        $dto = MachineDto::fromRequest($request->validated());
+        $machine = $this->machineService->createMachine($dto);
         
         return MachineResource::make($machine)
             ->response()
@@ -51,7 +53,15 @@ class MachineController extends Controller
      */
     public function update(UpdateMachineRequest $request, Machine $machine): MachineResource
     {
-        $machine = $this->machineService->updateMachine($machine, $request->validated());
+        // Merge existing data with request data for partial updates
+        $data = array_merge([
+            'machine_code' => $machine->machine_code,
+            'name' => $machine->name,
+            'description' => $machine->description,
+        ], $request->validated());
+        
+        $dto = MachineDto::fromRequest($data);
+        $machine = $this->machineService->updateMachine($machine, $dto);
         return MachineResource::make($machine);
     }
 
