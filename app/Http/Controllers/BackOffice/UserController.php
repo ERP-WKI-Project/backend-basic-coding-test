@@ -15,6 +15,13 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
+    /**
+     * Get all users
+     *
+     * Retrieve a paginated list of users. Supports filtering by employee number, name, email, and searching.
+     *
+     * @tag Users
+     */
     public function index(IndexUserRequest $request): AnonymousResourceCollection
     {
         $users = UserService::getAllUsers($request->query('limit', 15), $request->query('q'));
@@ -22,6 +29,13 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
+    /**
+     * Create a new user
+     *
+     * Create a new user with auto-generated employee number.
+     *
+     * @tag Users
+     */
     public function store(StoreUserRequest $request): UserResource
     {
         $dto = UserDto::fromRequest($request->validated());
@@ -30,11 +44,25 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
+    /**
+     * Get user details
+     *
+     * Retrieve details of a specific user by ID.
+     *
+     * @tag Users
+     */
     public function show(User $user): UserResource
     {
         return new UserResource($user);
     }
 
+    /**
+     * Update user
+     *
+     * Update an existing user's information.
+     *
+     * @tag Users
+     */
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
         $dto = UserDto::fromRequest($request->validated());
@@ -43,6 +71,13 @@ class UserController extends Controller
         return new UserResource($updatedUser);
     }
 
+    /**
+     * Delete user
+     *
+     * Soft delete a user from the system.
+     *
+     * @tag Users
+     */
     public function destroy(User $user): JsonResponse
     {
         UserService::deleteUser($user);

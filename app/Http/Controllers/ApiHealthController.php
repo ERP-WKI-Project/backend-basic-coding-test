@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class ApiHealthController extends Controller
 {
+    /**
+     * API Health Check
+     *
+     * Check the health status of the API, database, and Redis connections.
+     *
+     * @tag Health Check
+     * @unauthenticated
+     */
     public function __invoke(Request $request)
     {
         $status = 200;

@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Login
+     *
+     * Authenticate user with employee number and password. Returns access token on success.
+     *
+     * @tag Authentication
+     * @unauthenticated
+     */
     public function login(LoginRequest $request): AuthResource|JsonResponse
     {
         $validated = $request->validated();
@@ -43,6 +51,13 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout
+     *
+     * Revoke the current access token.
+     *
+     * @tag Authentication
+     */
     public function logout(Request $request): JsonResponse
     {
         // Revoke current access token

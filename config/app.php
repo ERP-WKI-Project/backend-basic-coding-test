@@ -136,4 +136,16 @@ return [
 
     'default_user_password' => env('DEFAULT_USER_PASSWORD', 'mypassword'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | API Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is used for API versioning in documentation and responses.
+    | It helps track which version of the API is currently deployed.
+    |
+    */
+
+    'api_version' => env('API_VERSION', '1.0.0'),
+
 ];
