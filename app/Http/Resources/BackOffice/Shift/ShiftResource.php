@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\BackOffice\Machine;
+namespace App\Http\Resources\BackOffice\Shift;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MachineResource extends JsonResource
+class ShiftResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,9 @@ class MachineResource extends JsonResource
     {
         return [
             'id' => $this->ulid,
-            'code' => $this->code,
             'name' => $this->name,
-            'description' => $this->description,
-            'status' => $this->status,
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
         ];
     }
 }
