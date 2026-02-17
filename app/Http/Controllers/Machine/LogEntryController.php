@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Machine;
 use App\DTOs\MachineLogDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Machine\LogEntry\StoreLogEntryRequest;
+use App\Http\Resources\Machine\LogEntry\LogEntryResource;
 use App\Jobs\ProcessMachineLog;
 use App\Models\Machine;
 use App\Services\MachineLogService;
@@ -23,9 +24,23 @@ class LogEntryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    /**
+     * Display a listing of the machine logs.
+     */
+    public function index(Request $request)
     {
-        //
+        try {
+            $filters = $request->only(['search', 'date', 'machine_id', 'event']);
+
+            $logs = $this->machineLogService->getPaginatedLogs($filters, $request->per_page ?? 10);
+
+            return $this->successResponse(
+                LogEntryResource::collection($logs),
+                'Machine logs retrieved successfully.'
+            );
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to retrieve logs: ' . $th->getMessage(), 500);
+        }
     }
 
     /**

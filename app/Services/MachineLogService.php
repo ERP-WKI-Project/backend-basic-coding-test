@@ -9,6 +9,7 @@ use App\Models\MachineLog;
 use App\Models\User;
 use App\Models\UserShift;
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class MachineLogService
@@ -22,6 +23,33 @@ class MachineLogService
         $this->model = $model;
         $this->userShiftModel = $userShiftModel;
         $this->machineModel = $machineModel;
+    }
+
+    /**
+     * Get paginated machine logs with filters.
+     */
+    public function getPaginatedLogs(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->model
+            ->with(['user', 'machine'])
+            ->latest()
+            ->when($filters['machine_id'] ?? null, function ($query, $machineUlid) {
+                $query->whereHas('machine', fn($q) => $q->where('ulid', $machineUlid));
+            })
+            ->when($filters['event'] ?? null, function ($query, $event) {
+                $query->where('event', $event);
+            })
+            ->when($filters['date'] ?? null, function ($query, $date) {
+                $query->whereDate('created_at', $date);
+            })
+            ->when($filters['search'] ?? null, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('log_message', 'ilike', "%{$search}%")
+                        ->orWhere('machine_code', 'ilike', "%{$search}%")
+                        ->orWhereHas('user', fn($u) => $u->where('name', 'ilike', "%{$search}%"));
+                });
+            })
+            ->paginate($perPage);
     }
 
     public function validateActiveSession(User $user, Machine $machine): void

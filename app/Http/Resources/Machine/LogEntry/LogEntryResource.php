@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Machine\LogEntry;
 
+use App\Http\Resources\BackOffice\Machine\MachineResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,13 +16,11 @@ class LogEntryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'           => $this->ulid, // Use ULID instead of internal ID
-            'machine_code' => $this->machine_code,
+            'id'           => $this->ulid,
             'event'        => $this->event,
             'message'      => $this->log_message,
-            
-            // Transform relationship into a nested object or string
-            'operator'     => [
+            'machine'      => new MachineResource($this->whenLoaded('machine')),
+            'user'         => [
                 'name'            => $this->user?->name,
                 'employee_number' => $this->user?->employee_number,
             ],
