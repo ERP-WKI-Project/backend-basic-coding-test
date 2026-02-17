@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\MachineDto;
 use App\Models\Machine;
 use Illuminate\Support\Facades\DB;
 
@@ -10,13 +11,13 @@ class MachineService
     /**
      * Create a new machine.
      *
-     * @param array $data
+     * @param MachineDto $dto
      * @return Machine
      */
-    public function createMachine(array $data): Machine
+    public function createMachine(MachineDto $dto): Machine
     {
-        return DB::transaction(function () use ($data) {
-            return Machine::create($data);
+        return DB::transaction(function () use ($dto) {
+            return Machine::create($dto->toArray());
         });
     }
 
@@ -24,13 +25,13 @@ class MachineService
      * Update an existing machine.
      *
      * @param Machine $machine
-     * @param array $data
+     * @param MachineDto $dto
      * @return Machine
      */
-    public function updateMachine(Machine $machine, array $data): Machine
+    public function updateMachine(Machine $machine, MachineDto $dto): Machine
     {
-        return DB::transaction(function () use ($machine, $data) {
-            $machine->update($data);
+        return DB::transaction(function () use ($machine, $dto) {
+            $machine->update($dto->toArray());
             return $machine->fresh();
         });
     }

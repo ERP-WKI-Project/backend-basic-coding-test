@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\UserDto;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,13 +12,15 @@ class UserService
     /**
      * Create a new user with validation and business logic.
      *
-     * @param array $data
+     * @param UserDto $dto
      * @return User
      * @throws \Exception
      */
-    public function createUser(array $data): User
+    public function createUser(UserDto $dto): User
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($dto) {
+            $data = $dto->toArray();
+            
             // Hash password before storing
             $data['password'] = Hash::make($data['password']);
 
@@ -35,13 +38,15 @@ class UserService
      * Update existing user with validation and business logic.
      *
      * @param User $user
-     * @param array $data
+     * @param UserDto $dto
      * @return User
      * @throws \Exception
      */
-    public function updateUser(User $user, array $data): User
+    public function updateUser(User $user, UserDto $dto): User
     {
-        return DB::transaction(function () use ($user, $data) {
+        return DB::transaction(function () use ($user, $dto) {
+            $data = $dto->toArray();
+            
             // Hash password if provided
             if (isset($data['password']) && !empty($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
