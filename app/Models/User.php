@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Models\BaseAuthenticatable as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -40,7 +44,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Shift::class, 'user_shifts', 'user_id', 'shift_id');
     }
 
-    public function userShifts()
+    public function userShifts(): HasMany
     {
         return $this->hasMany(UserShift::class, 'user_id', 'id');
     }
