@@ -67,6 +67,11 @@ Validasi jadwal shift sangat ketat untuk menjaga integritas data operasional:
 - **Active Machine Only**: `machine_code` hanya boleh diisi dengan mesin yang statusnya `ACTIVE`. Mesin `INACTIVE` akan ditolak (422).
 - **Integrity Check**: `user_id`, `shift_id`, dan `machine_code` divalidasi keberadaannya di database (Foreign Key check).
 
+### 7. Flexible Event Logging
+- **Keputusan**: Kolom `event` di tabel `machine_logs` disimpan sebagai `string` (varchar), bukan terbatas pada Enum.
+- **Alasan**: Memberikan fleksibilitas penuh bagi mesin IoT untuk mengirimkan tipe event baru (misal: `machine_overheat`, `emergency_stop`, `sensor_fault`) tanpa perlu update/deploy backend setiap kali ada jenis event baru dari vendor mesin.
+- **Implementasi**: DTO `MachineLogDto` menerima `string` untuk properti event. `EventEnum` hanya digunakan untuk standarisasi event *internal* system (seperti `login_success`).
+
 ---
 
 ## Keputusan Arsitektur
@@ -154,8 +159,6 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 | **Login** | 5 | Berhasil, password salah (401), user not found (404), validasi kosong (422), format salah (422) |
 | **Logout** | 2 | Berhasil, tanpa token (401) |
 
----
-
 ### Machine Management (19 test, 135 assertions)
 
 | Kategori | Jumlah | Skenario |
@@ -166,6 +169,13 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 | **Update** | 5 | Full update, partial update, self-update code, validasi duplikat, 404 |
 | **Destroy** | 2 | Soft delete, 404 not found |
 | **Auth** | 1 | Unauthenticated (401) |
+
+### Machine Log Entry (8 test, 37 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **Index** | 3 | List log (pagination), Filter by machine_code, Filter by search keyword (event & message) |
+| **Store** | 5 | Berhasil (std event), Berhasil (custom/flexible event), Gagal (invalid machine), Gagal (empty event), Gagal (machine inactive) |
 
 ---
 
