@@ -87,6 +87,7 @@ class ShiftService
             $this->validateMachineAvailability($machine->id, $data['shift_date'], $shift->id, $userShift->id);
 
             $userShift->update([
+                'user_id'    => $data['user_id'], 
                 'shift_id'   => $shift->id,
                 'machine_id' => $machine->id,
                 'shift_date' => $data['shift_date'],
@@ -117,11 +118,12 @@ class ShiftService
         }
     }
 
-    private function validateMachineAvailability(int $machineId, string $date, int $shiftId): void
+    private function validateMachineAvailability(int $machineId, string $date, int $shiftId, ?int $ignoreId = null): void
     {
         $busy = $this->userShiftModel->where('machine_id', $machineId)
             ->where('shift_date', $date)
             ->where('shift_id', $shiftId)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
             ->exists();
 
         if ($busy) {
