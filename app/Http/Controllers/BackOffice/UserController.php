@@ -4,21 +4,20 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\UserDto;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BackOffice\IndexUserRequest;
 use App\Http\Requests\BackOffice\StoreUserRequest;
 use App\Http\Requests\BackOffice\UpdateUserRequest;
 use App\Http\Resources\BackOffice\UserResource;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(IndexUserRequest $request): AnonymousResourceCollection
     {
-        $perPage = $request->input('per_page', 15);
-        $users = UserService::getAllUsers($perPage);
+        $users = UserService::getAllUsers($request->query('limit', 15), $request->query('q'));
 
         return UserResource::collection($users);
     }

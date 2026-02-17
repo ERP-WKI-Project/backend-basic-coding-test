@@ -6,12 +6,37 @@ use App\DTOs\UserDto;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class UserService
 {
-    public static function getAllUsers(int $perPage = 15): LengthAwarePaginator
+    public static function getAllUsers(?int $limit = null, ?string $search = null): LengthAwarePaginator
     {
-        return User::latest()->paginate($perPage);
+        $query = QueryBuilder::for(User::class)
+            ->allowedFilters([
+                AllowedFilter::exact('employee_number'),
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('email'),
+                AllowedFilter::trashed(),
+            ])
+            ->allowedSorts([
+                'employee_number',
+                'name',
+                'email',
+                'created_at',
+            ])
+            ->defaultSort('-created_at');
+
+        // Apply search if provided
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ILIKE', "%{$search}%")
+                  ->orWhere('employee_number', 'ILIKE', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($limit)->withQueryString();
     }
 
     public static function createUser(UserDto $dto): User
