@@ -84,16 +84,18 @@ class User extends Authenticatable
         return $user;
     }
 
-    public static function updateUserById(int|string $id, array $data)
+    public static function getByNik(string $nik): ?self
     {
-        $user = self::find($id);
+        return self::where('employee_number', $nik)->first();
+    }
+
+
+    public static function updateUserByNik(string $nik, array $data)
+    {
+        $user = self::getByNik($nik);
 
         if (!$user) {
             return null;
-        }
-
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
         }
 
         $user->fill($data);
@@ -102,10 +104,9 @@ class User extends Authenticatable
         return $user;
     }
 
-
-    public static function deleteUserById(int|string $id): bool
+    public static function deleteUserByNik(string $nik): bool
     {
-        $user = self::find($id);
+        $user = self::getByNik($nik);
         if (!$user) {
             return false;
         }
@@ -113,9 +114,9 @@ class User extends Authenticatable
         return (bool) $user->delete();
     }
 
-    public static function getUserListPaginated(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    public static function getUserListPaginated(int $perPage = 15, array $columns = ['*'], int $page = 1)
     {
-        return self::query()->paginate($perPage, $columns);
+        return self::query()->paginate($perPage, $columns, 'page', $page);
     }
 
     public function createPersonalAccessToken(string $tokenName = 'auth-token'): array
