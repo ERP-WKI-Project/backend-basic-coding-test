@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\BaseAuthenticatable as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -15,6 +16,22 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    use SoftDeletes;
+    public $timestamps = true;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        "employee_number",
+        "name",
+        "email",
+        "email_verified_at",
+        "password",
+        "remember_token"
     ];
 
     /**
