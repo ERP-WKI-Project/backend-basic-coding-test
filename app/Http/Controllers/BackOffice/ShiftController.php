@@ -4,8 +4,8 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\ShiftDto;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreShiftRequest;
-use App\Http\Requests\UpdateShiftRequest;
+use App\Http\Requests\BackOffice\StoreShiftRequest;
+use App\Http\Requests\BackOffice\UpdateShiftRequest;
 use App\Http\Resources\BackOffice\ShiftResource;
 use App\Services\ShiftService;
 use Illuminate\Http\JsonResponse;

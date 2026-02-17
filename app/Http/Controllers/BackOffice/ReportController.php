@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BackOffice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserMachineActivityRequest;
+use App\Http\Requests\BackOffice\UserMachineActivityRequest;
 use App\Services\ReportService;
 use Illuminate\Http\JsonResponse;
 
