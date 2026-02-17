@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
         $userId = $user->id ?? $user;
 
         return [
-            'employee_number' => 'required|string|max:6|unique:users,employee_number,' . $userId,
+            'employee_number' => 'required|numeric|digits:6|unique:users,employee_number,' . $userId,
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $userId,
             'password' => 'nullable|string|min:6',
