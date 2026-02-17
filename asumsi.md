@@ -180,6 +180,12 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 | **Index** | 3 | List log (pagination), Filter by machine_code, Filter by search keyword (event & message) |
 | **Store** | 5 | Berhasil (std event), Berhasil (custom/flexible event), Gagal (invalid machine), Gagal (empty event), Gagal (machine inactive) |
 
+### Reporting (5 test, 31 assertions)
+
+| Kategori | Jumlah | Skenario |
+|---|---|---|
+| **User Machine Activity** | 5 | Filter range tanggal, filter by user, filter by machine, validasi range date, unauthenticated |
+
 ---
 
 ## Tools & Konvensi
