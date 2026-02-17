@@ -25,22 +25,38 @@ class MachineLogService
         $this->machineModel = $machineModel;
     }
 
+    public function getActiveShift(User $user): ?UserShift
+    {
+        return $this->userShiftModel
+            ->where('user_id', $user->id)
+            ->whereDate('shift_date', now()->toDateString())
+            ->whereHas('shift', function ($query) {
+                $now = now()->format('H:i:s');
+                $query->where('start_time', '<=', $now)
+                    ->where('end_time', '>=', $now);
+            })
+            ->first();
+    }
+
     /**
      * Get paginated machine logs with filters.
      */
     public function getPaginatedLogs(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         return $this->model
-            ->with(['user', 'machine'])
+            ->with(['user', 'machine', 'userShift.shift'])
             ->latest()
-            ->when($filters['machine_id'] ?? null, function ($query, $machineUlid) {
-                $query->whereHas('machine', fn($q) => $q->where('ulid', $machineUlid));
+            ->when($filters['user_shift_id'] ?? null, function ($query, $userShiftId) {
+                $query->whereHas('userShift', fn($q) => $q->where('id', $userShiftId));
             })
             ->when($filters['event'] ?? null, function ($query, $event) {
                 $query->where('event', $event);
             })
             ->when($filters['date'] ?? null, function ($query, $date) {
                 $query->whereDate('created_at', $date);
+            })
+            ->when($filters['user_id'] ?? null, function ($query, $userId) {
+                $query->where('user_id', $userId);
             })
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -86,9 +102,36 @@ class MachineLogService
                 'user_id'      => $dto->user->id,
                 'machine_id'   => $dto->machineId,
                 'machine_code' => $dto->machineCode,
+                'user_shift_id'=> $dto->userShiftId,
                 'event'        => $dto->event->value,
                 'log_message'  => $dto->logMessage,
             ]);
         });
+    }
+
+    public function getMachineActivityReport(array $filters = [], int $perPage = 50): LengthAwarePaginator
+    {
+        return $this->model
+            ->with(['user', 'machine', 'userShift.shift'])
+            ->latest()
+            ->when($filters['start_date'] ?? null, function ($query, $start) {
+                $query->whereDate('created_at', '>=', $start);
+            })
+            ->when($filters['end_date'] ?? null, function ($query, $end) {
+                $query->whereDate('created_at', '<=', $end);
+            })
+            ->when($filters['user_id'] ?? null, function ($query, $userUlid) {
+                $query->whereHas('user', fn($q) => $q->where('id', $userUlid));
+            })
+            ->when($filters['machine_id'] ?? null, function ($query, $machineUlid) {
+                $query->whereHas('machine', fn($q) => $q->where('ulid', $machineUlid));
+            })
+            ->when($filters['search'] ?? null, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('log_message', 'ilike', "%{$search}%")
+                        ->orWhere('machine_code', 'ilike', "%{$search}%");
+                });
+            })
+            ->paginate($perPage);
     }
 }

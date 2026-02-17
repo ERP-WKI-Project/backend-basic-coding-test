@@ -24,7 +24,6 @@ class StoreLogEntryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'machine_id'   => ['required', 'string', 'exists:machines,ulid'],
             'event'        => ['required', 'string', new Enum(EventEnum::class)],
             'log_message'  => ['required', 'string', 'max:5000'],
         ];

@@ -8,7 +8,7 @@ use App\DTOs\MachineLogDto;
 use App\Jobs\ProcessMachineLog;
 
 class AuthService
-{
+{   
     public static function authenticateBackOffice(AuthCredentialDto $dto): AuthDto
     {
         $user = $dto->user;
@@ -39,7 +39,7 @@ class AuthService
         }
 
         ProcessMachineLog::dispatch(
-            MachineLogDto::fromAuth($dto, $auth),
+            MachineLogDto::fromAuth($dto, $auth, $userShift),
             'log_machine_auth_' . $user->employee_number . '_' . now()->format('YmdHis')
         );
 

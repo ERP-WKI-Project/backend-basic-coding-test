@@ -24,6 +24,12 @@ class LogEntryResource extends JsonResource
                 'name'            => $this->user?->name,
                 'employee_number' => $this->user?->employee_number,
             ],
+            "user_shift" => [
+                "name"            => $this->userShift?->shift?->name,
+                "start_time"      => $this->userShift?->shift?->start_time,
+                "end_time"        => $this->userShift?->shift?->end_time,
+                "shift_date"      => $this->userShift?->shift_date
+            ],
             'logged_at'    => $this->created_at?->format('Y-m-d H:i:s'),
             'time_ago'     => $this->created_at?->diffForHumans(),
         ];

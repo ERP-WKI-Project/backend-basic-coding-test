@@ -9,11 +9,12 @@ use App\Http\Resources\Machine\LogEntry\LogEntryResource;
 use App\Jobs\ProcessMachineLog;
 use App\Models\Machine;
 use App\Services\MachineLogService;
+use App\Traits\HasActiveShift;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 
 class LogEntryController extends Controller
-{
+{   
     protected MachineLogService $machineLogService;
 
     public function __construct(MachineLogService $machineLogService)
@@ -30,13 +31,24 @@ class LogEntryController extends Controller
     public function index(Request $request)
     {
         try {
-            $filters = $request->only(['search', 'date', 'machine_id', 'event']);
+            $user = $request->user();
+
+            $activeShift = $this->machineLogService->getActiveShift($user);
+
+            if (!$activeShift) {
+                return $this->errorResponse('You do not have an active shift assignment for this time.', 403);
+            }
+
+            $filters = $request->only(['search', 'date', 'event']);
+
+            $filters['user_id'] = $user->id;
+            $filters['user_shift_id'] = $activeShift->id;
 
             $logs = $this->machineLogService->getPaginatedLogs($filters, $request->per_page ?? 10);
 
             return $this->successResponse(
                 LogEntryResource::collection($logs),
-                'Machine logs retrieved successfully.'
+                'Your list of activities for today has been successfully retrieved..'
             );
         } catch (\Throwable $th) {
             return $this->errorResponse('Failed to retrieve logs: ' . $th->getMessage(), 500);
@@ -57,12 +69,15 @@ class LogEntryController extends Controller
     public function store(StoreLogEntryRequest $request)
     {
         try {
-            $machine = Machine::findByUlid($request->machine_id);
+            $user = $request->user();
+
+            $activeShift = $this->machineLogService->getActiveShift($user);
+            $machine = $activeShift->machine;
 
             $this->machineLogService->validateShift($request->user(), $machine);
             $this->machineLogService->validateActiveSession($request->user(), $machine);
 
-            $dto = MachineLogDto::fromRequest($request);
+            $dto = MachineLogDto::fromRequest($request, $machine, $activeShift);
 
             ProcessMachineLog::dispatch(
                 $dto,

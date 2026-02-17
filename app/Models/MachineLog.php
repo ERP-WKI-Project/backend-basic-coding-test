@@ -19,4 +19,9 @@ class MachineLog extends Model
     {
         return $this->belongsTo(Machine::class, 'machine_id');
     }
+
+    public function userShift()
+    {
+        return $this->belongsTo(UserShift::class, 'user_shift_id');
+    }
 }
