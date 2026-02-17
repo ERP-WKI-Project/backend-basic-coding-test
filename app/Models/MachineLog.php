@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\MachineLog\MachineLogEventEnum;
+use App\Enums\MachineLog\SeverityEnum;
 use App\Models\BaseModel as Model;
 use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +11,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MachineLog extends Model
 {
     use HasUlidColumn;
+
+    protected $fillable = [
+        'machine_code',
+        'user_id',
+        'event',
+        'log_message',
+        'severity',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'event' => MachineLogEventEnum::class,
+        'severity' => SeverityEnum::class,
+        'metadata' => 'array',
+    ];
 
     /**
      * Get the user that owns the machine log.

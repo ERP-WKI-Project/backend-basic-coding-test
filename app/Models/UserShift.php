@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserShift extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'shift_id',
+        'shift_date',
+        'machine_code',
+        'notes',
+    ];
+
     protected $casts = [
         'shift_date' => 'date',
     ];
@@ -24,5 +32,12 @@ class UserShift extends Model
     public function machine(): BelongsTo
     {
         return $this->belongsTo(Machine::class, 'machine_code', 'machine_code');
+    }
+
+    public function machineLogs()
+    {
+        return $this->hasMany(MachineLog::class, 'user_id', 'user_id')
+            ->where('machine_code', $this->machine_code)
+            ->whereDate('created_at', $this->shift_date);
     }
 }
