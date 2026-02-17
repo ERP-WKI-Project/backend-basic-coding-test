@@ -75,6 +75,27 @@ describe('index', function () {
             ->assertJsonCount(1, 'data')
             ->assertJsonFragment(['shift_date' => $date1]);
     });
+
+    test('mengembalikan error validasi 422 jika filter user_id tidak valid (bukan angka)', function () {
+        $response = $this->getJson('/api/backoffice/v1/user-shifts?user_id=invalid');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['user_id']);
+    });
+
+    test('mengembalikan error validasi 422 jika filter user_id tidak ditemukan (non-existent)', function () {
+        $response = $this->getJson('/api/backoffice/v1/user-shifts?user_id=99999');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['user_id']);
+    });
+
+    test('mengembalikan error validasi 422 jika filter shift_date format salah', function () {
+        $response = $this->getJson('/api/backoffice/v1/user-shifts?shift_date=invalid-date');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['shift_date']);
+    });
 });
 
 describe('store', function () {

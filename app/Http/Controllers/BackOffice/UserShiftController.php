@@ -7,12 +7,12 @@ use App\DTOs\UserShift\UpdateUserShiftDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BackOffice\StoreUserShiftRequest;
 use App\Http\Requests\BackOffice\UpdateUserShiftRequest;
+use App\Http\Requests\BackOffice\UserShiftFilterRequest;
 use App\Http\Resources\BackOffice\UserShiftResource;
 use App\Models\UserShift;
 use App\Services\UserShiftService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserShiftController extends Controller
 {
@@ -22,14 +22,10 @@ class UserShiftController extends Controller
         private readonly UserShiftService $userShiftService
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(UserShiftFilterRequest $request): JsonResponse
     {
         $userShifts = $this->userShiftService->getAll(
-            filters: [
-                'user_id' => $request->query('user_id'),
-                'shift_id' => $request->query('shift_id'),
-                'shift_date' => $request->query('shift_date'),
-            ],
+            filters: $request->validated(),
             search: $request->input('search')
         );
 

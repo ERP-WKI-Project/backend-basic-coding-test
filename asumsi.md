@@ -133,11 +133,11 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 
 ## Test Coverage
 
-### User Shift Management (19 test, 126 assertions)
+### User Shift Management (22 test, 142 assertions)
 
 | Kategori | Jumlah | Skenario |
 |---|---|---|
-| **Index** | 4 | List semua, filter by user_id, filter by shift_id, filter by shift_date |
+| **Index** | 7 | List semua, filter by user/shift/date, filter by invalid user/date (422) |
 | **Store** | 4 | Berhasil, validasi hari mismatch, double booking tanggal, foreign key tidak ada |
 | **Show** | 2 | Detail jadwal, 404 not found |
 | **Update** | 6 | Success update, mismatch hari/shift, conflict tanggal lain, self-update tanggal sama (ok), mesin inactive (gagal) |
@@ -173,11 +173,11 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 | **Destroy** | 2 | Soft delete, 404 not found |
 | **Auth** | 1 | Unauthenticated (401) |
 
-### Machine Log Entry (8 test, 37 assertions)
+### Machine Log Entry (10 test, 37 assertions)
 
 | Kategori | Jumlah | Skenario |
 |---|---|---|
-| **Index** | 3 | List log (pagination), Filter by machine_code, Filter by search keyword (event & message) |
+| **Index** | 5 | List log (pagination), Filter by machine_code, Filter by date, Filter by search keyword, Invalid date (422) |
 | **Store** | 5 | Berhasil (std event), Berhasil (custom/flexible event), Gagal (invalid machine), Gagal (empty event), Gagal (machine inactive) |
 
 ### Reporting (5 test, 31 assertions)

@@ -66,6 +66,31 @@ describe('index', function () {
             ->assertJsonCount(1, 'data')
             ->assertJsonFragment(['log_message' => 'System Panic']);
     });
+
+    test('mengembalikan daftar log entry berdasarkan tanggal', function () {
+        $log1 = new MachineLog(['user_id' => $this->user->id, 'machine_code' => $this->machine->code, 'event' => 'A', 'log_message' => 'Today Log']);
+        $log1->setCreatedAt(now());
+        $log1->save();
+
+        $log2 = new MachineLog(['user_id' => $this->user->id, 'machine_code' => $this->machine->code, 'event' => 'B', 'log_message' => 'Yesterday Log']);
+        $log2->setCreatedAt(now()->subDay());
+        $log2->save();
+
+        // Filter today
+        $response = $this->getJson(route('api.machine.v1.log-entry.index', ['date' => now()->format('Y-m-d')]));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['log_message' => 'Today Log'])
+            ->assertJsonMissing(['log_message' => 'Yesterday Log']);
+    });
+
+    test('mengembalikan error validasi 422 jika filter date format salah', function () {
+        $response = $this->getJson(route('api.machine.v1.log-entry.index', ['date' => 'invalid-date']));
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['date']);
+    });
 });
 
 describe('store', function () {
