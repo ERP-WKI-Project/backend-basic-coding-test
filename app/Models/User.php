@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $user;
     }
 
+    public static function getByID(string $id): ?self
+    {
+        return self::where('id', $id)->first();
+    }
+
     public static function getByNik(string $nik): ?self
     {
         return self::where('employee_number', $nik)->first();
