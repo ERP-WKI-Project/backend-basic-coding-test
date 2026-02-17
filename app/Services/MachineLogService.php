@@ -102,7 +102,7 @@ class MachineLogService
                 'user_id'      => $dto->user->id,
                 'machine_id'   => $dto->machineId,
                 'machine_code' => $dto->machineCode,
-                'user_shift_id'=> $dto->userShiftId,
+                'user_shift_id' => $dto->userShiftId,
                 'event'        => $dto->event->value,
                 'log_message'  => $dto->logMessage,
             ]);
@@ -125,6 +125,9 @@ class MachineLogService
             })
             ->when($filters['machine_id'] ?? null, function ($query, $machineUlid) {
                 $query->whereHas('machine', fn($q) => $q->where('ulid', $machineUlid));
+            })
+            ->when($filters['shift_id'] ?? null, function ($query, $shiftId) {
+                $query->whereHas('userShift', fn($q) => $q->where('shift_id', $shiftId));
             })
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
