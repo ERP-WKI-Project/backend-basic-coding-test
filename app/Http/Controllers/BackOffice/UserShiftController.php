@@ -51,7 +51,7 @@ class UserShiftController extends Controller
     public function show(UserShift $userShift): JsonResponse
     {
         return $this->resourceResponse(
-            new UserShiftResource($userShift),
+            new UserShiftResource($userShift->load(['user', 'shift', 'machine'])),
             __('messages.user_shift_retrieved')
         );
     }

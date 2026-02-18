@@ -5,7 +5,7 @@ namespace App\Http\Resources\BackOffice;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserShiftResource extends JsonResource
+class ShiftResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,10 @@ class UserShiftResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'shift_date' => $this->shift_date->format('Y-m-d'),
-            'user' => new UserResource($this->whenLoaded('user')),
-            'shift' => new ShiftResource($this->whenLoaded('shift')),
-            'machine' => new MachineResource($this->whenLoaded('machine')),
+            'name' => $this->name,
+            'start_time' => substr($this->start_time, 0, 5),
+            'end_time' => substr($this->end_time, 0, 5),
+            'day_of_week' => $this->day_of_week,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

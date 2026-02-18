@@ -82,9 +82,11 @@ Dokumen ini memisahkan antara **Asumsi Bisnis** (kondisi yang diterima apa adany
 *   **Keputusan**: Menggunakan `__('messages.key')` untuk output pesan.
 *   **Alasan**: Memisahkan teks dari logika code, memudahkan support multi-bahasa.
 
-### 10. Standardisasi Response
-*   **Keputusan**: Format JSON konsisten (`success`, `message`, `data`) dan tanggal format ISO 8601.
-*   **Alasan**: Memudahkan konsumsi data oleh Frontend/Mobile Apps.
+### 10. Standardisasi Response & Pencarian
+*   **Format**: JSON konsisten (`success`, `message`, `data`) dan tanggal ISO 8601.
+*   **Nested Objects**: Resource mengembalikan objek relasi penuh (User, Shift, Machine) bukan hanya ID.
+*   **Deep Search**: Pencarian mencakup kolom relasi (misal: nama user, nama shift, nama mesin) via `whereHas`.
+*   **Alasan**: Memudahkan konsumsi data frontend dan mengurangi round-trip request.
 
 ### 11. Strategi Testing
 *   **Database**: Menggunakan **PostgreSQL** untuk testing (bukan SQLite) untuk paritas production.
@@ -95,7 +97,7 @@ Dokumen ini memisahkan antara **Asumsi Bisnis** (kondisi yang diterima apa adany
 ### 12. Cakupan Tes (Test Coverage)
 *Detail jumlah dan skenario tes yang telah diimplementasikan.*
 
-*   **User Shift Management** (23 test, 138 assertions): Coverage untuk Create, Update, Delete, Validation, Integrity Check.
+*   **User Shift Management** (24 test, 297 assertions): Coverage untuk Create, Update, Delete, Validation, Integrity Check.
 *   **User Management** (28 test, 137 assertions): CRUD User, Auth, Password Hashing.
 *   **BackOffice Auth** (7 test, 23 assertions): Login, Logout, Guard protection.
 *   **Machine Management** (19 test, 135 assertions): CRUD Machine, Status Active/Inactive.

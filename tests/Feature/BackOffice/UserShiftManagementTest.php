@@ -21,7 +21,8 @@ beforeEach(function () {
 
 describe('index', function () {
     test('mengembalikan daftar jadwal user beserta format paginasi yang valid', function () {
-        UserShift::factory()->count(10)->create();
+        $machine = Machine::factory()->create();
+        UserShift::factory()->count(10)->create(['machine_code' => $machine->code]);
 
         $response = $this->getJson('/api/backoffice/v1/user-shifts');
 
@@ -30,7 +31,15 @@ describe('index', function () {
                 'success',
                 'message',
                 'data' => [
-                    '*' => ['user_id', 'shift_id', 'shift_date', 'machine_code', 'created_at', 'updated_at'],
+                    '*' => [
+                        'id',
+                        'shift_date',
+                        'user' => ['id', 'employee_number', 'name', 'email'],
+                        'shift' => ['id', 'name', 'start_time', 'end_time', 'day_of_week', 'created_at', 'updated_at'],
+                        'machine' => ['code', 'name', 'status'],
+                        'created_at',
+                        'updated_at',
+                    ],
                 ],
                 'meta',
             ])
@@ -48,7 +57,7 @@ describe('index', function () {
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
-            ->assertJsonFragment(['user_id' => $user1->id]);
+            ->assertJsonFragment(['employee_number' => $user1->employee_number]);
     });
 
     test('mengembalikan daftar jadwal user berdasarkan shift_id', function () {
@@ -59,7 +68,7 @@ describe('index', function () {
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
-            ->assertJsonFragment(['shift_id' => $this->shiftPagi->id]);
+            ->assertJsonFragment(['name' => $this->shiftPagi->name]);
     });
 
     test('mengembalikan daftar jadwal user berdasarkan shift_date', function () {
@@ -96,6 +105,35 @@ describe('index', function () {
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['shift_date']);
     });
+
+    test('mengembalikan daftar jadwal user berdasarkan pencarian (user name, shift name, machine code)', function () {
+        $user = User::factory()->create(['name' => 'John Searchable']);
+        $shift = Shift::factory()->create(['name' => 'Shift Searchable']);
+        $machine = Machine::factory()->create(['code' => 'MCH-SEARCH']);
+
+        UserShift::factory()->create(['user_id' => $user->id]);
+        UserShift::factory()->create(['shift_id' => $shift->id]);
+        UserShift::factory()->create(['machine_code' => $machine->code]);
+        UserShift::factory()->count(5)->create(); // Random data
+
+        // Search by User Name
+        $this->getJson('/api/backoffice/v1/user-shifts?search=John Searchable')
+            ->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['name' => 'John Searchable']);
+
+        // Search by Shift Name
+        $this->getJson('/api/backoffice/v1/user-shifts?search=Shift Searchable')
+            ->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['name' => 'Shift Searchable']);
+
+        // Search by Machine Code
+        $this->getJson('/api/backoffice/v1/user-shifts?search=MCH-SEARCH')
+            ->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['code' => 'MCH-SEARCH']);
+    });
 });
 
 describe('store', function () {
@@ -114,10 +152,10 @@ describe('store', function () {
                 'message' => __('messages.user_shift_created'),
             ])
             ->assertJsonFragment([
-                'user_id' => $this->user->id,
-                'shift_id' => $this->shiftPagi->id,
                 'shift_date' => $nextMonday,
-            ]);
+            ])
+            ->assertJsonPath('data.user.employee_number', $this->user->employee_number)
+            ->assertJsonPath('data.shift.name', $this->shiftPagi->name);
     });
 
     test('mengembalikan error validasi 422 jika hari tidak sesuai dengan shift', function () {
@@ -174,8 +212,8 @@ describe('show', function () {
             ->assertJsonFragment([
                 'success' => true,
                 'message' => __('messages.user_shift_retrieved'),
-                'user_id' => $userShift->user_id,
-            ]);
+            ])
+            ->assertJsonPath('data.user.employee_number', $userShift->user->employee_number);
     });
 
     test('mengembalikan status 404 jika jadwal user tidak ditemukan', function () {
@@ -204,8 +242,8 @@ describe('update', function () {
             ->assertJsonFragment([
                 'success' => true,
                 'message' => __('messages.user_shift_updated'),
-                'machine_code' => $machine->code,
-            ]);
+            ])
+            ->assertJsonPath('data.machine.code', $machine->code);
     });
 
     test('berhasil self-update (mengirim shift_date yang sama)', function () {

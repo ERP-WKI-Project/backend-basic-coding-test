@@ -15,7 +15,21 @@ class UserShiftService
             ->when($filters['user_id'] ?? null, fn ($query) => $query->where('user_id', $filters['user_id']))
             ->when($filters['shift_id'] ?? null, fn ($query) => $query->where('shift_id', $filters['shift_id']))
             ->when($filters['shift_date'] ?? null, fn ($query) => $query->where('shift_date', $filters['shift_date']))
-            ->when($search, fn ($query) => $query->where('machine_code', 'ilike', "%{$search}%"))
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('machine_code', 'ilike', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'ilike', "%{$search}%")
+                                ->orWhere('employee_number', 'ilike', "%{$search}%");
+                        })
+                        ->orWhereHas('shift', function ($q) use ($search) {
+                            $q->where('name', 'ilike', "%{$search}%");
+                        })
+                        ->orWhereHas('machine', function ($q) use ($search) {
+                            $q->where('name', 'ilike', "%{$search}%");
+                        });
+                });
+            })
             ->with(['user', 'shift', 'machine'])
             ->orderBy('shift_date', 'desc')
             ->paginate($perPage);
@@ -23,14 +37,16 @@ class UserShiftService
 
     public function create(CreateUserShiftDto $dto): UserShift
     {
-        return UserShift::create($dto->toArray());
+        $userShift = UserShift::create($dto->toArray());
+
+        return $userShift->load(['user', 'shift', 'machine']);
     }
 
     public function update(UserShift $userShift, UpdateUserShiftDto $dto): UserShift
     {
         $userShift->update($dto->toArray());
 
-        return $userShift->refresh();
+        return $userShift->refresh()->load(['user', 'shift', 'machine']);
     }
 
     public function delete(UserShift $userShift): bool
