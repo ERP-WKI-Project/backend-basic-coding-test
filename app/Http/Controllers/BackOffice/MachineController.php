@@ -23,8 +23,8 @@ class MachineController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-
-        $machines = $this->service->list($perPage);
+        $page = $request->get('page', 1);
+        $machines = $this->service->list($perPage, $page);
 
         return response()->json($machines);
     }

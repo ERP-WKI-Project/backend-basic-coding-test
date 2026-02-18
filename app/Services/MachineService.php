@@ -4,13 +4,19 @@ namespace App\Services;
 
 use App\DTOs\MachineDto;
 use App\Models\Machine;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 
 class MachineService
 {
-    public function list(int $perPage = 10)
+    public function list(int $perPage = 10, int $page = 1)
     {
-        return Machine::latest()->paginate($perPage);
+        $cacheKey = "machines:list:perPage={$perPage}:page={$page}";
+
+        return Cache::tags(['machines'])->remember(
+            $cacheKey,
+            now()->addMinutes(5),
+            fn () => Machine::latest()->paginate($perPage, ['*'], 'page', $page)
+        );
     }
 
     public function find(Machine $machine): Machine
