@@ -6,6 +6,8 @@ use App\DTOs\BaseResponseDto;
 use App\DTOs\ShiftDto;
 use App\Services\ShiftService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BackOffice\ShiftStoreRequest;
+use App\Http\Requests\BackOffice\ShiftUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -21,15 +23,10 @@ class ShiftController extends Controller
     /**
      * Store a newly created shift in storage.
      */
-    public function store(Request $request)
+    public function store(ShiftStoreRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'day_of_week' => 'required|integer|between:1,7',
-                'start_time' => 'required|date_format:H:i:s',
-                'end_time' => 'required|date_format:H:i:s|after:start_time',
-            ]);
+            $validated = $request->validated();
 
             $shiftDto = $this->shiftService->createShift($validated);
             $response = BaseResponseDto::success('Shift created successfully', $shiftDto->toArray());
@@ -68,15 +65,10 @@ class ShiftController extends Controller
     /**
      * Update the specified shift.
      */
-    public function update(Request $request, int $id)
+    public function update(ShiftUpdateRequest $request, int $id)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'sometimes|string|max:255',
-                'day_of_week' => 'sometimes|integer|between:1,7',
-                'start_time' => 'sometimes|date_format:H:i:s',
-                'end_time' => 'sometimes|date_format:H:i:s',
-            ]);
+            $validated = $request->validated();
 
             $shiftDto = $this->shiftService->updateShiftById($id, $validated);
 

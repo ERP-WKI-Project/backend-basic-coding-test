@@ -7,6 +7,7 @@ use App\Services\BackOfficeAuthService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Container\Attributes\Auth;
+use App\Http\Requests\BackOffice\AuthLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -22,13 +23,10 @@ class AuthController extends Controller
     /**
      * Login user with email and password
      */
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'nik' => 'required',
-                'password' => 'required|string|min:6',
-            ]);
+            $validated = $request->validated();
 
             $result = $this->backOfficeAuthService->login($validated['nik'], $validated['password']);
             if (!$result->isSuccess()) {

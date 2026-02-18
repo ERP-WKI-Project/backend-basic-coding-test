@@ -7,6 +7,7 @@ use App\Enums\MachineLog\EventEnum;
 use App\Services\MachineLogService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Machine\LogEntryStoreRequest;
 
 class LogEntryController extends Controller
 {
@@ -63,7 +64,7 @@ class LogEntryController extends Controller
      * Create machine log entry
      * POST /api/machine/v1/log-entry
      */
-    public function store(Request $request)
+    public function store(LogEntryStoreRequest $request)
     {
         try {
             // Get authenticated user
@@ -73,25 +74,13 @@ class LogEntryController extends Controller
                     BaseResponseDto::error('Unauthorized', [], null)
                 )->setStatusCode(401);
             }
-
-            // Validation
-            $validator = validator($request->all(), [
-                'machine_code' => 'required|string|max:50',
-                'event' => 'required|string|in:' . implode(',', array_column(EventEnum::cases(), 'value')),
-                'log_message' => 'required|string',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(
-                    BaseResponseDto::error('Validation failed', [], $validator->errors()->toArray())
-                )->setStatusCode(422);
-            }
+            $validated = $request->validated();
 
             $data = [
-                'machine_code' => $request->machine_code,
+                'machine_code' => $validated['machine_code'],
                 'user_id' => $user->id,
-                'event' => $request->event,
-                'log_message' => $request->log_message,
+                'event' => $validated['event'],
+                'log_message' => $validated['log_message'],
             ];
 
             $machineLog = $this->machineLogService->createLog($data);

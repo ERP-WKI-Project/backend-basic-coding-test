@@ -6,6 +6,8 @@ use App\DTOs\BaseResponseDto;
 use App\DTOs\MachineDto;
 use App\Services\MachineService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BackOffice\MachineStoreRequest;
+use App\Http\Requests\BackOffice\MachineUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -21,16 +23,10 @@ class MachineController extends Controller
     /**
      * Store a newly created machine in storage.
      */
-    public function store(Request $request)
+    public function store(MachineStoreRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'machine_code' => 'required|string|unique:machines',
-                'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'location' => 'nullable|string|max:255',
-                'status' => 'sometimes|in:active,inactive,maintenance',
-            ]);
+            $validated = $request->validated();
 
             $machineDto = $this->machineService->createMachine($validated);
             $response = BaseResponseDto::success('Machine created successfully', $machineDto->toArray());
@@ -69,15 +65,10 @@ class MachineController extends Controller
     /**
      * Update the specified machine by machine_code.
      */
-    public function update(Request $request, string $machineCode)
+    public function update(MachineUpdateRequest $request, string $machineCode)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'sometimes|string|max:255',
-                'description' => 'sometimes|nullable|string',
-                'location' => 'sometimes|nullable|string|max:255',
-                'status' => 'sometimes|in:active,inactive,maintenance',
-            ]);
+            $validated = $request->validated();
 
             $machineDto = $this->machineService->updateMachineByCode($machineCode, $validated);
 

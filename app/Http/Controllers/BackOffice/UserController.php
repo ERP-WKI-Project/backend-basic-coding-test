@@ -6,6 +6,8 @@ use App\DTOs\BaseResponseDto;
 use App\DTOs\UserDto;
 use App\Services\UserService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BackOffice\UserStoreRequest;
+use App\Http\Requests\BackOffice\UserUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -18,15 +20,10 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'employee_number' => 'required|string|size:6|unique:users',
-                'name' => 'required|string|max:255',
-                'email' => 'nullable|email|unique:users',
-                'password' => 'string|min:6',
-            ]);
+            $validated = $request->validated();
 
             $userDto = $this->userService->createUser($validated);
             $response = BaseResponseDto::success('User created successfully', $userDto->toArray());
@@ -59,14 +56,10 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, string $nik)
+    public function update(UserUpdateRequest $request, string $nik)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:users,email,' . $nik . ',employee_number',
-                'password' => 'sometimes|string|min:6',
-            ]);
+            $validated = $request->validated();
 
             $userDto = $this->userService->updateUserByNik($nik, $validated);
 

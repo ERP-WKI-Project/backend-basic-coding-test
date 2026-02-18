@@ -5,7 +5,8 @@ namespace App\Http\Controllers\BackOffice;
 use App\DTOs\BaseResponseDto;
 use App\Http\Controllers\Controller;
 use App\Services\PasswordResetService;
-use Illuminate\Http\Request;
+use App\Http\Requests\BackOffice\PasswordResetGenerateRequest;
+use App\Http\Requests\BackOffice\PasswordResetVerifyRequest;
 use Illuminate\Validation\ValidationException;
 
 class PasswordResetController extends Controller
@@ -21,12 +22,10 @@ class PasswordResetController extends Controller
      * Generate reset token by nik (employee_number)
      * POST /api/backoffice/v1/password-reset
      */
-    public function store(Request $request)
+    public function store(PasswordResetGenerateRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'nik' => 'required|string',
-            ]);
+            $validated = $request->validated();
 
             $result = $this->passwordResetService->generateResetToken($validated['nik']);
 
@@ -46,12 +45,10 @@ class PasswordResetController extends Controller
      * Verify token and reset password
      * POST /api/backoffice/v1/password-reset/verify/{token}
      */
-    public function verify(Request $request, string $token)
+    public function verify(PasswordResetVerifyRequest $request, string $token)
     {
         try {
-            $validated = $request->validate([
-                'password' => 'required|string|min:6',
-            ]);
+            $validated = $request->validated();
 
             $result = $this->passwordResetService->verifyTokenAndReset($token, $validated['password']);
 
