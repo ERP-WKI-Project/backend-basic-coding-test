@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\DTOs\MachineLogDto;
 use App\Models\MachineLog;
-use App\Models\User;
 
 class MachineLogService
 {
-    public static function addLog(MachineLogDto $dto): void
+    public function list(int $perPage = 10)
     {
-        MachineLog::create([
+        return MachineLog::latest()->paginate($perPage);
+    }
+
+    public static function addLog(MachineLogDto $dto): MachineLog
+    {
+        return MachineLog::create([
             'user_id' => $dto->user->id,
             'machine_code' => $dto->machineCode,
             'event' => $dto->event->value,

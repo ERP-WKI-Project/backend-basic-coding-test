@@ -28,4 +28,19 @@ readonly class MachineLogDto
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
         );
     }
+
+    public static function fromRequest(
+        \App\Models\User $user,
+        string $machineCode,
+        \App\Enums\MachineLog\EventEnum $event,
+        string $logMessage
+    ): self {
+        return new self(
+            user: $user,
+            machineCode: $machineCode,
+            event: $event,
+            logMessage: $logMessage
+        );
+    }
+
 }
