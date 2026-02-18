@@ -3,8 +3,13 @@
 namespace App\Services;
 
 use App\DTOs\MachineLogDto;
+use App\Models\Machine;
 use App\Models\MachineLog;
 use App\Models\User;
+use App\Models\UserShift;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class MachineLogService
 {
@@ -17,4 +22,27 @@ class MachineLogService
             'log_message' => $dto->logMessage,
         ]);
     }
+
+    public static function getMachineLogs(
+        int $limit,
+        ?string $userId = null,
+        ?string $machineCode = null,
+    ): LengthAwarePaginator {
+        $query = QueryBuilder::for(MachineLog::class)
+            ->with(['user', 'machine'])
+            ->allowedFilters([
+                AllowedFilter::exact('machine_code'),
+                AllowedFilter::scope('start_after'),
+                AllowedFilter::scope('start_before'),
+            ]);
+
+            if ($userId && $machineCode) {
+                $query
+                    ->where('user_id', $userId)
+                    ->where('machine_code', $machineCode);
+            }
+
+        return $query->latest()->paginate($limit);
+    }
 }
+

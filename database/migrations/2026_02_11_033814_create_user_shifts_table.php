@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('user_shifts', function (Blueprint $table) {
             $table->id();
+            $table->ulid()->unique();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('shift_id')->constrained()->cascadeOnDelete();
             $table->date('shift_date')->index();
-            $table->string('machine_code')->nullable()->index();
+            $table->string('machine_code')
+                ->nullable()
+                ->index();
+            $table->foreign('machine_code')
+                ->references('machine_code')
+                ->on('machines')
+                ->onDelete('set null');
             $table->datetimes();
         });
     }

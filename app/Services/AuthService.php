@@ -8,6 +8,16 @@ use App\DTOs\MachineLogDto;
 
 class AuthService
 {
+    public static function authenticateBackOffice(AuthCredentialDto $dto): AuthDto
+    {
+        $user = $dto->user;
+
+        // Create token with BACKOFFICE ability
+        $token = $user->createToken('auth_token', [\App\Enums\SystemAbility::BACKOFFICE->value])->plainTextToken;
+
+        return AuthDto::success($token);
+    }
+
     public static function authenticateUseMachine(AuthCredentialDto $dto): AuthDto
     {
         $user = $dto->user;

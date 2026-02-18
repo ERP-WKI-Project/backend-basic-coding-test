@@ -123,4 +123,29 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'redis'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default User Password
+    |--------------------------------------------------------------------------
+    |
+    | This value is used as the default password when creating new users
+    | without explicitly providing a password. This can be useful for
+    | initial user creation or automated user provisioning.
+    |
+    */
+
+    'default_user_password' => env('DEFAULT_USER_PASSWORD', 'mypassword'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is used for API versioning in documentation and responses.
+    | It helps track which version of the API is currently deployed.
+    |
+    */
+
+    'api_version' => env('API_VERSION', '1.0.0'),
+
 ];
