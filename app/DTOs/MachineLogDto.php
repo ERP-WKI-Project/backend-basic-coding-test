@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Models\User;
+
 readonly class MachineLogDto
 {
     /**
@@ -27,5 +29,27 @@ readonly class MachineLogDto
             event: $event,
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
         );
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            user: User::findOrFail($data['user_id']),
+            machineCode: $data['machine_code'],
+            event: $data['event'],
+            logMessage: $data['log_message'],
+        );
+    }
+
+    public function toArray(): array
+    {
+        $data = [
+            'user_id' => $this->user->id,
+            'machine_code' => $this->machineCode,
+            'event' => $this->event,
+            'log_message' => $this->logMessage
+        ];
+
+        return $data;
     }
 }

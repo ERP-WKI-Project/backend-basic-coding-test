@@ -1,3 +1,23 @@
+## Dokumentasi
+
+### Auth untuk backoffice
+Tambahan auth login untuk backoffice agar bisa mendapat bearer token untuk akses endpoint-endpoint di path backoffice.
+
+### Postman Documentation
+https://documenter.getpostman.com/view/12200000/2sBXcBohZZ
+
+### Run PHP Unit test
+Run semua test
+```angular2html
+php artisan test
+```
+
+Run tiap file
+```angular2html
+php artisan test  Tests\Feature\UserShiftServiceTest.php
+```
+___
+
 ## ERP WKI – Basic Coding Test
 
 Panduan singkat untuk mengerjakan tugas **Test 1** – **Test 5** pada repository ini.
