@@ -17,9 +17,9 @@ class ShiftService
         return $shiftData;
     }
 
-    public static function getShift($id): Shift
+    public static function getShiftByUlid($id): Shift
     {
-        $shift = Shift::find($id);
+        $shift = Shift::where('ulid', $id)->first();
 
         return $shift;
     }
@@ -46,13 +46,16 @@ class ShiftService
 
     public static function updateShift(UpdateShiftDto $dto, $id): Shift
     {
-        $shiftData = Shift::find($id);
+        $shiftData = Shift::where('ulid', $id)->first();
 
         $shiftData->update([
             'name' => $dto->name,
+            'day_of_week' => $dto->dayOfWeek,
+            'start_time' => $dto->startTime,
+            'end_time' => $dto->endTime,
         ]);
 
-        $shiftData = Shift::find($id);
+        $shiftData = Shift::where('ulid', $id)->first();
 
         return $shiftData;
     }

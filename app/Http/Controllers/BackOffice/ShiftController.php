@@ -21,11 +21,11 @@ class ShiftController extends Controller
      */
     public function index()
     {
-        $user = $this->shiftService->getAllShift();
+        $shift = $this->shiftService->getAllShift();
 
         return response()->json([
             'message' => 'Succesfull : Shift Index',
-            'data' => $user,
+            'data' => $shift,
         ]);
     }
 
@@ -44,18 +44,18 @@ class ShiftController extends Controller
     {
         $dto = CreateShiftDto::fromRequest($request);
 
-        $user = $this->shiftService->createShift($dto);
+        $shift = $this->shiftService->createShift($dto);
 
-        return response()->json($user, 201);
+        return response()->json($shift, 201);
     }
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $user = $this->shiftService->getShift($id);
+        $data = $this->shiftService->getShiftByUlid($id);
 
-        return response()->json(['message' => 'Succesfull : Shift Show', 'data' => $user]);
+        return response()->json(['message' => 'Succesfull : Shift Show', 'data' => $data]);
     }
 
     /**
@@ -73,9 +73,9 @@ class ShiftController extends Controller
     {
         $dto = UpdateShiftDto::fromRequest($request);
 
-        $user = $this->shiftService->updateShift($dto, $id);
+        $shift = $this->shiftService->updateShift($dto, $id);
 
-        return response()->json(['message' => 'Succesfull : Shift Update', 'data' => $user]);
+        return response()->json(['message' => 'Succesfull : Shift Update', 'data' => $shift]);
     }
 
     /**
@@ -83,7 +83,7 @@ class ShiftController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = $this->shiftService->deleteShift($id);
+        $shift = $this->shiftService->deleteShift($id);
 
         return response()->json(['message' => 'Succesfull : Shift Delete']);
     }

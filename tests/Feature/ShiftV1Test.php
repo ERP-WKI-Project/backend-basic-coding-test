@@ -29,12 +29,12 @@ test('shift_v1_response', function () {
 test('shift_v1_create_without_parameter', function () {
     $response = $this->post('api/backoffice/v1/shift', []);
 
-    $response->assertStatus(200);
+    $response->assertStatus(422);
 });
 
 // shift - create with parameter null
 test('shift_v1_create_with_parameter_null', function () {
     $response = $this->post('api/backoffice/v1/shift', []);
 
-    $response->assertStatus(200);
+    $response->assertStatus(422);
 });
