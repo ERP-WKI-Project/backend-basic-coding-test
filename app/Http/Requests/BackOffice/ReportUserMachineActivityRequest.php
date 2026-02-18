@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Machine;
+namespace App\Http\Requests\BackOffice;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Support\ApiResponse;
 
-class AuthLoginRequest extends FormRequest
+class ReportUserMachineActivityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,13 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_number' => ['required', 'string', 'size:6'],
-            'machine_code' => ['required', 'string', 'max:255'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'employee_number' => ['sometimes', 'string', 'max:20'],
+            'machine_code' => ['sometimes', 'string', 'max:255'],
+            'event' => ['sometimes', 'string', 'max:50'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ];
     }
 
@@ -36,13 +41,7 @@ class AuthLoginRequest extends FormRequest
 
         foreach ($validator->failed() as $field => $rules) {
             $rule = strtolower(array_key_first($rules));
-            $errors[$field] = match ($rule) {
-                'required' => 'error.required',
-                'size' => 'error.size',
-                'string' => 'error.invalid_type',
-                'max' => 'error.max',
-                default => 'error.invalid',
-            };
+            $errors[$field] = $this->mapRuleToErrorCode($rule);
         }
 
         throw new HttpResponseException(
@@ -52,5 +51,18 @@ class AuthLoginRequest extends FormRequest
                 400
             )
         );
+    }
+
+    private function mapRuleToErrorCode(string $rule): string
+    {
+        return match ($rule) {
+            'required' => 'error.required',
+            'date' => 'error.invalid_date',
+            'after_or_equal' => 'error.date_range',
+            'integer' => 'error.integer',
+            'min' => 'error.min',
+            'max' => 'error.max',
+            default => 'error.invalid',
+        };
     }
 }

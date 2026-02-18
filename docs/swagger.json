@@ -1,0 +1,3448 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Basic Coding Test",
+        "description": "Basic Coding Test API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "Localhost"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Backoffice - Auth",
+            "description": "API Authentication"
+        },
+        {
+            "name": "Backoffice - User",
+            "description": "API Manage Users"
+        },
+        {
+            "name": "Backoffice - Machine",
+            "description": "API Manage Machine"
+        },
+        {
+            "name": "Backoffice - Shift",
+            "description": "API Manage Shift"
+        },
+        {
+            "name": "Backoffice - Report",
+            "description": "API For Reporting"
+        },
+        {
+            "name": "Machine - Auth",
+            "description": "API Authentication"
+        },
+        {
+            "name": "Machine - Profile",
+            "description": "API Get Profile"
+        },
+        {
+            "name": "Machine - Log Entry",
+            "description": "API Manage Log Entry"
+        }
+    ],
+    "paths": {
+        "/backoffice/v1/auth/login": {
+            "post": {
+                "tags": ["Backoffice - Auth"],
+                "description": "Login with authenticated user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/loginRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/loginRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/loginResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/auth/logout": {
+            "post": {
+                "tags": ["Backoffice - Auth"],
+                "description": "Logout authenticated user",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/logoutRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/logoutRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/logoutResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logoutResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/user": {
+            "get": {
+                "tags": ["Backoffice - User"],
+                "description": "Get list user with pagination",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" },
+                    { "$ref": "#/components/parameters/searchParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userListResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userListResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userListResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Backoffice - User"],
+                "description": "Create user employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userCreateRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/userCreateRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userCreateResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userCreateResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userCreateResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/user/{id}": {
+            "get": {
+                "tags": ["Backoffice - User"],
+                "description": "Detail user employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userDetailResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDetailResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDetailResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDetailResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Backoffice - User"],
+                "description": "Update user employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userUpdateRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/userUpdateRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userUpdateResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userUpdateResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userUpdateResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userUpdateResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Backoffice - User"],
+                "description": "Delete user employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userDeleteResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDeleteResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDeleteResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userDeleteResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/user/{id}/restore": {
+            "post": {
+                "tags": ["Backoffice - User"],
+                "description": "Restore deleted user employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userRestoreRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/userRestoreRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userRestoreResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userRestoreResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userRestoreResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/userRestoreResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/machine": {
+            "get": {
+                "tags": ["Backoffice - Machine"],
+                "description": "Get list machine with pagination",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" },
+                    { "$ref": "#/components/parameters/searchParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/machineListResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/machineListResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/machineListResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/machine/{machineCodeParam}": {
+            "get": {
+                "tags": ["Backoffice - Machine"],
+                "description": "Detail machine with shift and user",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/machineCodeParam" },
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/machineDetailResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/machineDetailResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/machineDetailResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/machineDetailResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/shift": {
+            "get": {
+                "tags": ["Backoffice - Shift"],
+                "description": "Get list shift with pagination",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" },
+                    { "$ref": "#/components/parameters/startDateParam" },
+                    { "$ref": "#/components/parameters/endDateParam" },
+                    { "$ref": "#/components/parameters/machineCodeParam" },
+                    { "$ref": "#/components/parameters/userIdParam" },
+                    { "$ref": "#/components/parameters/employeeNumberParam" },
+                    { "$ref": "#/components/parameters/searchParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/shiftListResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftListResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftListResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Backoffice - Shift"],
+                "description": "Create shift employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/shiftCreateRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/shiftCreateRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/shiftCreateResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftCreateResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftCreateResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/shift/{id}": {
+            "get": {
+                "tags": ["Backoffice - Shift"],
+                "description": "Detail shift employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/shiftDetailResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDetailResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDetailResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDetailResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Backoffice - Shift"],
+                "description": "Update shift employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/shiftUpdateRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/shiftUpdateRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/shiftUpdateResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftUpdateResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftUpdateResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftUpdateResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Backoffice - Shift"],
+                "description": "Delete shift employee",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/idParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/shiftDeleteResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDeleteResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDeleteResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/shiftDeleteResponse404"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machine/v1/auth/login": {
+            "post": {
+                "tags": ["Machine - Auth"],
+                "description": "Login machine with authenticated user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/loginMachineRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/loginMachineRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/loginMachineResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginMachineResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginMachineResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/loginMachineResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machine/v1/auth/logout": {
+            "post": {
+                "tags": ["Machine - Auth"],
+                "description": "Logout authenticated machine user",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/logoutMachineRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/logoutMachineRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/logoutMachineResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logoutMachineResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machine/v1/profile": {
+            "get": {
+                "tags": ["Machine - Profile"],
+                "description": "Get login profile",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/profileMachineResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/profileMachineResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machine/v1/log-entry": {
+            "get": {
+                "tags": ["Machine - Log Entry"],
+                "description": "Get list log entry machine with pagination",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" },
+                    { "$ref": "#/components/parameters/startDateParam" },
+                    { "$ref": "#/components/parameters/endDateParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/logEntryMachineListResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logEntryMachineListResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logEntryMachineListResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Machine - Log Entry"],
+                "description": "Create log entry machine",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/logEntryMachineCreateRequest"
+                            },
+                            "examples": {
+                                "request": {
+                                    "$ref": "#/components/examples/logEntryMachineCreateRequest"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/logEntryMachineCreateResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logEntryMachineCreateResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/logEntryMachineCreateResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/backoffice/v1/report/user-machine-activity": {
+            "get": {
+                "tags": ["Backoffice - Report"],
+                "description": "Get list report user machine activity with pagination",
+                "security": [
+                    { "bearerAuth": [] }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/pageParam" },
+                    { "$ref": "#/components/parameters/limitParam" },
+                    { "$ref": "#/components/parameters/machineCodeParam" },
+                    { "$ref": "#/components/parameters/employeeNumberParam" },
+                    { "$ref": "#/components/parameters/startDateParam" },
+                    { "$ref": "#/components/parameters/endDateParam" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/reportUserMachineActivityListResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/reportUserMachineActivityListResponse200"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/reportUserMachineActivityListResponse400"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/defaultErrorResponse"
+                                },
+                                "examples": {
+                                    "response": {
+                                        "$ref": "#/components/examples/defaultResponse401"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "Sanctum"
+            }
+        },
+        "parameters": {
+            "pageParam": {
+                "name": "pageParam",
+                "in": "query",
+                "description": "Page parameter",
+                "schema": {
+                    "type": "number",
+                    "example": 1
+                }
+            },
+            "limitParam": {
+                "name": "limitParam",
+                "in": "query",
+                "description": "Limit parameter",
+                "schema": {
+                    "type": "number",
+                    "example": 10
+                }
+            },
+            "searchParam": {
+                "name": "searchParam",
+                "in": "query",
+                "description": "Search parameter",
+                "schema": {
+                    "type": "string",
+                    "example": "Data"
+                }
+            },
+            "idParam": {
+                "name": "idParam",
+                "in": "path",
+                "description": "Id parameter",
+                "schema": {
+                    "type": "integer",
+                    "example": "1"
+                },
+                "required": true
+            },
+            "machineCodeParam": {
+                "name": "machineCodeParam",
+                "in": "query",
+                "description": "Machine code parameter",
+                "schema": {
+                    "type": "string",
+                    "example": "FILLING-MACHINE-001"
+                }
+            },
+            "userIdParam": {
+                "name": "userIdParam",
+                "in": "query",
+                "description": "User id parameter",
+                "schema": {
+                    "type": "integer",
+                    "example": 1
+                }
+            },
+            "employeeNumberParam": {
+                "name": "employeeNumberParam",
+                "in": "query",
+                "description": "Employee number parameter",
+                "schema": {
+                    "type": "string",
+                    "example": "000001"
+                }
+            },
+            "startDateParam": {
+                "name": "startDateParam",
+                "in": "query",
+                "description": "Start date parameter",
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-02-01"
+                }
+            },
+            "endDateParam": {
+                "name": "endDateParam",
+                "in": "query",
+                "description": "End date parameter",
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-02-28"
+                }
+            }
+        },
+        "schemas": {
+            "defaultErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "required": ["success", "message", "errors"]
+            },
+            "loginRequest": {
+                "type": "object",
+                "properties": {
+                    "employee_number": {
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 6
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": ["employee_number", "password"]
+            },
+            "loginResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            },
+                            "token_type": {
+                                "type": "string"
+                            },
+                            "user": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "employee_number": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["id", "employee_number", "name"]
+                            }
+                        },
+                        "required": ["token", "user"]
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "logoutRequest": {
+                "type": "object"
+            },
+            "logoutResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "userListResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "employee_number": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "email_verified_at": {
+                                    "type": "boolean"
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "updated_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "deleted_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": ["id", "employee_number", "name"]
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            },
+            "userCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "employee_number": {
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 6,
+                        "pattern": "^\\d{6}$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 8,
+                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                    }
+                },
+                "required": ["employee_number", "name", "password"]
+            },
+            "userCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "employee_number": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "employee_number", "name"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "userUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "employee_number": {
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 6,
+                        "pattern": "^\\d{6}$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 8,
+                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                    }
+                },
+                "required": ["employee_number", "name", "password"]
+            },
+            "userUpdateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "employee_number": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "employee_number", "name"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "userDeleteResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "userRestoreRequest": {
+                "type": "object"
+            },
+            "userRestoreResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "employee_number": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "restored_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "employee_number", "name"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "userDetailResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "employee_number": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "employee_number", "name"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "machineListResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "machine_code": {
+                                    "type": "string"
+                                },
+                                "total_assigned_shifts": {
+                                    "type": "number"
+                                },
+                                "last_assigned_date": {
+                                    "type": "string",
+                                    "format": "date"
+                                }
+                            },
+                            "required": ["machine_code", "total_assigned_shifts", "last_assigned_date"]
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            },
+            "machineDetailResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "machine_code": {
+                                "type": "string"
+                            },
+                            "total_assigned_shifts": {
+                                "type": "number"
+                            },
+                            "assignments": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "shift_date": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "shift_name": {
+                                            "type": "string"
+                                        },
+                                        "day_of_week": {
+                                            "type": "integer"
+                                        },
+                                        "start_time": {
+                                            "type": "string"
+                                        },
+                                        "end_time": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "employee_number": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": ["id", "employee_number", "name"]
+                                        }
+                                    },
+                                    "required": ["shift_date", "shift_name", "day_of_week", "start_time", "end_time", "user"]
+                                }
+                            }
+                        },
+                        "required": ["machine_code", "total_assigned_shifts", "assignments"]
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            },
+            "shiftListResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "shift_date": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "machine_code": {
+                                    "type": "string"
+                                },
+                                "shift": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "day_of_week": {
+                                            "type": "integer"
+                                        },
+                                        "start_time": {
+                                            "type": "string"
+                                        },
+                                        "end_time": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["id", "name", "day_of_week", "start_time", "end_time"]
+                                },
+                                "user": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "employee_number": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["id", "employee_number", "name"]
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "updated_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": ["id", "shift_date", "machine_code", "shift", "user", "created_at", "updated_at"]
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            },
+            "shiftCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "integer"
+                    },
+                    "shift_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "machine_code": {
+                        "type": "string"
+                    }
+                },
+                "required": ["user_id", "shift_id", "shift_date", "machine_code"]
+            },
+            "shiftCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "user_id": {
+                                "type": "integer"
+                            },
+                            "shift_id": {
+                                "type": "integer"
+                            },
+                            "shift_date": {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            "machine_code": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "user_id", "shift_id", "shift_date", "machine_code", "created_at"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "shiftDetailResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "shift_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "machine_code": {
+                        "type": "string"
+                    },
+                    "shift": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "day_of_week": {
+                                "type": "integer"
+                            },
+                            "start_time": {
+                                "type": "string"
+                            },
+                            "end_time": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["id", "name", "day_of_week", "start_time", "end_time"]
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "employee_number": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["id", "employee_number", "name"]
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": ["id", "shift_date", "machine_code", "shift", "user", "created_at", "updated_at"]
+            },
+            "shiftUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "integer"
+                    },
+                    "shift_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "machine_code": {
+                        "type": "string"
+                    }
+                },
+                "required": ["user_id", "shift_id", "shift_date", "machine_code"]
+            },
+            "shiftUpdateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "user_id": {
+                                "type": "integer"
+                            },
+                            "shift_id": {
+                                "type": "integer"
+                            },
+                            "shift_date": {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            "machine_code": {
+                                "type": "string"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "user_id", "shift_id", "shift_date", "machine_code", "updated_at"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "shiftDeleteResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "loginMachineRequest": {
+                "type": "object",
+                "properties": {
+                    "employee_number": {
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 6
+                    },
+                    "machine_code": {
+                        "type": "string"
+                    }
+                },
+                "required": ["employee_number", "machine_code"]
+            },
+            "loginMachineResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            },
+                            "token_type": {
+                                "type": "string"
+                            },
+                            "user": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "employee_number": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["id", "employee_number", "name"]
+                            },
+                            "machine_code": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["token", "token_type", "user", "machine_code"]
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "logoutMachineRequest": {
+                "type": "object"
+            },
+            "logoutMachineResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "profileMachineResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "user": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "employee_number": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["id", "employee_number", "name"]
+                            },
+                            "machine": {
+                                "type": "object",
+                                "properties": {
+                                    "machine_code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["machine_code"]
+                            },
+                            "shift": {
+                                "type": "object",
+                                "properties": {
+                                    "shift_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "start_time": {
+                                        "type": "string"
+                                    },
+                                    "end_time": {
+                                        "type": "string"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": ["shift_date", "name", "start_time", "end_time", "is_active"]
+                            }
+                        },
+                        "required": ["user", "machine", "shift"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "logEntryMachineListResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "event": {
+                                    "type": "string",
+                                    "enum": ["login_success", "login_failed", "logout", "process_start", "process_stop", "error"]
+                                },
+                                "message": {
+                                    "type": "string"
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": ["id", "event", "message", "created_at"]
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            },
+            "logEntryMachineCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "enum": ["login_success", "login_failed", "logout", "process_start", "process_stop", "error"]
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": ["event", "message"]
+            },
+            "logEntryMachineCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "event": {
+                                "type": "string",
+                                "enum": ["login_success", "login_failed", "logout", "process_start", "process_stop", "error"]
+                            },
+                            "message": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["id", "event", "message", "created_at"]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "reportUserMachineActivityListResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "machine_code": {
+                                    "type": "string"
+                                },
+                                "event": {
+                                    "type": "string",
+                                    "enum": ["login_success", "login_failed", "logout", "process_start", "process_stop", "error"]
+                                },
+                                "log_message": {
+                                    "type": "string"
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": ["id", "event", "machine_code", "log_message", "user", "created_at"]
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "message", "data", "meta"]
+            }
+        },
+        "examples": {
+            "defaultResponse401": {
+                "value": {
+                    "success": false,
+                    "message": "Unauthenticated",
+                    "errors": {
+                        "auth": "error.unauthenticated"
+                    }
+                }
+            },
+            "loginRequest": {
+                "value": {
+                    "employee_number": "000001",
+                    "password": "password"
+                }
+            },
+            "loginResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successfull",
+                    "data": {
+                        "token": "5|NN1DfWX9K0eEnfGPzxRkGacmXS1GKnIu08rUBLJZ69407e59",
+                        "token_type": "Bearer",
+                        "user": {
+                            "id": 1,
+                            "employee_number": "000001",
+                            "name": "Dummy Employee",
+                            "email": null
+                        }
+                    }
+                }
+            },
+            "loginResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The employee number field is required. (and 1 more error)",
+                    "errors": {
+                        "employee_number": "error.required",
+                        "password": "error.required"
+                    }
+                }
+            },
+            "loginResponse401": {
+                "value": {
+                    "success": false,
+                    "message": "Invalid employee number or password",
+                    "errors": {
+                        "employee": "error.invalid_credential"
+                    }
+                }
+            },
+            "logoutRequest": {
+                "value": {}
+            },
+            "logoutResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successfull",
+                    "data": []
+                }
+            },
+            "userListResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": [
+                        {
+                            "id": 1,
+                            "employee_number": "000001",
+                            "name": "Dummy Employee",
+                            "email": null,
+                            "email_verified_at": null,
+                            "created_at": "2026-02-14T17:29:18.000000Z",
+                            "updated_at": "2026-02-14T17:29:18.000000Z",
+                            "deleted_at": null
+                        }
+                    ],
+                    "meta": {
+                        "current_page": 1,
+                        "per_page": 10,
+                        "total": 1,
+                        "last_page": 1,
+                        "from": 1,
+                        "to": 1
+                    }
+                }
+            },
+            "userListResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The page field must be an integer.",
+                    "errors": {
+                        "page": "error.integer",
+                        "limit": "error.max",
+                        "search": "error.invalid_type"
+                    }
+                }
+            },
+            "userCreateRequest": {
+                "value": {
+                    "employee_number": "000002",
+                    "name": "Miss Brooke Reichert",
+                    "password": "@Qwer1234"
+                }
+            },
+            "userCreateResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 2,
+                        "employee_number": "000002",
+                        "name": "Pam Spencer",
+                        "email": null,
+                        "created_at": "2026-02-16T04:56:48.000000Z"
+                    }
+                }
+            },
+            "userCreateResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The employee number has already been taken.",
+                    "errors": {
+                        "employee_number": "error.unique",
+                        "name": "error.required",
+                        "password": "error.password_strength"
+                    }
+                }
+            },
+            "userUpdateRequest": {
+                "value": {
+                    "employee_number": "000002",
+                    "name": "Miss Brooke Reichert",
+                    "password": "@Qwer1234"
+                }
+            },
+            "userUpdateResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 2,
+                        "employee_number": "000002",
+                        "name": "Pam Spencer",
+                        "email": null,
+                        "updated_at": "2026-02-16T04:56:48.000000Z"
+                    }
+                }
+            },
+            "userUpdateResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The employee number has already been taken.",
+                    "errors": {
+                        "employee_number": "error.unique",
+                        "password": "error.password_strength"
+                    }
+                }
+            },
+            "userUpdateResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "User not found",
+                    "errors": {
+                        "user": "error.not_found"
+                    }
+                }
+            },
+            "userDeleteResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": []
+                }
+            },
+            "userDeleteResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The id field must be an integer.",
+                    "errors": {
+                        "id": "error.invalid"
+                    }
+                }
+            },
+            "userDeleteResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "User not found",
+                    "errors": {
+                        "user": "error.not_found"
+                    }
+                }
+            },
+            "userRestoreRequest": {
+                "value": {}
+            },
+            "userRestoreResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 2,
+                        "employee_number": "000002",
+                        "name": "Pam Spencer",
+                        "email": null,
+                        "restored_at": "2026-02-16T04:56:48.000000Z"
+                    }
+                }
+            },
+            "userRestoreResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The id field must be an integer.",
+                    "errors": {
+                        "id": "error.invalid"
+                    }
+                }
+            },
+            "userRestoreResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "User not found or not deleted",
+                    "errors": {
+                        "user": "error.not_found"
+                    }
+                }
+            },
+            "userDetailResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 2,
+                        "employee_number": "000002",
+                        "name": "Pam Spencer",
+                        "email": null,
+                        "created_at": "2026-02-16T04:56:48.000000Z",
+                        "updated_at": "2026-02-16T07:21:19.000000Z"
+                    }
+                }
+            },
+            "userDetailResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The id field must be an integer.",
+                    "errors": {
+                        "id": "error.integer"
+                    }
+                }
+            },
+            "userDetailResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "User not found",
+                    "errors": {
+                        "user": "error.not_found"
+                    }
+                }
+            },
+            "machineListResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": [
+                        {
+                            "machine_code": "FILLING-MACHINE-001",
+                            "total_assigned_shifts": 21,
+                            "last_assigned_date": "2026-02-27"
+                        }
+                    ],
+                    "meta": {
+                        "current_page": 1,
+                        "per_page": 10,
+                        "total": 1,
+                        "last_page": 1,
+                        "from": 1,
+                        "to": 1
+                    }
+                }
+            },
+            "machineListResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The page field must be an integer.",
+                    "errors": {
+                        "page": "error.integer",
+                        "limit": "error.max",
+                        "search": "error.invalid_type"
+                    }
+                }
+            },
+            "machineDetailResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "machine_code": "FILLING-MACHINE-001",
+                        "total_assigned_shifts": 21,
+                        "assignments": [
+                            {
+                                "shift_date": "2026-02-26T17:00:00.000000Z",
+                                "shift_name": "Shift Malam",
+                                "day_of_week": 5,
+                                "start_time": "23:00:00",
+                                "end_time": "07:00:00",
+                                "user": {
+                                    "id": 1,
+                                    "employee_number": "000001",
+                                    "name": "Dummy Employee"
+                                }
+                            },
+                            {
+                                "shift_date": "2026-02-25T17:00:00.000000Z",
+                                "shift_name": "Shift Siang",
+                                "day_of_week": 4,
+                                "start_time": "15:00:00",
+                                "end_time": "23:00:00",
+                                "user": {
+                                    "id": 1,
+                                    "employee_number": "000001",
+                                    "name": "Dummy Employee"
+                                }
+                            }
+                        ]
+                    },
+                    "meta": {
+                        "current_page": 1,
+                        "per_page": 2,
+                        "total": 21,
+                        "last_page": 11,
+                        "from": 1,
+                        "to": 2
+                    }
+                }
+            },
+            "machineDetailResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The page field must be an integer.",
+                    "errors": {
+                        "page": "error.integer",
+                        "limit": "error.max"
+                    }
+                }
+            },
+            "machineDetailResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "Machine not found",
+                    "errors": {
+                        "Backoffice - Machine": "error.not_found"
+                    }
+                }
+            },
+            "shiftListResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": [
+                        {
+                            "id": 21,
+                            "shift_date": "2026-02-27",
+                            "machine_code": "FILLING-MACHINE-001",
+                            "shift": {
+                                "id": 15,
+                                "name": "Shift Malam",
+                                "day_of_week": 5,
+                                "start_time": "23:00:00",
+                                "end_time": "07:00:00"
+                            },
+                            "user": {
+                                "id": 1,
+                                "employee_number": "000001",
+                                "name": "Dummy Employee"
+                            },
+                            "created_at": "2026-02-15 00:29:19",
+                            "updated_at": "2026-02-15 00:29:19"
+                        },
+                        {
+                            "id": 20,
+                            "shift_date": "2026-02-26",
+                            "machine_code": "FILLING-MACHINE-001",
+                            "shift": {
+                                "id": 11,
+                                "name": "Shift Siang",
+                                "day_of_week": 4,
+                                "start_time": "15:00:00",
+                                "end_time": "23:00:00"
+                            },
+                            "user": {
+                                "id": 1,
+                                "employee_number": "000001",
+                                "name": "Dummy Employee"
+                            },
+                            "created_at": "2026-02-15 00:29:19",
+                            "updated_at": "2026-02-15 00:29:19"
+                        }
+                    ],
+                    "meta": {
+                        "current_page": 1,
+                        "per_page": 2,
+                        "total": 21,
+                        "last_page": 11,
+                        "from": 1,
+                        "to": 2
+                    }
+                }
+            },
+            "shiftListResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The page field must be an integer.",
+                    "errors": {
+                        "page": "error.integer",
+                        "limit": "error.integer",
+                        "user_id": "error.integer",
+                        "employee_number": "error.max",
+                        "machine_code": "error.invalid_type",
+                        "search": "error.invalid_type"
+                    }
+                }
+            },
+            "shiftCreateRequest": {
+                "value": {
+                    "user_id": 1,
+                    "shift_id": 1,
+                    "shift_date": "2026-03-02",
+                    "machine_code": "FILLING-MACHINE-001"
+                }
+            },
+            "shiftCreateResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 23,
+                        "user_id": 1,
+                        "shift_id": 1,
+                        "shift_date": "2026-03-02",
+                        "machine_code": "FILLING-MACHINE-001",
+                        "created_at": "2026-02-17 15:07:17"
+                    }
+                }
+            },
+            "shiftCreateResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The user id field is required.",
+                    "errors": {
+                        "user_id": "error.required",
+                        "shift_id": "error.required",
+                        "shift_date": "error.required",
+                        "machine_code": "error.required"
+                    }
+                }
+            },
+            "shiftDetailResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 23,
+                        "shift_date": "2026-03-02",
+                        "machine_code": "FILLING-MACHINE-001",
+                        "shift": {
+                            "id": 1,
+                            "name": "Shift Pagi",
+                            "day_of_week": 1,
+                            "start_time": "07:00:00",
+                            "end_time": "15:00:00"
+                        },
+                        "user": {
+                            "id": 1,
+                            "employee_number": "000001",
+                            "name": "Dummy Employee"
+                        },
+                        "created_at": "2026-02-17 22:07:17",
+                        "updated_at": "2026-02-17 22:07:17"
+                    }
+                }
+            },
+            "shiftDetailResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The id field must be an integer.",
+                    "errors": {
+                        "id": "error.integer"
+                    }
+                }
+            },
+            "shiftDetailResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "Shift not found",
+                    "errors": {
+                        "shift": "error.not_found"
+                    }
+                }
+            },
+            "shiftUpdateRequest": {
+                "value": {
+                    "user_id": 1,
+                    "shift_id": 1,
+                    "shift_date": "2026-03-02",
+                    "machine_code": "FILLING-MACHINE-001"
+                }
+            },
+            "shiftUpdateResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 23,
+                        "user_id": 1,
+                        "shift_id": 1,
+                        "shift_date": "2026-03-02",
+                        "machine_code": "FILLING-MACHINE-001",
+                        "updated_at": "2026-02-17 22:39:04"
+                    }
+                }
+            },
+            "shiftUpdateResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The selected user id is invalid.",
+                    "errors": {
+                        "user_id": "error.not_found",
+                        "shift_id": "error.not_found",
+                        "shift_date": "error.invalid_date"
+                    }
+                }
+            },
+            "shiftUpdateResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "Shift not found",
+                    "errors": {
+                        "shift": "error.not_found"
+                    }
+                }
+            },
+            "shiftDeleteResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": []
+                }
+            },
+            "shiftDeleteResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The id field must be an integer.",
+                    "errors": {
+                        "id": "error.invalid"
+                    }
+                }
+            },
+            "shiftDeleteResponse404": {
+                "value": {
+                    "success": false,
+                    "message": "Shift not found",
+                    "errors": {
+                        "shift": "error.not_found"
+                    }
+                }
+            },
+            "loginMachineRequest": {
+                "value": {
+                    "employee_number": "000001",
+                    "machine_code": "FILLING-MACHINE-001"
+                }
+            },
+            "loginMachineResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "token": "21|3Ukbg06XdY4ie0AMt61udhbir3OVmnclvuE5QXjFdfad1143",
+                        "token_type": "Bearer",
+                        "user": {
+                            "id": 1,
+                            "employee_number": "000001",
+                            "name": "Dummy Employee"
+                        },
+                        "machine_code": "FILLING-MACHINE-001"
+                    }
+                }
+            },
+            "loginMachineResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The employee number field is required.",
+                    "errors": {
+                        "employee_number": "error.required",
+                        "machine_code": "error.required"
+                    }
+                }
+            },
+            "loginMachineResponse401": {
+                "value": {
+                    "success": false,
+                    "message": "Invalid employee number",
+                    "errors": {
+                        "employee_number": "error.invalid_credential"
+                    }
+                }
+            },
+            "loginMachineResponse403": {
+                "value": {
+                    "success": false,
+                    "message": "login gagal pada 18-02-2026 00:12:03, karena tidak memiliki shift.",
+                    "errors": {
+                        "auth": "error.unauthorized"
+                    }
+                }
+            },
+            "logoutMachineRequest": {
+                "value": {}
+            },
+            "logoutMachineResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successfull",
+                    "data": []
+                }
+            },
+            "profileMachineResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "user": {
+                            "id": 1,
+                            "employee_number": "000001",
+                            "name": "Dummy Employee"
+                        },
+                        "machine": {
+                            "machine_code": "FILLING-MACHINE-001"
+                        },
+                        "shift": {
+                            "shift_date": "2026-02-18",
+                            "name": "Shift Malam",
+                            "start_time": "23:00:00",
+                            "end_time": "07:00:00",
+                            "is_active": true
+                        }
+                    }
+                }
+            },
+            "logEntryMachineListResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": [
+                        {
+                            "id": 29,
+                            "event": "login_success",
+                            "message": "Login successful",
+                            "created_at": "2026-02-18 08:18:14"
+                        },
+                        {
+                            "id": 27,
+                            "event": "login_failed",
+                            "message": "Login failed: login gagal pada 18-02-2026 08:17:43, di luar jam kerja shift. Shift mulai pukul 23:00:00 sampai 07:00:00.",
+                            "created_at": "2026-02-18 08:17:44"
+                        }
+                    ],
+                    "meta": {
+                        "current_page": 1,
+                        "per_page": 2,
+                        "total": 28,
+                        "last_page": 14,
+                        "from": 1,
+                        "to": 2
+                    }
+                }
+            },
+            "logEntryMachineListResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The page field must be an integer.",
+                    "errors": {
+                        "page": "error.integer",
+                        "limit": "error.max"
+                    }
+                }
+            },
+            "logEntryMachineCreateRequest": {
+                "value": {
+                    "event": "process_start",
+                    "message": "Proses filling dimulai"
+                }
+            },
+            "logEntryMachineCreateResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": {
+                        "id": 31,
+                        "event": "process_start",
+                        "message": "Proses filling dimulai",
+                        "created_at": "2026-02-18 09:58:20"
+                    }
+                }
+            },
+            "logEntryMachineCreateResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The event field is required.",
+                    "errors": {
+                        "event": "error.required",
+                        "message": "error.required"
+                    }
+                }
+            },
+            "reportUserMachineActivityListResponse200": {
+                "value": {
+                    "success": true,
+                    "message": "Successful",
+                    "data": [
+                        {
+                            "id": 31,
+                            "machine_code": "FILLING-MACHINE-001",
+                            "event": "process_start",
+                            "log_message": "Proses filling dimulai",
+                            "user": {
+                                "employee_number": "000001",
+                                "name": "Dummy Employee"
+                            },
+                            "created_at": "2026-02-18 09:58:20"
+                        },
+                        {
+                            "id": 30,
+                            "machine_code": "FILLING-MACHINE-001",
+                            "event": "process_start",
+                            "log_message": "Proses filling dimulai",
+                            "user": {
+                                "employee_number": "000001",
+                                "name": "Dummy Employee"
+                            },
+                            "created_at": "2026-02-18 09:48:41"
+                        }
+                    ],
+                    "meta": {
+                        "start_date": "2026-02-01",
+                        "end_date": "2026-02-28",
+                        "current_page": 1,
+                        "per_page": 2,
+                        "total": 29,
+                        "last_page": 15
+                    }
+                }
+            },
+            "reportUserMachineActivityListResponse400": {
+                "value": {
+                    "success": false,
+                    "message": "The start date field must be a valid date.",
+                    "errors": {
+                        "start_date": "error.invalid_date",
+                        "end_date": "error.invalid_date",
+                        "machine_code": "error.invalid",
+                        "page": "error.integer",
+                        "limit": "error.integer"
+                    }
+                }
+            }
+        }
+    }
+}

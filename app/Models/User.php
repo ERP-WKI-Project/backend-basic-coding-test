@@ -4,9 +4,14 @@ namespace App\Models;
 
 use App\Models\BaseAuthenticatable as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasApiTokens;
+    use SoftDeletes;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -15,6 +20,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $fillable = [
+        'employee_number',
+        'name',
+        'email',
+        'password',
     ];
 
     /**

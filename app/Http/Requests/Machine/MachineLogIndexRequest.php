@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Support\ApiResponse;
 
-class AuthLoginRequest extends FormRequest
+class MachineLogIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,10 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_number' => ['required', 'string', 'size:6'],
-            'machine_code' => ['required', 'string', 'max:255'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
         ];
     }
 
@@ -38,9 +40,8 @@ class AuthLoginRequest extends FormRequest
             $rule = strtolower(array_key_first($rules));
             $errors[$field] = match ($rule) {
                 'required' => 'error.required',
-                'size' => 'error.size',
-                'string' => 'error.invalid_type',
-                'max' => 'error.max',
+                'date' => 'error.invalid_date',
+                'after_or_equal' => 'error.invalid_range',
                 default => 'error.invalid',
             };
         }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Machine;
 
+use App\Enums\MachineLog\EventEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Support\ApiResponse;
+use Illuminate\Validation\Rule;
 
-class AuthLoginRequest extends FormRequest
+class MachineLogStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +27,8 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_number' => ['required', 'string', 'size:6'],
-            'machine_code' => ['required', 'string', 'max:255'],
+            'event' => ['required', 'string', 'max:100', Rule::in(array_column(EventEnum::cases(), 'value'))],
+            'message' => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -38,8 +40,8 @@ class AuthLoginRequest extends FormRequest
             $rule = strtolower(array_key_first($rules));
             $errors[$field] = match ($rule) {
                 'required' => 'error.required',
-                'size' => 'error.size',
                 'string' => 'error.invalid_type',
+                'in' => 'error.invalid_enum',
                 'max' => 'error.max',
                 default => 'error.invalid',
             };

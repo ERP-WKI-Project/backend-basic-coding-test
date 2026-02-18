@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Machine;
+namespace App\Http\Requests\BackOffice;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Support\ApiResponse;
 
-class AuthLoginRequest extends FormRequest
+class UserDeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,6 +15,13 @@ class AuthLoginRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'id' => $this->route('user'),
+        ]);
     }
 
     /**
@@ -25,8 +32,7 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_number' => ['required', 'string', 'size:6'],
-            'machine_code' => ['required', 'string', 'max:255'],
+            'id' => ['required', 'integer'],
         ];
     }
 
@@ -38,9 +44,7 @@ class AuthLoginRequest extends FormRequest
             $rule = strtolower(array_key_first($rules));
             $errors[$field] = match ($rule) {
                 'required' => 'error.required',
-                'size' => 'error.size',
-                'string' => 'error.invalid_type',
-                'max' => 'error.max',
+                'exists' => 'error.not_found',
                 default => 'error.invalid',
             };
         }

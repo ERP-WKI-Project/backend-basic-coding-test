@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Models\User;
+
 readonly class MachineLogDto
 {
     /**
@@ -26,6 +28,16 @@ readonly class MachineLogDto
             machineCode: $credDto->machineCode ?? 'unknown',
             event: $event,
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
+        );
+    }
+
+    public static function logout(User $user, string $machineCode): self
+    {
+        return new self(
+            user: $user,
+            machineCode: $machineCode,
+            event: \App\Enums\MachineLog\EventEnum::LOGOUT,
+            logMessage: 'Logout successful'
         );
     }
 }
