@@ -10,7 +10,7 @@ Route::middleware(['auth:sanctum', 'ability:'. ABILITY_BACKOFFICE_SYSTEM])->grou
     Route::post('auth/logout', [BackOffice\AuthController::class, 'logout'])->name('auth.logout');
 
     // Test 1: Manage Users
-    Route::apiResource('users', BackOffice\UserController::class)->names('user');
+    Route::apiResource('user', BackOffice\UserController::class)->names('user');
 
     // Test 2: Manage Machines
     Route::apiResource('machine', BackOffice\MachineController::class)->names('machine');
