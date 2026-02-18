@@ -101,8 +101,8 @@ Dokumen ini memisahkan antara **Asumsi Bisnis** (kondisi yang diterima apa adany
 *   **User Management** (28 test, 137 assertions): CRUD User, Auth, Password Hashing.
 *   **BackOffice Auth** (7 test, 23 assertions): Login, Logout, Guard protection.
 *   **Machine Management** (19 test, 135 assertions): CRUD Machine, Status Active/Inactive.
-*   **Machine Log Entry** (10 test, 44 assertions): Logging IoT, Flexible event type.
-*   **Reporting** (5 test, 31 assertions): Filter tanggal, performa query.
+*   **Machine Log Entry** (10 test, 53 assertions): Logging IoT, Flexible event type.
+*   **Reporting** (6 test, 42 assertions): Filter tanggal, performa query.
 
 ---
 

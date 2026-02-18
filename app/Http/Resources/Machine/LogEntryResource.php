@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Machine;
 
+use App\Http\Resources\BackOffice\MachineResource;
+use App\Http\Resources\BackOffice\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,8 +18,8 @@ class LogEntryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'machine_code' => $this->machine_code,
-            'user_id' => $this->user_id,
+            'machine' => new MachineResource($this->whenLoaded('machine')),
+            'user' => new UserResource($this->whenLoaded('user')),
             'event' => $this->event,
             'log_message' => $this->log_message,
             'created_at' => $this->created_at->toIso8601String(),

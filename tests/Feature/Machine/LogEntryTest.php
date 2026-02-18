@@ -31,7 +31,15 @@ describe('index', function () {
                 'success',
                 'message',
                 'data' => [
-                    '*' => ['id', 'machine_code', 'user_id', 'event', 'log_message', 'created_at'],
+                    '*' => [
+                        'id',
+                        'machine' => ['code', 'name', 'status'],
+                        'user' => ['id', 'employee_number', 'name', 'email'],
+                        'event',
+                        'log_message',
+                        'created_at',
+                        'updated_at',
+                    ],
                 ],
                 'meta',
             ])
@@ -47,7 +55,8 @@ describe('index', function () {
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
-            ->assertJsonFragment(['machine_code' => $this->machine->code]);
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.machine.code', $this->machine->code);
     });
 
     test('mengembalikan daftar log entry berdasarkan search keyword', function () {

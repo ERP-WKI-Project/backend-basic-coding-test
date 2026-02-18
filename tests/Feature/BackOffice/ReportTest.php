@@ -47,8 +47,8 @@ test('user machine activity report → mengembalikan data activity dalam rentang
             'data' => [
                 '*' => [
                     'log_id',
-                    'user' => ['id', 'name', 'employee_number'],
-                    'machine' => ['code', 'name'],
+                    'user' => ['id', 'name', 'employee_number', 'email'],
+                    'machine' => ['code', 'name', 'status'],
                     'event',
                     'message',
                     'created_at',
@@ -140,4 +140,48 @@ test('user machine activity report → unauthenticated', function () {
     $response = $this->getJson('/api/backoffice/v1/report/user-machine-activity');
 
     $response->assertStatus(401);
+});
+
+test('user machine activity report → pencarian (search) berdasarkan user/machine/event', function () {
+    $user = User::factory()->create(['name' => 'John Search']);
+    $machine = Machine::factory()->create(['name' => 'Machine Search']);
+
+    MachineLog::create([
+        'user_id' => $user->id,
+        'machine_code' => $machine->code,
+        'event' => 'unique_event_search',
+        'log_message' => 'Message',
+    ]);
+
+    MachineLog::create([
+        'user_id' => User::factory()->create()->id,
+        'machine_code' => Machine::factory()->create()->code,
+        'event' => 'other_event',
+        'log_message' => 'Other Message',
+    ]);
+
+    Sanctum::actingAs(
+        User::factory()->create(),
+        [\App\Enums\SystemAbility::BACKOFFICE->value]
+    );
+
+    $baseParams = '?start_date=' . now()->format('Y-m-d') . '&end_date=' . now()->format('Y-m-d');
+
+    // Search by User Name
+    $this->getJson('/api/backoffice/v1/report/user-machine-activity' . $baseParams . '&search=John Search')
+        ->assertStatus(200)
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.user.name', 'John Search');
+
+    // Search by Machine Name
+    $this->getJson('/api/backoffice/v1/report/user-machine-activity' . $baseParams . '&search=Machine Search')
+        ->assertStatus(200)
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.machine.name', 'Machine Search');
+
+    // Search by Event
+    $this->getJson('/api/backoffice/v1/report/user-machine-activity' . $baseParams . '&search=unique_event')
+        ->assertStatus(200)
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.event', 'unique_event_search');
 });

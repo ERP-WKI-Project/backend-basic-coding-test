@@ -19,6 +19,7 @@ class ReportController extends Controller
     {
         $reportData = $this->reportService->getUserMachineActivity(
             filters: $request->validated(),
+            search: $request->query('search'),
             perPage: $request->query('per_page', 15)
         );
 

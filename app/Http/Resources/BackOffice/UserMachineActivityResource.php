@@ -16,15 +16,8 @@ class UserMachineActivityResource extends JsonResource
     {
         return [
             'log_id' => $this->id,
-            'user' => [
-                'id' => $this->user_id,
-                'name' => $this->user->name ?? null,
-                'employee_number' => $this->user->employee_number ?? null,
-            ],
-            'machine' => [
-                'code' => $this->machine_code,
-                'name' => $this->machine->name ?? null,
-            ],
+            'user' => new UserResource($this->whenLoaded('user')),
+            'machine' => new MachineResource($this->whenLoaded('machine')),
             'event' => $this->event,
             'message' => $this->log_message,
             'created_at' => $this->created_at->toIso8601String(),

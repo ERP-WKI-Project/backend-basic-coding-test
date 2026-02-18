@@ -44,6 +44,11 @@ class UserMachineActivityRequest extends FormRequest
                 'string',
                 'exists:machines,code',
             ],
+            'search' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ];
     }
 }
