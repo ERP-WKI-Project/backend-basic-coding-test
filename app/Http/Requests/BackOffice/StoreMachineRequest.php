@@ -34,7 +34,7 @@ class StoreMachineRequest extends FormRequest
             'room_id' => 'required|exists:rooms,id',
             'purchase_date' => 'nullable|date',
             'installation_date' => 'nullable|date',
-            'status' => 'required|string|in:active,maintenance,breakdown,retired',
+            'status' => 'required|string|in:active,maintenance,breakdown,error,offline',
             'notes' => 'nullable|string',
         ];
     }

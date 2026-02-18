@@ -10,7 +10,7 @@ readonly class MachineLogDto
     public function __construct(
         public \App\Models\User $user,
         public string $machineCode,
-        public \App\Enums\MachineLog\EventEnum $event,
+        public \App\Eenums\MachineLog\EventEnum $event,
         public string $logMessage,
     )
     {

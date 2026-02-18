@@ -34,7 +34,7 @@ class UpdateMachineRequest extends FormRequest
             'room_id' => 'sometimes|exists:rooms,id',
             'purchase_date' => 'nullable|date',
             'installation_date' => 'nullable|date',
-            'status' => 'sometimes|string|in:active,maintenance,breakdown,retired',
+            'status' => 'sometimes|string|in:active,maintenance,error,offline',
             'notes' => 'nullable|string',
         ];
     }

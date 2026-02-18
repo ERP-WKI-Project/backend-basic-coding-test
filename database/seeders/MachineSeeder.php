@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Machine;
 use Illuminate\Database\Seeder;
+use App\Enums\Machine\MachineStatus;
 
 class MachineSeeder extends Seeder
 {
@@ -27,7 +28,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 1,
                 'purchase_date' => '2023-01-10',
                 'installation_date' => '2023-02-01',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Main sunscreen bulk mixer',
             ],
 
@@ -44,7 +45,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 1,
                 'purchase_date' => '2023-01-12',
                 'installation_date' => '2023-02-05',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Emulsion smoothing',
             ],
 
@@ -61,7 +62,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 1,
                 'purchase_date' => '2023-01-20',
                 'installation_date' => '2023-02-10',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Bulk storage before filling',
             ],
 
@@ -78,7 +79,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 2,
                 'purchase_date' => '2023-03-01',
                 'installation_date' => '2023-03-20',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => '50ml sunscreen tube',
             ],
 
@@ -95,7 +96,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 2,
                 'purchase_date' => '2023-03-05',
                 'installation_date' => '2023-03-22',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Hot air tube sealing',
             ],
 
@@ -112,7 +113,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 2,
                 'purchase_date' => '2023-04-01',
                 'installation_date' => '2023-04-18',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => '100ml sunscreen bottle',
             ],
 
@@ -129,7 +130,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 3,
                 'purchase_date' => '2023-05-01',
                 'installation_date' => '2023-05-15',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Tube labeling',
             ],
 
@@ -146,7 +147,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 3,
                 'purchase_date' => '2023-05-10',
                 'installation_date' => '2023-05-18',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Batch & expiry printing',
             ],
 
@@ -163,7 +164,7 @@ class MachineSeeder extends Seeder
                 'room_id' => 3,
                 'purchase_date' => '2023-06-01',
                 'installation_date' => '2023-06-20',
-                'status' => 'active',
+                'status' => MachineStatus::ACTIVE->value,
                 'notes' => 'Secondary packaging',
             ],
 

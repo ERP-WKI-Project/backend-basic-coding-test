@@ -2,11 +2,11 @@
 
 namespace App\DTOs;
 
+use App\Enums\Machine\MachineStatus;
+
+
 readonly class MachineDto
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct(
         public string $code,
         public string $name,
@@ -20,7 +20,7 @@ readonly class MachineDto
         public string $room_id,
         public string $purchase_date,
         public string $installation_date,
-        public string $status,
+        public MachineStatus $status, // <-- change to enum
     ) {}
 
     public static function fromArray(array $data): self
@@ -38,7 +38,7 @@ readonly class MachineDto
             room_id: $data['room_id'],
             purchase_date: $data['purchase_date'],
             installation_date: $data['installation_date'],
-            status: $data['status']
+            status: MachineStatus::from($data['status']), // <-- convert string to enum
         );
     }
 
@@ -57,7 +57,7 @@ readonly class MachineDto
             'room_id' => $this->room_id,
             'purchase_date' => $this->purchase_date,
             'installation_date' => $this->installation_date,
-            'status' => $this->status
+            'status' => $this->status->value, // <-- convert enum back to string
         ], fn ($v) => ! is_null($v));
     }
 }
