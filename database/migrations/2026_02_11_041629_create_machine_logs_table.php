@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->ulid();
             $table->string('machine_code');
+            $table->foreignId('machine_id')->nullable()->index()->after('user_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('event');
             $table->text('log_message');
