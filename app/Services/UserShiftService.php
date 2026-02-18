@@ -89,7 +89,15 @@ class UserShiftService
 
             // Update the shift assignment
             $userShift->update($dto->toArray());
-            return $userShift->fresh(['user', 'shift', 'machine']);
+            $userShift->refresh();
+            $userShift->load(['user', 'shift']);
+
+            // Load machine only if machine_code is set
+            if ($userShift->machine_code) {
+                $userShift->load('machine');
+            }
+
+            return $userShift;
         });
     }
 
@@ -123,7 +131,7 @@ class UserShiftService
 
         // Find all shifts for this user on the same date
         $existingShifts = UserShift::where('user_id', $userId)
-            ->where('shift_date', $shiftDate)
+            ->whereDate('shift_date', $shiftDate)
             ->when($excludeShiftId, function ($query) use ($excludeShiftId) {
                 $query->where('id', '!=', $excludeShiftId);
             })

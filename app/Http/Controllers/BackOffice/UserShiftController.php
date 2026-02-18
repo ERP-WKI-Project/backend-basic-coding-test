@@ -39,12 +39,14 @@ class UserShiftController extends Controller
      * @tag User Shifts
      * @throws \Throwable
      */
-    public function store(StoreUserShiftRequest $request): UserShiftResource
+    public function store(StoreUserShiftRequest $request): JsonResponse
     {
         $dto = UserShiftDto::fromRequest($request->validated());
         $userShift = UserShiftService::assignUserShift($dto);
 
-        return new UserShiftResource($userShift);
+        return (new UserShiftResource($userShift))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -54,10 +56,10 @@ class UserShiftController extends Controller
      *
      * @tag User Shifts
      */
-    public function show(UserShift $shift): UserShiftResource
+    public function show(UserShift $userShift): UserShiftResource
     {
-        $shift->load(['user', 'shift', 'machine']);
-        return new UserShiftResource($shift);
+        $userShift->load(['user', 'shift', 'machine']);
+        return new UserShiftResource($userShift);
     }
 
     /**
@@ -66,11 +68,12 @@ class UserShiftController extends Controller
      * Update an existing shift assignment with conflict validation.
      *
      * @tag User Shifts
+     * @throws \Throwable
      */
-    public function update(UpdateUserShiftRequest $request, UserShift $shift): UserShiftResource
+    public function update(UpdateUserShiftRequest $request, UserShift $userShift): UserShiftResource
     {
         $dto = UserShiftDto::fromRequest($request->validated());
-        $updatedShift = UserShiftService::updateUserShift($shift, $dto);
+        $updatedShift = UserShiftService::updateUserShift($userShift, $dto);
 
         return new UserShiftResource($updatedShift);
     }
@@ -82,9 +85,9 @@ class UserShiftController extends Controller
      *
      * @tag User Shifts
      */
-    public function destroy(UserShift $shift): JsonResponse
+    public function destroy(UserShift $userShift): JsonResponse
     {
-        UserShiftService::deleteUserShift($shift);
+        UserShiftService::deleteUserShift($userShift);
 
         return response()->json([
             'message' => 'Shift assignment deleted successfully'

@@ -21,7 +21,6 @@ describe('BackOffice Auth', function () {
                 'data' => [
                     'token',
                     'user' => [
-                        'id',
                         'employee_number',
                         'name',
                         'email',
