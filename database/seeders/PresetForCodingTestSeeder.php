@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Machine;
 use App\Models\Shift;
 use App\Models\User;
 use App\Models\UserShift;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -23,6 +23,17 @@ class PresetForCodingTestSeeder extends Seeder
         ], [
             'name' => 'Dummy Employee',
             'password' => bcrypt('password'),
+        ]);
+
+        // Create a machine for testing
+        $presetMachine = Machine::firstOrCreate([
+            'code' => 'FILLING-MACHINE-001',
+        ], [
+            'ulid' => (string) Str::ulid(),
+            'name' => 'Filling Machine Line 1',
+            'location' => 'Plant A - Floor 1',
+            'status' => 'active',
+            'description' => 'Test machine',
         ]);
 
         $dateTemplate = '1990-01-%02d';
@@ -58,15 +69,7 @@ class PresetForCodingTestSeeder extends Seeder
 
         // Assign all shifts to the preset user for all days if not already assigned
         if ($presetUser->shifts()->count() === 0) {
-            $shifts = Shift::where(function ($query) use ($dateTemplate) {
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 1))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 2))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 3))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 4))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 5))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 6))), 0, 10) . '%');
-                $query->orWhere('ulid', 'like', substr(Str::ulid(Carbon::parse(sprintf($dateTemplate, 7))), 0, 10) . '%');
-            })->get();
+            $shifts = Shift::all();
 
             $startDate = now()->startOfMonth()->dayOfMonth;
             $stepShift = ['Shift Pagi', 'Shift Siang', 'Shift Malam'];
@@ -76,19 +79,23 @@ class PresetForCodingTestSeeder extends Seeder
                 $date = now()->startOfMonth()->addDays($dateOfMonth - 1);
                 $dayOfWeek = $date->dayOfWeekIso; // 1 (Monday) to 7 (Sunday)
                 $idx = ($dateOfMonth - 1) % 4;
-                if ($idx === 3) continue; // Off day
+                if ($idx === 3) {
+                    continue;
+                } // Off day
 
                 $shiftName = $stepShift[$idx];
                 $shift = $shifts->where('day_of_week', $dayOfWeek)
                     ->where('name', $shiftName)
                     ->first();
-                
-                if (!$shift) continue;
+
+                if (! $shift) {
+                    continue;
+                }
                 UserShift::create([
                     'user_id' => $presetUser->id,
                     'shift_id' => $shift->id,
+                    'machine_id' => $presetMachine->id,
                     'shift_date' => $date,
-                    'machine_code' => 'FILLING-MACHINE-001',
                 ]);
             }
         }
