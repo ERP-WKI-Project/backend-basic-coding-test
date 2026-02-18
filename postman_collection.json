@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "ef5c76f6-a382-4354-ae0e-117a3ff80867",
-    "name": "Backend Basic Coding Test",
+    "_postman_id": "b5471903-0bcc-4202-8b32-5ac426dc3003",
+    "name": "Backend Basic Coding Test Copy",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "16152374"
   },
@@ -336,7 +336,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki\",\n    \"password\": \"fazrilrizki777\"\n}",
+                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki\",\n    \"password\": \"123456\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -437,7 +437,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki T.A\",\n    \"email\": \"fazril@dinamika.ac.id\"\n}",
+                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki T.A\",\n    \"email\": \"fazril@gmail.com\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -459,7 +459,7 @@
                   "variable": [
                     {
                       "key": "ulid",
-                      "value": "01KHQ8FMQBHWRQQBT537BX798F"
+                      "value": "01KHRARQ8V6WJZP5HH05E2GR9R"
                     }
                   ]
                 }

@@ -27,6 +27,10 @@ Dikarenakan penggunaan fitur spesifik PostgreSQL (seperti `ilike` untuk pencaria
     - **Validasi Shift (`validateShift`):** Memastikan user benar-benar ditugaskan pada mesin tersebut untuk hari ini sebelum diizinkan melakukan operasi apa pun.
 9. Untuk endpoint laporan (`ReportController`), menggunakan **Form Request** terpisah (`UserMachineActivityRequest`) alih-alih validasi _inline_. Hal ini dilakukan karena filter laporan cenderung kompleks dan banyak (tanggal, user, mesin, shift), sehingga pemisahan ini menjaga _controller_ tetap bersih dan mudah dibaca.
 10. Menambahkan kolom `user_shift_id` pada tabel `machine_logs`. Hal ini bertujuan untuk menghubungkan setiap aktivitas mesin (_log_) secara langsung dengan sesi _shift_ user yang sedang berlangsung, sehingga mempermudah pelacakan dan pelaporan aktivitas per _shift_.
+11. Menggunakan **Enum (`EventEnum`)** untuk menstandarisasi jenis aktivitas mesin (_machine events_) seperti `login_success`, `job_start`, `downtime_planned`, dll.
+    - Menghindari penggunaan _magic strings_ yang rentan kesalahan ketik.
+    - Mengelompokkan event ke dalam kategori yang jelas (Production, Downtime, Authentication).
+    - Memudahkan pemeliharaan dan pengembangan fitur _reporting_ di masa depan.
 
 ### Cara Menjalankan Test
 
