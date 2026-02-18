@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\BaseResponseDto;
 use App\DTOs\MachineDto;
-use App\Http\Business\Machine\MachineService;
+use App\Services\MachineService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

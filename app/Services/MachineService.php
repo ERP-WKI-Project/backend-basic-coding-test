@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Business\Machine;
+namespace App\Services;
 
 use App\DTOs\MachineDto;
 use App\Models\Machine;

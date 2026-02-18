@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\BaseResponseDto;
 use App\DTOs\ShiftDto;
-use App\Http\Business\Shift\ShiftService;
+use App\Services\ShiftService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

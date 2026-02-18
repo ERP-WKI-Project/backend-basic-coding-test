@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\AuthDto;
-use App\Http\Business\BackOfficeAuth\BackOfficeAuth;
+use App\Services\BackOfficeAuthService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Container\Attributes\Auth;
@@ -12,11 +12,11 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    protected BackOfficeAuth $backOfficeAuth;
+    protected BackOfficeAuthService $backOfficeAuthService;
 
-    public function __construct(BackOfficeAuth $backOfficeAuth)
+    public function __construct(BackOfficeAuthService $backOfficeAuthService)
     {
-        $this->backOfficeAuth = $backOfficeAuth;
+        $this->backOfficeAuthService = $backOfficeAuthService;
     }
 
     /**
@@ -30,7 +30,7 @@ class AuthController extends Controller
                 'password' => 'required|string|min:6',
             ]);
 
-            $result = $this->backOfficeAuth->login($validated['nik'], $validated['password']);
+            $result = $this->backOfficeAuthService->login($validated['nik'], $validated['password']);
             if (!$result->isSuccess()) {
                 return response()->json(AuthDto::failure($result->errorMessage));
             }
@@ -56,7 +56,7 @@ class AuthController extends Controller
                 return response()->json(AuthDto::failure('User not authenticated', 401));
             }
 
-            $isLoggedOut = $this->backOfficeAuth->logout($user);
+            $isLoggedOut = $this->backOfficeAuthService->logout($user);
 
             if (!$isLoggedOut) {
                 return response()->json(AuthDto::failure('Logout failed', 500));

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Business\User;
+namespace App\Services;
 
 use App\DTOs\UserDto;
 use App\Models\User;

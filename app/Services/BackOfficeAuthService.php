@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Business\BackOfficeAuth;
+namespace App\Services;
 
 use App\DTOs\AuthDto;
 use App\Models\User;
 
-class BackOfficeAuth
+class BackOfficeAuthService
 {
     /**
      * Authenticate user with nik and password

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Business\Shift;
+namespace App\Services;
 
 use App\DTOs\ShiftDto;
 use App\Models\Shift;

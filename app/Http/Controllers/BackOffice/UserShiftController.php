@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\BaseResponseDto;
 use App\DTOs\UserShiftDto;
-use App\Http\Business\UserShift\UserShiftService;
+use App\Services\UserShiftService;
 use App\Http\Controllers\Controller;
 use App\Models\UserShift;
 use Illuminate\Http\Request;

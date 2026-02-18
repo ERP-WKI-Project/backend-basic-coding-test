@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Business\Report;
+namespace App\Services;
 
 use App\DTOs\UserMachineActivityReportDto;
 use App\Models\Machine;
@@ -9,6 +9,9 @@ use App\Models\User;
 
 class ReportService
 {
+    /**
+     * Get user machine activity report within date range
+     */
     public function getUserMachineActivityReport(
         int $perPage = 15,
         int $page = 1,

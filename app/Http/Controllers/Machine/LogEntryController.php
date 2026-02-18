@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Machine;
 
 use App\DTOs\BaseResponseDto;
 use App\Enums\MachineLog\EventEnum;
-use App\Http\Business\MachineLog\MachineLogService;
+use App\Services\MachineLogService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

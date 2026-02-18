@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BackOffice;
 
 use App\DTOs\BaseResponseDto;
-use App\Http\Business\Report\ReportService;
+use App\Services\ReportService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

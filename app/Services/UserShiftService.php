@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Business\UserShift;
+namespace App\Services;
 
 use App\DTOs\UserShiftDto;
 use App\Models\Machine;
