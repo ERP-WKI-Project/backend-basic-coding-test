@@ -10,12 +10,7 @@ class MachineLogService
 {
     public static function addLog(MachineLogDto $dto): MachineLog
     {
-        $log = MachineLog::create([
-            'user_id' => $dto->user->id,
-            'machine_code' => $dto->machineCode,
-            'event' => $dto->event,
-            'log_message' => $dto->logMessage,
-        ]);
+        $log = MachineLog::create($dto->toArray());
 
         return $log->load(['user', 'machine']);
     }

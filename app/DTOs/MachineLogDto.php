@@ -39,4 +39,14 @@ readonly class MachineLogDto
             logMessage: $request->validated('log_message'),
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => $this->user->id,
+            'machine_code' => $this->machineCode,
+            'event' => $this->event,
+            'log_message' => $this->logMessage,
+        ];
+    }
 }
