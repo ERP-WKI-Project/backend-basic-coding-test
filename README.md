@@ -6,6 +6,16 @@ Tambahan auth login untuk backoffice agar bisa mendapat bearer token untuk akses
 ### Postman Documentation
 https://documenter.getpostman.com/view/12200000/2sBXcBohZZ
 
+### Run PHP Unit test
+Run semua test
+```angular2html
+php artisan test
+```
+
+Run tiap file
+```angular2html
+php artisan test  Tests\Feature\UserShiftServiceTest.php
+```
 ___
 
 ## ERP WKI – Basic Coding Test
