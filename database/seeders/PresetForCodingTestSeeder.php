@@ -94,6 +94,7 @@ class PresetForCodingTestSeeder extends Seeder
 
                 if (!$shift) continue;
                 UserShift::create([
+                    'ulid' => Str::ulid(Carbon::parse(sprintf($dateTemplate, $day))),
                     'user_id' => $presetUser->id,
                     'shift_id' => $shift->id,
                     'shift_date' => $date,

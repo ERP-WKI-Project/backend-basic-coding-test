@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('machine_logs', function (Blueprint $table) {
             $table->id();
-            $table->ulid();
+            $table->ulid()->unique();
             $table->string('machine_code')->index();
             $table->foreign('machine_code')
                 ->references('machine_code')

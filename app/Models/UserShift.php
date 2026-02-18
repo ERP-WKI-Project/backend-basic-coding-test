@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use \App\Models\BaseModel as Model;
+use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserShift extends Model
 {
+    use HasUlidColumn;
+
     protected $fillable = [
+        'ulid',
         'user_id',
         'shift_id',
         'shift_date',
@@ -17,6 +21,11 @@ class UserShift extends Model
     protected $casts = [
         'shift_date' => 'date',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'ulid';
+    }
 
     public function shift(): BelongsTo
     {
