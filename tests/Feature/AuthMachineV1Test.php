@@ -10,7 +10,11 @@ beforeEach(function () {
     $this->seed(DatabaseSeeder::class);
 });
 
-test('login_success', function () {
+test('login success', function () {
+    // Travel to Feb 17, 2026 at 10:00 (Shift Pagi: 07:00-15:00)
+    // Index: (17-1) % 4 = 0 -> Shift Pagi
+    $this->travelTo(now()->setDate(2026, 2, 17)->setTime(10, 0, 0));
+
     $shiftId = Shift::query()
         ->where('day_of_week', now()->dayOfWeekIso)
         ->where('start_time', '<=', now()->toTimeString())
@@ -37,7 +41,10 @@ test('login_success', function () {
     ]);
 });
 
-test('login_no_shift', function () {
+test('login no shift', function () {
+    // Travel to Feb 17, 2026 at 10:00 (same as login success test)
+    $this->travelTo(now()->setDate(2026, 2, 17)->setTime(10, 0, 0));
+
     UserShift::where('user_id', User::where('employee_number', '000001')->value('id'))
         ->whereDate('shift_date', now()->format('Y-m-d'))
         ->delete();
@@ -51,18 +58,22 @@ test('login_no_shift', function () {
     $response->assertJsonStructure(['message']);
 });
 
-test('login_shift_out_of_range', function () {
+test('login shift out of range', function () {
+    // Travel to Feb 17, 2026 at 05:00 (outside all shift hours)
+    $this->travelTo(now()->setDate(2026, 2, 17)->setTime(5, 0, 0));
+
     $shiftId = Shift::query()
         ->where('day_of_week', now()->dayOfWeekIso)
         ->where('start_time', '>=', now()->toTimeString())
         ->value('id');
 
-    UserShift::where('user_id', User::where('employee_number', '000001')->value('id'))
-        ->whereDate('shift_date', now()->format('Y-m-d'))
-        ->update([
-            'shift_id' => $shiftId,
-            'machine_code' => 'FILLING-MACHINE-001',
-        ]);
+    UserShift::updateOrCreate([
+        'user_id' => User::where('employee_number', '000001')->value('id'),
+        'machine_code' => 'FILLING-MACHINE-001',
+        'shift_date' => now()->format('Y-m-d'),
+    ], [
+        'shift_id' => $shiftId
+    ]);
 
     $response = $this->post('api/machine/v1/auth/login', [
         'pin' => '000001',
