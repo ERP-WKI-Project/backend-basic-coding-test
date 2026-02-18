@@ -13,23 +13,33 @@ class AuthService
         $user = $dto->user;
         $machineCode = $dto->machineCode;
 
+        $machine = \App\Models\Machine::where('code', $machineCode)->first();
+
+        if (! $machine) {
+            $timeNow = now()->format('d-m-Y H:i:s');
+            $auth = AuthDto::failure("login gagal pada {$timeNow}, karena mesin tidak ditemukan.");
+            dispatch(fn () => MachineLogService::addLog(MachineLogDto::fromAuth($dto, $auth)))->name('log_machine_auth_'.$user->employee_number.'_'.now()->format('YmdHis'));
+
+            return $auth;
+        }
+
         $userShift = $user->userShifts()
             ->with('shift')
-            ->where('machine_code', $machineCode)
+            ->where('machine_id', $machine->id)
             ->whereDate('shift_date', now()->format('Y-m-d'))
             ->first();
 
-        if (!$userShift || !$userShift->shift) {
+        if (! $userShift || ! $userShift->shift) {
             $timeNow = now()->format('d-m-Y H:i:s');
             $auth = AuthDto::failure("login gagal pada {$timeNow}, karena tidak memiliki shift.");
-        } else if ($userShift && $userShift->shift && ($userShift->shift->start_time > now()->format('H:i:s') || $userShift->shift->end_time < now()->format('H:i:s'))) {
+        } elseif ($userShift && $userShift->shift && ($userShift->shift->start_time > now()->format('H:i:s') || $userShift->shift->end_time < now()->format('H:i:s'))) {
             $timeNow = now()->format('d-m-Y H:i:s');
             $auth = AuthDto::failure("login gagal pada {$timeNow}, di luar jam kerja shift. Shift mulai pukul {$userShift->shift->start_time} sampai {$userShift->shift->end_time}.");
         } else {
             $auth = AuthDto::success($user->createToken('auth_token', [\App\Enums\SystemAbility::MACHINE->value])->plainTextToken);
         }
 
-        dispatch(fn() => MachineLogService::addLog(MachineLogDto::fromAuth($dto, $auth)))->name('log_machine_auth_' . $user->employee_number . '_' . now()->format('YmdHis'));
+        dispatch(fn () => MachineLogService::addLog(MachineLogDto::fromAuth($dto, $auth)))->name('log_machine_auth_'.$user->employee_number.'_'.now()->format('YmdHis'));
 
         return $auth;
     }
