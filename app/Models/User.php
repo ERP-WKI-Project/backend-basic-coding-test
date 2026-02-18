@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Models\BaseAuthenticatable as Authenticatable;
-use App\Models\Shift;
-use App\Models\UserShift;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
@@ -41,13 +39,20 @@ class User extends Authenticatable
         return 'employee_number';
     }
 
+    // Define a many-to-many relationship between User and Shift
     public function shifts(): BelongsToMany
     {
+        // A user can belong to multiple shifts through the 'user_shifts' pivot table
+        // 'user_id' is the foreign key for the user in the pivot table
+        // 'shift_id' is the foreign key for the shift in the pivot table
         return $this->belongsToMany(Shift::class, 'user_shifts', 'user_id', 'shift_id');
     }
 
+    // Define a one-to-many relationship between User and UserShift
     public function userShifts()
     {
+        // A user can have multiple UserShift entries
+        // This allows direct access to the pivot table records if you need additional data
         return $this->hasMany(UserShift::class, 'user_id', 'id');
     }
 }

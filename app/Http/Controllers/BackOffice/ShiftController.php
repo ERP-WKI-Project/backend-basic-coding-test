@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class ShiftController extends Controller
 {
     public function __construct(
-        private UserShiftService $userShiftService
+        private UserShiftService $service
     ) {}
 
     /**
@@ -22,10 +22,13 @@ class ShiftController extends Controller
      */
     public function index(Request $request)
     {
+        // Get the 'per_page' query parameter from the request or default to 10
         $perPage = $request->get('per_page', 10);
 
-        $userShifts = $this->userShiftService->list($perPage);
+        // Fetch a paginated list of user shifts using the service layer
+        $userShifts = $this->service->list($perPage);
 
+        // Return the list as a collection of resources for consistent API formatting
         return UserShiftResource::collection($userShifts);
     }
 
@@ -34,10 +37,13 @@ class ShiftController extends Controller
      */
     public function store(StoreUserShiftRequest $request)
     {
+        // Validate the request and convert the input data into a Data Transfer Object (DTO)
         $dto = UserShiftDto::fromArray($request->validated());
 
-        $userShift = $this->userShiftService->create($dto);
+        // Pass the DTO to the service layer to create a new user shift
+        $userShift = $this->service->create($dto);
 
+        // Return the created user shift as a resource with HTTP status 201 (Created)
         return (new UserShiftResource($userShift))
             ->response()
             ->setStatusCode(201);
@@ -48,10 +54,11 @@ class ShiftController extends Controller
      */
     public function show(UserShift $shift)
     {
-        $shift = $this->userShiftService->find($shift);
+        // Use the service layer to retrieve the full details of the user shift
+        $shift = $this->service->find($shift);
 
+        // Return the user shift details as a resource
         return new UserShiftResource($shift);
-    
     }
 
     /**
@@ -59,10 +66,13 @@ class ShiftController extends Controller
      */
     public function update(UpdateUserShiftRequest $request, UserShift $shift)
     {
+        // Validate the request and convert the input into a DTO
         $dto = UserShiftDto::fromArray($request->validated());
 
-        $shift = $this->userShiftService->update($shift, $dto);
+        // Update the user shift using the service layer and the provided DTO
+        $shift = $this->service->update($shift, $dto);
 
+        // Return the updated user shift as a resource
         return new UserShiftResource($shift);
     }
 
@@ -71,8 +81,10 @@ class ShiftController extends Controller
      */
     public function destroy(UserShift $shift)
     {
-        $this->userShiftService->delete($shift);
+        // Delete the user shift using the service layer
+        $this->service->delete($shift);
 
+        // Return a JSON response indicating successful deletion and include the deleted shift as a resource
         return response()->json([
             'message' => 'User shift removed successfully.',
             'data' => new UserShiftResource($shift),
