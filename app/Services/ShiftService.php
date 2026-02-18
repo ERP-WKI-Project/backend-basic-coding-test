@@ -141,10 +141,6 @@ class ShiftService
         return DB::transaction(function () use ($userShift) {
             $this->validateDeletionTime($userShift);
 
-            if ($userShift->created_by !== auth()->id() && !auth()->user()->is_admin) {
-                throw new Exception("You are not authorized to delete this assignment.");
-            }
-
             return $userShift->delete();
         });
     }
