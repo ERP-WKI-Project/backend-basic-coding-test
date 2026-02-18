@@ -5,6 +5,7 @@ namespace App\Models;
 use \App\Models\BaseModel as Model;
 use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class UserShift extends Model
 {
@@ -25,6 +26,23 @@ class UserShift extends Model
     public function getRouteKeyName(): string
     {
         return 'ulid';
+    }
+
+    public function getShiftStartAttribute(): Carbon
+    {
+        return Carbon::parse($this->shift_date->format('Y-m-d') . ' ' . $this->shift->start_time);
+    }
+
+    public function getShiftEndAttribute(): Carbon
+    {
+        $start = $this->shift_start;
+        $end = Carbon::parse($this->shift_date->format('Y-m-d') . ' ' . $this->shift->end_time);
+
+        if ($end->lt($start)) {
+            $end->addDay();
+        }
+
+        return $end;
     }
 
     public function shift(): BelongsTo

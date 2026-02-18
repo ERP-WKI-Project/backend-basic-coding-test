@@ -25,7 +25,6 @@ describe('BackOffice Machine Management', function () {
                         'machine_code',
                         'name',
                         'description',
-                        'pin',
                         'created_at',
                         'updated_at',
                     ]
@@ -66,7 +65,6 @@ describe('BackOffice Machine Management', function () {
         $machineData = [
             'name' => 'New Machine',
             'description' => 'Test machine description',
-            'pin' => '123456',
         ];
 
         $response = $this->postJson('/api/backoffice/v1/machine', $machineData);
@@ -77,7 +75,6 @@ describe('BackOffice Machine Management', function () {
                     'machine_code',
                     'name',
                     'description',
-                    'pin',
                     'created_at',
                     'updated_at',
                 ]
@@ -85,13 +82,11 @@ describe('BackOffice Machine Management', function () {
             ->assertJsonFragment([
                 'name' => 'New Machine',
                 'description' => 'Test machine description',
-                'pin' => '123456',
             ]);
 
         $this->assertDatabaseHas('machines', [
             'name' => 'New Machine',
             'description' => 'Test machine description',
-            'pin' => '123456',
         ]);
     });
 
@@ -100,19 +95,6 @@ describe('BackOffice Machine Management', function () {
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name']);
-    });
-
-    test('store with invalid pin returns validation error', function () {
-        $machineData = [
-            'name' => 'New Machine',
-            'description' => 'Test machine description',
-            'pin' => '123', // Invalid: should be 6 digits
-        ];
-
-        $response = $this->postJson('/api/backoffice/v1/machine', $machineData);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['pin']);
     });
 
     test('show returns machine details by machine code', function () {
@@ -126,7 +108,6 @@ describe('BackOffice Machine Management', function () {
                     'machine_code',
                     'name',
                     'description',
-                    'pin',
                     'created_at',
                     'updated_at',
                 ]
@@ -148,20 +129,17 @@ describe('BackOffice Machine Management', function () {
         $response = $this->putJson("/api/backoffice/v1/machine/{$machine->machine_code}", [
             'name' => 'Updated Machine Name',
             'description' => 'Updated description',
-            'pin' => '654321',
         ]);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
                 'name' => 'Updated Machine Name',
                 'description' => 'Updated description',
-                'pin' => '654321',
             ]);
 
         $this->assertDatabaseHas('machines', [
             'machine_code' => $machine->machine_code,
             'name' => 'Updated Machine Name',
-            'pin' => '654321',
         ]);
     });
 
@@ -172,18 +150,6 @@ describe('BackOffice Machine Management', function () {
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name']);
-    });
-
-    test('update with invalid pin returns validation error', function () {
-        $machine = Machine::first();
-
-        $response = $this->putJson("/api/backoffice/v1/machine/{$machine->machine_code}", [
-            'name' => 'Updated Machine Name',
-            'pin' => '12345', // Invalid: should be 6 digits
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['pin']);
     });
 
     test('destroy soft deletes machine', function () {
@@ -225,4 +191,3 @@ describe('BackOffice Machine Management', function () {
         $response->assertStatus(403);
     });
 });
-

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('machine_code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('pin', 6)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
