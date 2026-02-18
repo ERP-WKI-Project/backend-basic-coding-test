@@ -11,7 +11,7 @@ readonly class UserShiftDto
      * Create a new class instance.
      */
     public function __construct(
-        public readonly int $userId,
+        public readonly string $userUlid,
         public readonly string $shiftUlid,
         public readonly string $machineUlid,
         public readonly string $shiftDate,
@@ -20,7 +20,7 @@ readonly class UserShiftDto
     public static function fromRequest(StoreShiftRequest|UpdateShiftRequest $request): self
     {
         return new self(
-            userId: $request->validated('user_id'),
+            userUlid: $request->validated('user_id'),
             shiftUlid: $request->validated('shift_id'),
             machineUlid: $request->validated('machine_id'),
             shiftDate: $request->validated('shift_date'),

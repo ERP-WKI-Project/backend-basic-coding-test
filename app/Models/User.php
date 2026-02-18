@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\BaseAuthenticatable as Authenticatable;
+use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use SoftDeletes;
+    use SoftDeletes, HasUlidColumn;
     
     /**
      * The attributes that are not mass assignable.
@@ -39,11 +40,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'employee_number';
     }
 
     public function shifts(): BelongsToMany

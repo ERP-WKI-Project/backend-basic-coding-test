@@ -10,6 +10,7 @@ use App\Http\Resources\BackOffice\Shift\UserShiftResource;
 use App\Models\UserShift;
 use App\Services\ShiftService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ShiftController extends Controller
 {
@@ -58,6 +59,7 @@ class ShiftController extends Controller
                 201
             );
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to create shift: ' . $th->getMessage(), 422);
         }
     }
@@ -93,6 +95,7 @@ class ShiftController extends Controller
                 'Shift assignment updated successfully.'
             );
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to update shift assignment: ' . $th->getMessage(), 422);
         }
     }
@@ -107,6 +110,7 @@ class ShiftController extends Controller
 
             return $this->successResponse(null, 'Shift deleted successfully');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to delete shift: ' . $th->getMessage(), 409);
         }
     }

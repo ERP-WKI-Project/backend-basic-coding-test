@@ -25,9 +25,9 @@ class UserMachineActivityRequest extends FormRequest
             'search'     => ['nullable', 'string', 'max:255'],
             'start_date' => ['nullable', 'date', 'before_or_equal:today'],
             'end_date'   => ['nullable', 'date', 'after_or_equal:start_date', 'before_or_equal:today'],
-            'user_id'    => ['nullable', 'string', 'exists:users,id'],
+            'user_id'    => ['nullable', 'string', 'exists:users,ulid'],
             'machine_id' => ['nullable', 'string', 'exists:machines,ulid'],
-            'shift_id'   => ['nullable', 'integer', 'exists:shifts,id'],
+            'shift_id'   => ['nullable', 'integer', 'exists:shifts,ulid'],
             'per_page'   => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }

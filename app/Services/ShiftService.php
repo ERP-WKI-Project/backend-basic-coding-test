@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTOs\UserShiftDto;
 use App\Models\Machine;
 use App\Models\Shift;
+use App\Models\User;
 use App\Models\UserShift;
 use Carbon\Carbon;
 use Exception;
@@ -17,15 +18,17 @@ class ShiftService
     protected Shift $model;
     protected UserShift $userShiftModel;
     protected Machine $machineModel;
+    protected User $userModel;
 
     /**
      * Create a new class instance.
      */
-    public function __construct(Shift $model, UserShift $userShiftModel, Machine $machineModel)
+    public function __construct(Shift $model, UserShift $userShiftModel, Machine $machineModel, User $userModel)
     {
         $this->model = $model;
         $this->userShiftModel = $userShiftModel;
         $this->machineModel = $machineModel;
+        $this->userModel = $userModel;
     }
 
     public function getPaginatedUserShifts(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -58,15 +61,16 @@ class ShiftService
     public function createShift(UserShiftDto $dto): UserShift
     {
         return DB::transaction(function () use ($dto) {
+            $user = $this->userModel->findByUlid($dto->userUlid);
             $shift = $this->model->findByUlid($dto->shiftUlid);
             $machine = $this->machineModel->findByUlid($dto->machineUlid);
 
             $this->validateDayMatching($shift, $dto->shiftDate);
-            $this->validateUserAvailability($dto->userId, $dto->shiftDate);
+            $this->validateUserAvailability($user->id, $dto->shiftDate);
             $this->validateMachineAvailability($machine->id, $dto->shiftDate, $shift->id);
 
             return $this->userShiftModel->create([
-                'user_id'    => $dto->userId,
+                'user_id'    => $user->id,
                 'shift_id'   => $shift->id,
                 'machine_id' => $machine->id,
                 'machine_code' => $machine->code,
@@ -79,15 +83,16 @@ class ShiftService
     public function updateShift(UserShift $userShift, UserShiftDto $dto): UserShift
     {
         return DB::transaction(function () use ($userShift, $dto) {
+            $user = $this->userModel->findByUlid($dto->userUlid);
             $shift = $this->model->findByUlid($dto->shiftUlid);
             $machine = $this->machineModel->findByUlid($dto->machineUlid);
 
             $this->validateDayMatching($shift, $dto->shiftDate);
-            $this->validateUserAvailability($dto->userId, $dto->shiftDate, $userShift->id);
+            $this->validateUserAvailability($user->id, $dto->shiftDate, $userShift->id);
             $this->validateMachineAvailability($machine->id, $dto->shiftDate, $shift->id, $userShift->id);
 
             $userShift->update([
-                'user_id'    => $dto->userId, 
+                'user_id'    => $user->id, 
                 'shift_id'   => $shift->id,
                 'machine_id' => $machine->id,
                 'shift_date' => $dto->shiftDate,

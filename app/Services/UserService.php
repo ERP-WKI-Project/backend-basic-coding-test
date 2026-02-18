@@ -62,7 +62,7 @@ class UserService
     public function deleteUser(User $user): bool
     {
         return DB::transaction(function () use ($user) {
-            $user->delete();
+            return $user->delete();
         });
     }
 }

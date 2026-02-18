@@ -22,7 +22,7 @@ class UpdateShiftRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['required', 'exists:users,ulid'],
             'shift_id' => ['required', 'exists:shifts,ulid'],
             'shift_date' => ['required', 'date', 'date_format:Y-m-d'],
             'machine_id' => ['required', 'exists:machines,ulid'],

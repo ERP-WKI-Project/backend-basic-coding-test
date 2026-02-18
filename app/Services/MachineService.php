@@ -56,7 +56,7 @@ class MachineService
     public function deleteMachine(Machine $machine): bool
     {
         return DB::transaction(function () use ($machine) {
-            $machine->delete();
+            return $machine->delete();
         });
     }
 }

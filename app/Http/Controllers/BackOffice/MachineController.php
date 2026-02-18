@@ -35,6 +35,7 @@ class MachineController extends Controller
 
             return $this->successResponse(new MachineResource($machine), 'Machine created successfully', 201);
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to create machine: ' . $th->getMessage(), 422);
         }
     }
@@ -51,6 +52,7 @@ class MachineController extends Controller
 
             return $this->successResponse(new MachineResource($machine), 'Machine updated successfully');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to update machine: ' . $th->getMessage(), 422);
         }
     }
@@ -62,6 +64,7 @@ class MachineController extends Controller
     
             return $this->successResponse(null, 'Machine deleted successfully');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to delete machine: ' . $th->getMessage(), 409);
         }
     }

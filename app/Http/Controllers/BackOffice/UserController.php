@@ -35,6 +35,7 @@ class UserController extends Controller
     
             return $this->successResponse(new UserResource($user), 'User created successfully', 201);
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to create user: ' . $th->getMessage(), 422);
         }
     }
@@ -51,6 +52,7 @@ class UserController extends Controller
 
             return $this->successResponse(new UserResource($user), 'User updated successfully.');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to update user: ' . $th->getMessage(), 422);
         }
     }
@@ -62,6 +64,7 @@ class UserController extends Controller
 
             return $this->successResponse(null, 'User deleted successfully.');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Failed to delete user: ' . $th->getMessage(), 409);
         }
     }

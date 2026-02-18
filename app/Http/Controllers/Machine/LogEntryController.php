@@ -30,29 +30,25 @@ class LogEntryController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            $user = $request->user();
+        $user = $request->user();
 
-            $activeShift = $this->machineLogService->getActiveShift($user);
+        $activeShift = $this->machineLogService->getActiveShift($user);
 
-            if (!$activeShift) {
-                return $this->errorResponse('You do not have an active shift assignment for this time.', 403);
-            }
-
-            $filters = $request->only(['search', 'date', 'event']);
-
-            $filters['user_id'] = $user->id;
-            $filters['user_shift_id'] = $activeShift->id;
-
-            $logs = $this->machineLogService->getPaginatedLogs($filters, $request->per_page ?? 10);
-
-            return $this->successResponse(
-                LogEntryResource::collection($logs),
-                'Your list of activities for today has been successfully retrieved..'
-            );
-        } catch (\Throwable $th) {
-            return $this->errorResponse('Failed to retrieve logs: ' . $th->getMessage(), 500);
+        if (!$activeShift) {
+            return $this->errorResponse('You do not have an active shift assignment for this time.', 403);
         }
+
+        $filters = $request->only(['search', 'date', 'event']);
+
+        $filters['user_id'] = $user->id;
+        $filters['user_shift_id'] = $activeShift->id;
+
+        $logs = $this->machineLogService->getPaginatedLogs($filters, $request->per_page ?? 10);
+
+        return $this->successResponse(
+            LogEntryResource::collection($logs),
+            'Your list of activities for today has been successfully retrieved..'
+        );
     }
 
     /**
@@ -86,6 +82,7 @@ class LogEntryController extends Controller
 
             return $this->successResponse(null, 'Activity logged successfully.');
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse($th->getMessage(), 422);
         }
     }

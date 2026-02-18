@@ -17,7 +17,7 @@ readonly class MachineLogDto
         public \App\Models\User $user,
         public int $machineId,
         public string $machineCode,
-        public int $userShiftId,
+        public ?int $userShiftId,
         public \App\Enums\MachineLog\EventEnum $event,
         public string $logMessage,
     )
@@ -25,7 +25,7 @@ readonly class MachineLogDto
         //
     }
 
-    public static function fromAuth(AuthCredentialDto $credDto, AuthDto $authDto, UserShift $userShift): self
+    public static function fromAuth(AuthCredentialDto $credDto, AuthDto $authDto, ?UserShift $userShift): self
     {
         $event = $authDto->isSuccess() ? \App\Enums\MachineLog\EventEnum::LOGIN_SUCCESS : \App\Enums\MachineLog\EventEnum::LOGIN_FAILED;
 
@@ -35,7 +35,7 @@ readonly class MachineLogDto
             user: $credDto->user,
             machineId: $machine->id,
             machineCode: $credDto->machineCode ?? 'unknown',
-            userShiftId: $userShift->id,
+            userShiftId: $userShift->id ?? null,
             event: $event,
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
         );

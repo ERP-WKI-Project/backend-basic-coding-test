@@ -55,8 +55,10 @@ class MachineLogService
             ->when($filters['date'] ?? null, function ($query, $date) {
                 $query->whereDate('created_at', $date);
             })
-            ->when($filters['user_id'] ?? null, function ($query, $userId) {
-                $query->where('user_id', $userId);
+            ->when($filters['user_id'] ?? null, function ($query, $userUlid) {
+                $query->whereHas('user', function ($q) use ($userUlid) {
+                    $q->where('id', $userUlid);
+                });
             })
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -121,13 +123,15 @@ class MachineLogService
                 $query->whereDate('created_at', '<=', $end);
             })
             ->when($filters['user_id'] ?? null, function ($query, $userUlid) {
-                $query->whereHas('user', fn($q) => $q->where('id', $userUlid));
+                $query->whereHas('user', fn($q) => $q->where('ulid', $userUlid));
             })
             ->when($filters['machine_id'] ?? null, function ($query, $machineUlid) {
                 $query->whereHas('machine', fn($q) => $q->where('ulid', $machineUlid));
             })
-            ->when($filters['shift_id'] ?? null, function ($query, $shiftId) {
-                $query->whereHas('userShift', fn($q) => $q->where('shift_id', $shiftId));
+            ->when($filters['shift_id'] ?? null, function ($query, $shiftUlid) {
+                $query->whereHas('userShift.shift', function ($q) use ($shiftUlid) {
+                    $q->where('ulid', $shiftUlid);
+                });
             })
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {

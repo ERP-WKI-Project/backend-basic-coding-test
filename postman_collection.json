@@ -1,602 +1,930 @@
 {
-    "info": {
-        "_postman_id": "aa123456-7890-1234-5678-90abcdef1234",
-        "name": "Backend Basic Coding Test",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
+  "info": {
+    "_postman_id": "ef5c76f6-a382-4354-ae0e-117a3ff80867",
+    "name": "Backend Basic Coding Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16152374"
+  },
+  "item": [
+    {
+      "name": "Backoffice",
+      "item": [
         {
-            "name": "Backoffice",
-            "item": [
-                {
-                    "name": "Auth",
-                    "item": [
-                        {
-                            "name": "Login",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/auth/login",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "auth",
-                                        "login"
-                                    ]
-                                }
-                            },
-                            "event": [
-                                {
-                                    "listen": "test",
-                                    "script": {
-                                        "exec": [
-                                            "var jsonData = pm.response.json();",
-                                            "pm.collectionVariables.set(\"token\", jsonData.access_token);"
-                                        ],
-                                        "type": "text/javascript"
-                                    }
-                                }
-                            ],
-                            "response": []
-                        },
-                        {
-                            "name": "Logout",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/auth/logout",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "auth",
-                                        "logout"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        }
-                    ]
-                },
-                {
-                    "name": "Machines",
-                    "item": [
-                        {
-                            "name": "List Machines",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/machine?search=&status=",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "machine"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "search",
-                                            "value": "",
-                                            "description": "Search by name or code"
-                                        },
-                                        {
-                                            "key": "status",
-                                            "value": "",
-                                            "description": "active, maintenance, inactive"
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Create Machine",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"code\": \"MCH-001\",\n    \"name\": \"Machine A\",\n    \"description\": \"Description here\",\n    \"status\": \"active\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/machine",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "machine"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Show Machine",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "machine",
-                                        ":ulid"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "ulid",
-                                            "value": ""
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Update Machine",
-                            "request": {
-                                "method": "PUT",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"name\": \"Machine A Updated\",\n    \"status\": \"maintenance\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "machine",
-                                        ":ulid"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "ulid",
-                                            "value": ""
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Delete Machine",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "machine",
-                                        ":ulid"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "ulid",
-                                            "value": ""
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        }
-                    ]
-                },
-                {
-                    "name": "Users",
-                    "item": [
-                        {
-                            "name": "List Users",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/user?search=",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "user"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "search",
-                                            "value": "",
-                                            "description": "Search by name, email, employee_number"
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Create User",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"employee_number\": \"EMP001\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/user",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "user"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Show User",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/user/:employee_number",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "user",
-                                        ":employee_number"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "employee_number",
-                                            "value": "EMP001"
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Update User",
-                            "request": {
-                                "method": "PUT",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"name\": \"John Doe Updated\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/user/:employee_number",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "user",
-                                        ":employee_number"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "employee_number",
-                                            "value": "EMP001"
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Delete User",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/backoffice/v1/user/:employee_number",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "backoffice",
-                                        "v1",
-                                        "user",
-                                        ":employee_number"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "employee_number",
-                                            "value": "EMP001"
-                                        }
-                                    ]
-                                }
-                            },
-                            "response": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "Machine API",
-            "item": [
-                {
-                    "name": "Auth",
-                    "item": [
-                        {
-                            "name": "Login",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"code\": \"MCH-001\"\n}",
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/machine/v1/auth/login",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "machine",
-                                        "v1",
-                                        "auth",
-                                        "login"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Logout",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/machine/v1/auth/logout",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "machine",
-                                        "v1",
-                                        "auth",
-                                        "logout"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        },
-                        {
-                            "name": "Profile",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/machine/v1/profile",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "machine",
-                                        "v1",
-                                        "profile"
-                                    ]
-                                }
-                            },
-                            "response": []
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
-    "auth": {
-        "type": "bearer",
-        "bearer": [
+          "name": "Auth",
+          "item": [
             {
-                "key": "token",
-                "value": "{{token}}",
-                "type": "string"
+              "name": "Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"token\", jsonData.access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"000001\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Logout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/auth/logout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "response": []
             }
-        ]
+          ]
+        },
+        {
+          "name": "Machines",
+          "item": [
+            {
+              "name": "List Machines",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/machine?search=&status=",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "machine"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search by name or code"
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "active, maintenance, inactive"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Machine",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"FILLING-MACHINE-003\",\n    \"name\": \"Machine 3\",\n    \"description\": \"Description here\",\n    \"status\": \"active\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/machine",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "machine"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Show Machine",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "machine",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ8MDWCE5KT9FD9GTSKCFYJ"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Machine",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"FILLING-MACHINE-002\",\n    \"name\": \"Machine 2\",\n    \"description\": \"Description here\",\n    \"status\": \"active\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "machine",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ8MDWCE5KT9FD9GTSKCFYJ"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Machine",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/machine/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "machine",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ8PKQW21MBF83TCHJBHQS1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "List Users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/user?search=",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "user"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search by name, email, employee_number"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki\",\n    \"password\": \"fazrilrizki777\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "user"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Show User",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/user/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "user",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ8FMQBHWRQQBT537BX798F"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/user/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "user",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ5MT9H9K4K5BYC66M7WJGY"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"Fazril Rizki T.A\",\n    \"email\": \"fazril@dinamika.ac.id\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/user/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "user",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHQ8FMQBHWRQQBT537BX798F"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Shift",
+          "item": [
+            {
+              "name": "Create Shifts",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"user_id\": \"01KHQ8FMQBHWRQQBT537BX798F\",\r\n    \"shift_id\": \"00JBY66VM0TKWMFSDD5DJTV1TF\",\r\n    \"shift_date\": \"2026-02-18\",\r\n    \"machine_id\": \"01KHQ8MDWCE5KT9FD9GTSKCFYJ\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/shift",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "shift"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Shifts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/shift",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "shift"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "machine_id",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Shift",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/shift/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "shift",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHN9C2T17E12EM3JRGHNNRSP"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Shift",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"user_id\": \"01KHQ5MT9FRYF8TFZ2D4HV1X8Z\",\n    \"shift_id\": \"00JBY66VM0K5DFJ2G73M4PB6B5\",\n    \"shift_date\": \"2026-02-18\",\n    \"machine_id\": \"01KHN937XP6MJYXFEYPH9A1JM7\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/shift/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "shift",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHN937YR3BG9DRSB3GPTBZE9"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Show Shift",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/shift/:ulid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "shift",
+                    ":ulid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "ulid",
+                      "value": "01KHN937XSKCXRP4VTJXSVWXD4"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Report",
+          "item": [
+            {
+              "name": "User Machine Activity",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/backoffice/v1/report/user-machine-activity",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "backoffice",
+                    "v1",
+                    "report",
+                    "user-machine-activity"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "user_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "machine_id",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
     },
-    "event": [
+    {
+      "name": "Machine API",
+      "item": [
         {
-            "listen": "prerequest",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-002\",\n    \"pin\": \"123456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/machine/v1/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "machine",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Logout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/machine/v1/auth/logout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "machine",
+                    "v1",
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/machine/v1/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "machine",
+                    "v1",
+                    "profile"
+                  ]
+                }
+              },
+              "response": []
             }
+          ]
         },
         {
-            "listen": "test",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
+          "name": "Log Entry",
+          "item": [
+            {
+              "name": "Create Manual Machine Log",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"event\": \"job_start\",\r\n    \"log_message\": \"Mulai Bekerja\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/machine/v1/log-entry",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "machine",
+                    "v1",
+                    "log-entry"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Manual Log",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/machine/v1/log-entry",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "machine",
+                    "v1",
+                    "log-entry"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "FILLING-MACHINE-001",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-16",
+                      "disabled": true
+                    },
+                    {
+                      "key": "machine_id",
+                      "value": "01KHN937XP6MJYXFEYPH9A1JM7",
+                      "disabled": true
+                    },
+                    {
+                      "key": "event",
+                      "value": null,
+                      "type": "text",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
             }
+          ]
         }
-    ],
-    "variable": [
-        {
-            "key": "base_url",
-            "value": "http://127.0.0.1:8000",
-            "type": "string"
-        },
-        {
-            "key": "token",
-            "value": "",
-            "type": "string"
-        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
     ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
 }
