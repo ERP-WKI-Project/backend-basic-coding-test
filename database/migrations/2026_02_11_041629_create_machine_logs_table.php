@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('machine_logs', function (Blueprint $table) {
             $table->id();
             $table->ulid();
-            $table->string('machine_code');
+            $table->string('machine_code')->index();
             $table->foreignId('machine_id')->nullable()->index()->after('user_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('event');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->index();
+            $table->string('event')->index();
             $table->text('log_message');
             $table->datetimes();
         });

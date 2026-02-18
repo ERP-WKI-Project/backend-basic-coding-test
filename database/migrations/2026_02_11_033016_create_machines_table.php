@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->char('code', 7)->unique()->index();          // MC-FILL-01
             $table->string('name');                    // Filling Machine 1
-            $table->string('type');                    // filling / mixer / labeling
+            $table->string('type')->index();                    // filling / mixer / labeling
             $table->string('brand')->nullable();       // Bosch, GEA, etc
             $table->string('model')->nullable();
             $table->string('serial_number')->nullable();
@@ -28,7 +28,7 @@ return new class extends Migration
 
             $table->date('purchase_date')->nullable();
             $table->date('installation_date')->nullable();
-            $table->string('status')->default('active');
+            $table->string('status')->default('active')->index();
 
             $table->text('notes')->nullable();
 

@@ -18,6 +18,10 @@ return new class extends Migration
             $table->date('shift_date')->index();
             $table->foreignId('machine_id')->constrained()->cascadeOnDelete()->nullable()->index();
             $table->datetimes();
+
+            $table->index(['user_id', 'shift_date']);
+            $table->index(['machine_id', 'shift_date']);
+            $table->index(['shift_id', 'shift_date']);
         });
     }
 

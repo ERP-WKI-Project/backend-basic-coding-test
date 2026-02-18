@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('production_lines', function (Blueprint $table) {
             $table->id();
-            $table->ulid();
+            $table->ulid()->unique()->index();
             $table->string('name');
             $table->text('notes')->nullable();
             $table->timestamps();

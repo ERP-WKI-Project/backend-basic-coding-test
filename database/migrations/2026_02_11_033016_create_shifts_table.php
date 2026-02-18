@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->ulid();
             $table->string('name');
-            $table->tinyInteger('day_of_week')->unsigned();
+            $table->tinyInteger('day_of_week')->unsigned()->index();
             $table->time('start_time');
             $table->time('end_time');
             $table->datetimes();
