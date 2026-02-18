@@ -14,6 +14,7 @@ class Machine extends Model
         'machine_code',
         'name',
         'description',
+        'pin',
         'status',
     ];
 

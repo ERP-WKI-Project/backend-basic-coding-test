@@ -8,6 +8,7 @@ readonly class MachineDto
         public string $name,
         public ?string $machine_code = null,
         public ?string $description = null,
+        public ?string $pin = null,
         public ?string $status = null,
     )
     {
@@ -18,6 +19,7 @@ readonly class MachineDto
         return new self(
             name: $data['name'],
             description: $data['description'] ?? null,
+            pin: $data['pin'] ?? null,
             status: $data['status'] ?? null,
         );
     }
@@ -34,6 +36,10 @@ readonly class MachineDto
 
         if ($this->description !== null) {
             $data['description'] = $this->description;
+        }
+
+        if ($this->pin !== null) {
+            $data['pin'] = $this->pin;
         }
 
         if ($this->status !== null) {

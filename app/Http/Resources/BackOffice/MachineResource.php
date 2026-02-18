@@ -13,6 +13,7 @@ class MachineResource extends JsonResource
             'machine_code' => $this->machine_code,
             'name' => $this->name,
             'description' => $this->description,
+            'pin' => $this->pin,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

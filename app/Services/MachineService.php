@@ -31,9 +31,9 @@ class MachineService
         // Apply search if provided
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'ILIKE', "%{$search}%")
-                  ->orWhere('machine_code', 'ILIKE', "%{$search}%")
-                  ->orWhere('description', 'ILIKE', "%{$search}%");
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('machine_code', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
 

@@ -23,6 +23,7 @@ class PresetForCodingTestSeeder extends Seeder
         ], [
             'name' => 'Filling Machine 001',
             'description' => 'Main filling machine for production line',
+            'pin' => '123456',
         ]);
 
         // Create a dummy user with employee_number '000001'
