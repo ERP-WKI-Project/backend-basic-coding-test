@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Models\BaseModel as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserShift extends Model
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    use SoftDeletes;
+
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
     protected $casts = [
         'shift_date' => 'date',

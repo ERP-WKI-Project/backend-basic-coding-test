@@ -52,7 +52,8 @@ class StoreUserShiftRequest extends FormRequest
                 'required',
                 'date_format:Y-m-d',
                 Rule::unique('user_shifts', 'shift_date')
-                    ->where('user_id', $this->input('user_id')),
+                    ->where('user_id', $this->input('user_id'))
+                    ->whereNull('deleted_at'),
             ],
             'machine_code' => [
                 'nullable',

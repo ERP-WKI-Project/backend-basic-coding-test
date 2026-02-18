@@ -311,7 +311,7 @@ describe('destroy', function () {
         $response->assertStatus(200)
             ->assertJsonFragment(['success' => true, 'message' => __('messages.user_shift_deleted')]);
 
-        $this->assertDatabaseMissing('user_shifts', ['id' => $userShift->id]);
+        $this->assertSoftDeleted('user_shifts', ['id' => $userShift->id]);
     });
 
     test('mengembalikan status 404 jika jadwal user tidak ditemukan', function () {

@@ -57,7 +57,8 @@ class UpdateUserShiftRequest extends FormRequest
                 'date_format:Y-m-d',
                 Rule::unique('user_shifts', 'shift_date')
                     ->ignore($userShift)
-                    ->where('user_id', $userId),
+                    ->where('user_id', $userId)
+                    ->whereNull('deleted_at'),
                 function ($attribute, $value, $fail) use ($userShift) {
                     if (! $value) {
                         return;

@@ -1,199 +1,110 @@
 # Asumsi & Keputusan Teknis
 
-Dokumen ini berisi asumsi-asumsi yang diambil selama pengerjaan coding test, beserta alasan di balik setiap keputusan teknis.
+Dokumen ini memisahkan antara **Asumsi Bisnis** (kondisi yang diterima apa adanya) dan **Keputusan Teknis** (solusi yang dipilih oleh developer).
 
 ---
 
-## Asumsi Bisnis
+## I. Asumsi Bisnis & Lingkungan (Assumptions)
+*Kondisi, batasan, atau aturan bisnis yang diasumsikan "benar" dari requirement.*
 
 ### 1. `employee_number` sebagai Identifier Publik
-
-`employee_number` diperlakukan sebagai **identifier publik** (bukan data rahasia), sehingga:
-
-- Diekspos di API response (`UserResource`)
-- Digunakan sebagai route key (`/api/backoffice/v1/users/{employee_number}`)
-- Tidak di-hash di database
-
-> **Catatan:** Jika `employee_number` bersifat sensitif (seperti PIN ATM), maka perlu:
-> - Di-hash di database
-> - Diganti route key-nya ke UUID/ULID
-> - Tidak diekspos di API response
+*   **Asumsi**: `employee_number` diperlakukan sebagai identifier umum (seperti Username/NIK), bukan data rahasia (seperti PIN ATM).
+*   **Implikasi**:
+    *   Aman diekspos di API response.
+    *   Digunakan sebagai route key di URL (`/users/{employee_number}`).
+    *   Disimpan *plain* (tidak di-hash) di database.
 
 ### 2. `email` Bersifat Opsional
+*   **Asumsi**: Tidak semua user (terutama pekerja lapangan/pabrik) memiliki email korporat.
+*   **Implikasi**:
+    *   Field `email` di database `nullable`.
+    *   Login BackOffice tidak bisa mengandalkan email, sehingga menggunakan `employee_number` + `password`.
 
-User dapat dibuat tanpa email (`nullable`). Konsekuensinya:
-
-- Login BackOffice menggunakan `employee_number` + `password` (bukan email)
-- Konsisten dengan Machine login yang juga menggunakan `employee_number` (PIN)
-
-### 3. Autentikasi BackOffice
-
-Login BackOffice menggunakan `employee_number` + `password`. Meskipun `employee_number` disebut sebagai PIN di modul Machine, dalam konteks ini PIN berfungsi sebagai **identifier** (seperti username/badge number), bukan sebagai secret. Alasannya:
-
-| Modul | Credential | Keterangan |
-|---|---|---|
-| **Machine** | PIN + `machine_code` | PIN = identifier, mesin fisik = verifikasi |
-| **BackOffice** | PIN + `password` | PIN = identifier, password = secret |
-
-- Semua user pasti memiliki `employee_number` (required), sedangkan `email` bersifat nullable
-- Pola ini sama dengan **username + password** pada umumnya — PIN hanya pengganti username
-
-### 4. Verifikasi Password via `Hash::check()`
-
-BackOffice auth menggunakan `Hash::check()` secara manual di Service, bukan `Auth::attempt()`. Alasan:
-
-- `Auth::attempt()` membuat session (stateful), tidak cocok untuk **stateless API** berbasis token
-- `Hash::check()` hanya memverifikasi password tanpa side-effect session
-- Konsisten dengan arsitektur Sanctum token-based
-
-### 5. Struktur Data Machine
-
-Meskipun tabel `user_shifts` dan `machine_logs` sudah menggunakan `machine_code` sebagai identifier (string), tetap membuat tabel `machines` terpisah sebagai **Master Data**.
-
-- **Identifier**: Menggunakan `code` (string) sebagai route key API publik untuk mencegah data enumeration, sementara ID auto-increment murni untuk relasi internal database.
-- **Relasi**: Tidak menambahkan Foreign Key (FK) constraint ke tabel existing (`user_shifts`) untuk menghindari breaking changes pada data lama. Integritas data dijaga di level aplikasi.
-- **Status**: Menambahkan kolom `status` (`active`/`inactive`) untuk kontrol operasional sederhana (soft delete digunakan untuk arsip).
+### 3. Model Autentikasi BackOffice
+*   **Asumsi**: Login menggunakan `employee_number` sebagai pengganti Username.
+*   **Konteks**:
+    *   **Machine Auth**: PIN (`employee_number`) + Mesin Fisik (`machine_code`).
+    *   **BackOffice Auth**: Username (`employee_number`) + Password (`password`).
 
 ---
 
-### 6. Validasi Jadwal Shift (User Shift)
+## II. Keputusan Teknis & Arsitektur (Decisions)
+*Pilihan desain, pola, dan teknologi yang diambil untuk memenuhi requirement.*
 
-Validasi jadwal shift sangat ketat untuk menjaga integritas data operasional:
-
-- **Konsistensi Hari**: `shift_date` wajib sesuai dengan `day_of_week` dari `shift_id` yang dipilih.
-    - Senin (1) harus dipasangkan dengan Shift Pagi/Siang yang aktif di hari Senin.
-    - Validasi ini berjalan saat `store` maupun `update` (bahkan saat partial update tanggal/shift saja).
-- **Unique Constraint**: 1 user hanya boleh memiliki 1 shift per tanggal.
-- **Active Machine Only**: `machine_code` hanya boleh diisi dengan mesin yang statusnya `ACTIVE`. Mesin `INACTIVE` akan ditolak (422).
-- **Integrity Check**: `user_id`, `shift_id`, dan `machine_code` divalidasi keberadaannya di database (Foreign Key check).
-- **Historical Protection**: Jadwal yang sudah berlalu (`shift_date < today`) **TIDAK BOLEH** dihapus.
-    - *Alasan*: Menjaga riwayat jadwal untuk keperluan laporan (komparasi jadwal vs realisasi).
-- **Flexibility**: Sistem mengizinkan perubahan jadwal meskipun user sudah/sedang bekerja di shift tersebut.
-    - *Alasan*: Mengakomodasi koreksi kesalahan admin (human error) tanpa birokrasi sistem yang rumit.
-    - *Catatan Ideal*: Di environment production High-Security, seharusnya perubahan diblokir jika jam start_time sudah lewat.
-
-### 7. Flexible Event Logging
-- **Keputusan**: Kolom `event` di tabel `machine_logs` disimpan sebagai `string` (varchar), bukan terbatas pada Enum.
-- **Alasan**: Memberikan fleksibilitas penuh bagi mesin IoT untuk mengirimkan tipe event baru (misal: `machine_overheat`, `emergency_stop`, `sensor_fault`) tanpa perlu update/deploy backend setiap kali ada jenis event baru dari vendor mesin.
-- **Implementasi**: DTO `MachineLogDto` menerima `string` untuk properti event. `EventEnum` hanya digunakan untuk standarisasi event *internal* system (seperti `login_success`).
-
----
-
-## Keputusan Arsitektur
-
-### 1. Service Layer Pattern
-
-Business logic dipisahkan dari Controller ke Service (`UserService`). Controller hanya bertanggung jawab untuk:
-
-- Menerima dan memvalidasi request (via Form Request)
-- Memanggil Service
-- Mengembalikan response (via API Resource)
+### 1. Arsitektur Layered (Service Pattern)
+*   **Keputusan**: Memisahkan business logic dari Controller ke Service (`UserService`, dll).
+*   **Alasan**: Agar Controller tetap tipis (*skinny*) dan logic bisa di-reuse atau di-test secara terisolasi.
 
 ### 2. Data Transfer Object (DTO)
+*   **Keputusan**: Menggunakan `readonly class` DTO untuk transfer data.
+*   **Alasan**: Menjamin *type safety* dan struktur data yang jelas antar layer, menghindari *magic array*.
 
-Menggunakan `readonly class` dengan typed properties untuk transfer data antar layer:
+### 3. Strategi Validasi & Integritas Data
+*   **Validasi Shift**: `UserShift` divalidasi sangat ketat (hari harus cocok dengan shift pattern, mesin harus aktif).
+*   **Partial Update**: Menggunakan `array_filter` di DTO untuk menangani update parsial tanpa menimpa data existing dengan `null`.
+*   **Validasi Unik**:
+    *   **Master Data**: Cek unik menghitung deleted row (mencegah ID reuse).
+*   **UserShift**: Cek unik mengabaikan deleted row (slot waktu bisa dipakai ulang).
+*   **Proteksi Historis**:
+    *   **Delete**: DILARANG untuk jadwal masa lalu (menjaga konsistensi laporan).
+    *   **Update**: DIIZINKAN untuk keperluan koreksi data (human error).
 
-- `CreateUserDto` — data untuk membuat user baru
-- `UpdateUserDto` — data untuk memperbarui user, dengan flag `hasEmail` untuk membedakan field yang tidak dikirim vs dikirim sebagai `null`
+### 4. Struktur Data Machine
+*   **Keputusan**: Tetap membuat tabel `machines` sebagai Master Data, meskipun `machine_code` sudah ada di `machine_logs`.
+*   **Alasan**:
+    *   **Identifier**: Menggunakan `code` (string) sebagai route key publik (anti-enumeration).
+    *   **Relasi**: Tidak memaksa FK ke tabel log lama untuk menghindari breaking changes.
+    *   **Status**: Membutuhkan kolom `status` (`active`/`inactive`) untuk kontrol operasional.
 
-### 3. Partial Update yang Aman
+### 5. Strategi Database & Penghapusan
+*   **Soft Deletes**:
+    *   Diterapkan pada: `User`, `Machine`, `Shift`, `UserShift`.
+    *   Alasan: Audit trail dan pemulihan data tidak sengaja.
+*   **Immutable (Hard Delete)**:
+    *   Diterapkan pada: `MachineLog`.
+    *   Alasan: Data log bervolume tinggi dan bersifat *append-only*.
+*   **Indexing**:
+    *   `MachineLog` di-index pada `created_at` (dan compound index) untuk performa Reporting yang berat di filter tanggal.
 
-`UpdateUserDto::toArray()` menggunakan `array_filter` untuk hanya mengirim field yang eksplisit dikirim dalam request. Ini mencegah:
+### 6. Manajemen Transaksi
+*   **Keputusan**: Tidak menggunakan block `DB::transaction()` manual di Service saat ini.
+*   **Alasan (YAGNI)**: Mayoritas operasi masih *Single-Entity CRUD* yang atomic. Transaksi akan ditambahkan nanti jika ada operasi *Multi-Write* kompleks.
 
-- Field yang tidak dikirim ter-overwrite menjadi `null`
-- Hanya `email` yang boleh di-set ke `null` secara eksplisit (via flag `hasEmail`)
+### 7. Sistem Logging Fleksibel
+*   **Keputusan**: Menyimpan `event` log sebagai `string`, bukan Enum.
+*   **Alasan**: Agar mesin IoT bisa mengirim tipe event baru (misal error code khusus) tanpa perlu menambahkan Enum.
 
-### 4. Mass Assignment Protection
+### 8. Keamanan Autentikasi
+*   **Keputusan**: Menggunakan `Hash::check()` manual untuk login API.
+*   **Alasan**: Menghindari pembuatan session stateful (`Auth::attempt`) karena API bersifat stateless (Sanctum token).
 
-Meskipun `BaseAuthenticatable` menggunakan `$guarded = []`, model `User` secara eksplisit mendefinisikan `$fillable` untuk membatasi field yang dapat di-mass-assign:
+### 9. Lokalisasi (i18n)
+*   **Keputusan**: Menggunakan `__('messages.key')` untuk output pesan.
+*   **Alasan**: Memisahkan teks dari logika code, memudahkan support multi-bahasa.
 
-```php
-protected $fillable = ['employee_number', 'name', 'email', 'password'];
-```
+### 10. Standardisasi Response
+*   **Keputusan**: Format JSON konsisten (`success`, `message`, `data`) dan tanggal format ISO 8601.
+*   **Alasan**: Memudahkan konsumsi data oleh Frontend/Mobile Apps.
 
-### 5. Testing Strategy
-
-- **Environment Database**: Menggunakan **PostgreSQL** (bukan SQLite in-memory) agar identik dengan production.
-    - `phpunit.xml` → `DB_CONNECTION=pgsql`, `DB_DATABASE=basic_coding_test_testing`
-- **Time-Sensitive Tests**: Pengujian fitur yang bergantung pada waktu (seperti jadwal shift) menggunakan data dinamis di level *test case*, bukan data *seeder* statis.
-    - **Alasan**: Data *seeder* memiliki jam tetap (statis), yang dapat menyebabkan kegagalan test (*flaky*) jika dijalankan di luar jam operasional shift tersebut.
-    - **Implementasi**: Test case membuat shift sementara (`Shift::factory()`) yang jam-nya disesuaikan relatif dengan waktu eksekusi test (`now()`).
-
-### 6. Standardized API Response
-
-Semua response menggunakan format konsisten via `ApiResponse` trait:
-
-```json
-{
-    "success": true,
-    "message": "Pesan operasi",
-    "data": { ... },
-    "errors": null
-}
-```
-
-- **Date Format**: Semua field tanggal (`created_at`, `updated_at`) diformat menggunakan ISO 8601 (`toIso8601String()`) untuk konsistensi parsing di sisi client (frontend/mobile apps).
-
----
-
-## Test Coverage
-
-### User Shift Management (22 test, 142 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **Index** | 7 | List semua, filter by user/shift/date, filter by invalid user/date (422) |
-| **Store** | 4 | Berhasil, validasi hari mismatch, double booking tanggal, foreign key tidak ada |
-| **Show** | 2 | Detail jadwal, 404 not found |
-| **Update** | 6 | Success update, mismatch hari/shift, conflict tanggal lain, self-update tanggal sama (ok), mesin inactive (gagal) |
-| **Destroy** | 2 | Berhasil hapus, 404 not found |
-| **Auth** | 1 | Unauthenticated (401) |
-
-### User Management (28 test, 137 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **Index** | 4 | List semua, search by name, search by employee_number, search kosong |
-| **Store** | 8 | Berhasil, tanpa email, password hashing, validasi kosong/duplikat/format/password |
-| **Show** | 2 | Detail user, 404 not found |
-| **Update** | 10 | Full update, partial update, self-update email/NIP, set null, validasi duplikat/format/password, 404 |
-| **Destroy** | 2 | Soft delete, 404 not found |
-| **Auth** | 2 | Unauthenticated (401) |
-
-### BackOffice Auth (7 test, 23 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **Login** | 5 | Berhasil, password salah (401), user not found (404), validasi kosong (422), format salah (422) |
-| **Logout** | 2 | Berhasil, tanpa token (401) |
-
-### Machine Management (19 test, 135 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **Index** | 4 | List semua, search by name/code, search kosong, paginasi valid |
-| **Store** | 5 | Berhasil, default active, validasi kosong/duplikat/format |
-| **Show** | 2 | Detail mesin, 404 not found |
-| **Update** | 5 | Full update, partial update, self-update code, validasi duplikat, 404 |
-| **Destroy** | 2 | Soft delete, 404 not found |
-| **Auth** | 1 | Unauthenticated (401) |
-
-### Machine Log Entry (10 test, 37 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **Index** | 5 | List log (pagination), Filter by machine_code, Filter by date, Filter by search keyword, Invalid date (422) |
-| **Store** | 5 | Berhasil (std event), Berhasil (custom/flexible event), Gagal (invalid machine), Gagal (empty event), Gagal (machine inactive) |
-
-### Reporting (5 test, 31 assertions)
-
-| Kategori | Jumlah | Skenario |
-|---|---|---|
-| **User Machine Activity** | 5 | Filter range tanggal, filter by user, filter by machine, validasi range date, unauthenticated |
+### 11. Strategi Testing
+*   **Database**: Menggunakan **PostgreSQL** untuk testing (bukan SQLite) untuk paritas production.
+*   **Dynamic Time**: Test case shift menggunakan waktu relatif (`now()`) bukan seeder statis, untuk menghindari *flaky test* di jam berbeda.
 
 ---
 
-## Tools & Konvensi
+### 12. Cakupan Tes (Test Coverage)
+*Detail jumlah dan skenario tes yang telah diimplementasikan.*
+
+*   **User Shift Management** (23 test, 138 assertions): Coverage untuk Create, Update, Delete, Validation, Integrity Check.
+*   **User Management** (28 test, 137 assertions): CRUD User, Auth, Password Hashing.
+*   **BackOffice Auth** (7 test, 23 assertions): Login, Logout, Guard protection.
+*   **Machine Management** (19 test, 135 assertions): CRUD Machine, Status Active/Inactive.
+*   **Machine Log Entry** (10 test, 44 assertions): Logging IoT, Flexible event type.
+*   **Reporting** (5 test, 31 assertions): Filter tanggal, performa query.
+
+---
+
+## III. Tools & Konvensi
 
 | Tool | Fungsi |
 |---|---|
@@ -203,13 +114,5 @@ Semua response menggunakan format konsisten via `ApiResponse` trait:
 | **Sanctum** | API token authentication |
 
 ### Commit Convention
-
-Menggunakan **Conventional Commits** dalam bahasa Indonesia:
-
-```
-feat: deskripsi fitur baru
-test: deskripsi test baru
-fix: deskripsi perbaikan bug
-style: formatting/linting
-chore: maintenance
-```
+Menggunakan **Conventional Commits** (Bahasa Indonesia):
+`feat`, `test`, `fix`, `style`, `chore`.
