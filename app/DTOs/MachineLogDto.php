@@ -10,7 +10,7 @@ readonly class MachineLogDto
     public function __construct(
         public \App\Models\User $user,
         public string $machineCode,
-        public \App\Enums\MachineLog\EventEnum $event,
+        public \App\Eenums\MachineLog\EventEnum $event,
         public string $logMessage,
     )
     {
@@ -28,4 +28,19 @@ readonly class MachineLogDto
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
         );
     }
+
+    public static function fromRequest(
+        \App\Models\User $user,
+        string $machineCode,
+        \App\Enums\MachineLog\EventEnum $event,
+        string $logMessage
+    ): self {
+        return new self(
+            user: $user,
+            machineCode: $machineCode,
+            event: $event,
+            logMessage: $logMessage
+        );
+    }
+
 }

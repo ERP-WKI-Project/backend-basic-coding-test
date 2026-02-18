@@ -88,7 +88,7 @@ class PresetForCodingTestSeeder extends Seeder
                     'user_id' => $presetUser->id,
                     'shift_id' => $shift->id,
                     'shift_date' => $date,
-                    'machine_code' => 'FILLING-MACHINE-001',
+                    'machine_id' => random_int(1,3),
                 ]);
             }
         }

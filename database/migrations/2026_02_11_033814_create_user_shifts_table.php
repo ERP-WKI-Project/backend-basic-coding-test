@@ -16,8 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('shift_id')->constrained()->cascadeOnDelete();
             $table->date('shift_date')->index();
-            $table->string('machine_code')->nullable()->index();
+            $table->foreignId('machine_id')->constrained()->cascadeOnDelete()->nullable()->index();
             $table->datetimes();
+
+            $table->index(['user_id', 'shift_date']);
+            $table->index(['machine_id', 'shift_date']);
+            $table->index(['shift_id', 'shift_date']);
         });
     }
 
