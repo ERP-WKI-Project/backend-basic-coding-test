@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackOffice;
 
+use App\DTOs\UserShiftDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BackOffice\Shift\StoreShiftRequest;
 use App\Http\Requests\BackOffice\Shift\UpdateShiftRequest;
@@ -47,7 +48,7 @@ class ShiftController extends Controller
     public function store(StoreShiftRequest $request)
     {
         try {
-            $userShift = $this->shiftService->createShift($request->validated());
+            $userShift = $this->shiftService->createShift(UserShiftDto::fromRequest($request));
 
             $userShift->load(['user', 'shift', 'machine', 'createdBy']);
 
@@ -57,7 +58,7 @@ class ShiftController extends Controller
                 201
             );
         } catch (\Throwable $th) {
-            throw $th;
+            return $this->errorResponse('Failed to create shift: ' . $th->getMessage(), 422);
         }
     }
 
@@ -85,14 +86,14 @@ class ShiftController extends Controller
     public function update(UpdateShiftRequest $request, UserShift $shift)
     {
         try {
-            $updated = $this->shiftService->updateShift($shift, $request->validated());
+            $updated = $this->shiftService->updateShift($shift, UserShiftDto::fromRequest($request));
 
             return $this->successResponse(
                 new UserShiftResource($updated),
                 'Shift assignment updated successfully.'
             );
         } catch (\Throwable $th) {
-            throw $th;
+            return $this->errorResponse('Failed to update shift assignment: ' . $th->getMessage(), 422);
         }
     }
 
@@ -106,7 +107,7 @@ class ShiftController extends Controller
 
             return $this->successResponse(null, 'Shift deleted successfully');
         } catch (\Throwable $th) {
-            throw $th;
+            return $this->errorResponse('Failed to delete shift: ' . $th->getMessage(), 409);
         }
     }
 }

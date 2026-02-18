@@ -11,7 +11,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
     }
 
     /**
@@ -27,7 +27,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'employee_number' => 'required|numeric|digits:6|unique:users,employee_number,' . $userId,
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $userId,
+            'email' => 'nullable|email|unique:users,email,' . $userId,
             'password' => 'nullable|string|min:6',
         ];
     }

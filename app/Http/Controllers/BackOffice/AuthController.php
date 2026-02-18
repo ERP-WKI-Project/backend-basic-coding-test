@@ -19,14 +19,21 @@ class AuthController extends Controller
 
     public function login(AuthLoginRequest $request)
     {
-        $user = User::query()->where('email', $request->email)->first();
+        $user = User::where(function ($query) use ($request) {
+                $query->where('email', $request->username)
+                    ->orWhere('employee_number', $request->username);
+            })
+            ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            abort(403, 'Email atau password salah.');
+            return $this->errorResponse('Invalid credentials. Please check your email/employee number and password.', 401);
         }
 
         $auth = $this->authService->authenticateBackOffice(AuthCredentialDto::usingPassword($user, $request->password));
-        abort_unless($auth->isSuccess(), 403, $auth->errorMessage);
+        if (!$auth->isSuccess()) {
+            return $this->errorResponse($auth->errorMessage, 403);
+        }
+
         return response()->json(['access_token' => $auth->token, 'token_type' => 'Bearer']);
     }
 

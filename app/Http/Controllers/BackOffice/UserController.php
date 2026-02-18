@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackOffice;
 
+use App\DTOs\UserDto;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\UserService;
@@ -29,9 +30,13 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        $user = $this->userService->createUser($request->validated());
-
-        return $this->successResponse(new UserResource($user), 'User created successfully', 201);
+        try {
+            $user = $this->userService->createUser(UserDto::fromRequest($request));
+    
+            return $this->successResponse(new UserResource($user), 'User created successfully', 201);
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to create user: ' . $th->getMessage(), 422);
+        }
     }
 
     public function show(User $user)
@@ -41,15 +46,23 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user = $this->userService->updateUser($user, $request->validated());
+        try {
+            $user = $this->userService->updateUser($user, UserDto::fromRequest($request));
 
-        return $this->successResponse(new UserResource($user), 'User updated successfully');
+            return $this->successResponse(new UserResource($user), 'User updated successfully.');
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to update user: ' . $th->getMessage(), 422);
+        }
     }
 
     public function destroy(User $user)
     {
-        $this->userService->deleteUser($user);
+        try {
+            $this->userService->deleteUser($user);
 
-        return $this->successResponse(null, 'User deleted successfully');
+            return $this->successResponse(null, 'User deleted successfully.');
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to delete user: ' . $th->getMessage(), 409);
+        }
     }
 }

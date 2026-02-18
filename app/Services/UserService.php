@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\UserDto;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -10,65 +11,58 @@ use Exception;
 
 class UserService
 {
+    protected User $model;
+
+    /**
+     * Create a new class instance.
+     */
+    public function __construct(User $model)
+    {
+        $this->model = $model;
+    }
+
     public function getPaginatedUsers(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        return User::latest()
+        return $this->model->latest()
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $operator = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
                     $q->where('name', $operator, "%{$search}%")
-                      ->orWhere('employee_number', $operator, "%{$search}%")
-                      ->orWhere('email', $operator, "%{$search}%");
+                        ->orWhere('employee_number', $operator, "%{$search}%")
+                        ->orWhere('email', $operator, "%{$search}%");
                 });
             })
             ->paginate($perPage);
     }
 
-    public function createUser(array $data): User
+    public function createUser(UserDto $data): User
     {
-        DB::beginTransaction();
-        try {
-            if (isset($data['password'])) {
-                $data['password'] = Hash::make($data['password']);
-            }
-            
-            $user = User::create($data);
-            DB::commit();
+        return DB::transaction(function () use ($data) {
+            $user = $this->model->create($data->toArray());
+
             return $user;
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
-    public function updateUser(User $user, array $data): User
+    public function updateUser(User $user, UserDto $data): User
     {
-        DB::beginTransaction();
-        try {
-            if (isset($data['password']) && $data['password']) {
-                $data['password'] = Hash::make($data['password']);
-            } else {
-                unset($data['password']);
+        return DB::transaction(function () use ($user, $data) {
+            $payload = $data->toArray();
+
+            if (empty($payload['password'])) {
+                unset($payload['password']);
             }
 
-            $user->update($data);
-            DB::commit();
+            $user->update($payload);
+
             return $user;
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
-    public function deleteUser(User $user): void
+    public function deleteUser(User $user): bool
     {
-        DB::beginTransaction();
-        try {
+        return DB::transaction(function () use ($user) {
             $user->delete();
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 }

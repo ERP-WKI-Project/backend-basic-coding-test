@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackOffice;
 
+use App\DTOs\MachineDto;
 use App\Http\Controllers\Controller;
 use App\Models\Machine;
 use App\Services\MachineService;
@@ -29,9 +30,13 @@ class MachineController extends Controller
 
     public function store(StoreMachineRequest $request)
     {
-        $machine = $this->machineService->createMachine($request->validated());
+        try {
+            $machine = $this->machineService->createMachine(MachineDto::fromRequest($request));
 
-        return $this->successResponse(new MachineResource($machine), 'Machine created successfully', 201);
+            return $this->successResponse(new MachineResource($machine), 'Machine created successfully', 201);
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to create machine: ' . $th->getMessage(), 422);
+        }
     }
 
     public function show(Machine $machine)
@@ -41,15 +46,23 @@ class MachineController extends Controller
 
     public function update(UpdateMachineRequest $request, Machine $machine)
     {
-        $machine = $this->machineService->updateMachine($machine, $request->validated());
+        try {
+            $machine = $this->machineService->updateMachine($machine, MachineDto::fromRequest($request));
 
-        return $this->successResponse(new MachineResource($machine), 'Machine updated successfully');
+            return $this->successResponse(new MachineResource($machine), 'Machine updated successfully');
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to update machine: ' . $th->getMessage(), 422);
+        }
     }
 
     public function destroy(Machine $machine)
     {
-        $this->machineService->deleteMachine($machine);
-
-        return $this->successResponse(null, 'Machine deleted successfully');
+        try {
+            $this->machineService->deleteMachine($machine);
+    
+            return $this->successResponse(null, 'Machine deleted successfully');
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to delete machine: ' . $th->getMessage(), 409);
+        }
     }
 }
