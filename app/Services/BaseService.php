@@ -80,4 +80,37 @@ abstract class BaseService implements ServiceInterface
             ->causedBy($user)
             ->log($description);
     }
+
+    // Methods for models using ID instead of ULID
+    public function findById(int $id): ?Model
+    {
+        return $this->modelClass::find($id);
+    }
+
+    public function updateById(int $id, array $data): ?Model
+    {
+        $model = $this->findById($id);
+
+        if (! $model) {
+            return null;
+        }
+
+        $model->update($data);
+        $this->logActivity('Updated '.$this->resourceName, $model);
+
+        return $model;
+    }
+
+    public function deleteById(int $id): bool
+    {
+        $model = $this->findById($id);
+
+        if (! $model) {
+            return false;
+        }
+
+        $this->logActivity('Deleted '.$this->resourceName, $model);
+
+        return $model->delete();
+    }
 }
