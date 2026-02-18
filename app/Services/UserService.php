@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTOs\CreateUserDto;
 use App\DTOs\UpdateUserDto;
 use App\Models\User;
+use App\Http\Resources\BackOffice\UserResource;
 
 class UserService
 {
@@ -16,22 +17,21 @@ class UserService
             'email' => $dto->email. rand(),
             'password' => $dto->password,
         ]);
-
-        return $userData;
+        return new UserResource($userData);
     }
 
     public static function getUser($id): User
     {
         $user = User::find($id);
 
-        return $user;
+        return new UserResource($user);
     }
 
     public static function getAllUser()
     {
         $user = User::get();
 
-        return $user;
+        return UserResource::collection($user);
     }
 
     public static function deleteUser($id)
@@ -58,6 +58,6 @@ class UserService
 
         $userData = User::find($id);
 
-        return $userData;
+        return new UserResource($userData);
     }
 }

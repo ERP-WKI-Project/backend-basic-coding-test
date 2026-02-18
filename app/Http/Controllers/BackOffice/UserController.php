@@ -21,12 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = $this->userService->getAllUser();
-
-        return response()->json([
-            'message' => 'Succesfull : User Index',
-            'data' => $user,
-        ]);
+        return $this->userService->getAllUser();
     }
 
     /**
