@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Controllers\BackOffice;
+
+use App\DTOs\BaseResponseDto;
+use App\DTOs\UserDto;
+use App\Services\UserService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\BackOffice\UserStoreRequest;
+use App\Http\Requests\BackOffice\UserUpdateRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
+class UserController extends Controller
+{
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function store(UserStoreRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            $userDto = $this->userService->createUser($validated);
+            $response = BaseResponseDto::success('User created successfully', $userDto->toArray());
+
+            return response()->json($response->toArray(), 201);
+        } catch (ValidationException $e) {
+            $response = BaseResponseDto::failure('Validation failed', $e->errors());
+            return response()->json($response->toArray(), 422);
+        } catch (\Exception $e) {
+            $response = BaseResponseDto::failure('An error occurred while creating user');
+            return response()->json($response->toArray(), 500);
+        }
+    }
+
+    public function show(string $nik)
+    {
+        try {
+            $userDto = $this->userService->getUserByNik($nik);
+
+            if (!$userDto) {
+                $response = BaseResponseDto::failure('User not found');
+                return response()->json($response->toArray(), 404);
+            }
+
+            $response = BaseResponseDto::success('User retrieved successfully', $userDto->toArray());
+            return response()->json($response->toArray(), 200);
+        } catch (\Exception $e) {
+            $response = BaseResponseDto::failure('An error occurred while retrieving user');
+            return response()->json($response->toArray(), 500);
+        }
+    }
+
+    public function update(UserUpdateRequest $request, string $nik)
+    {
+        try {
+            $validated = $request->validated();
+
+            $userDto = $this->userService->updateUserByNik($nik, $validated);
+
+            if (!$userDto) {
+                $response = BaseResponseDto::failure('User not found');
+                return response()->json($response->toArray(), 404);
+            }
+
+            $response = BaseResponseDto::success('User updated successfully', $userDto->toArray());
+            return response()->json($response->toArray(), 200);
+        } catch (ValidationException $e) {
+            $response = BaseResponseDto::failure('Validation failed', $e->errors());
+            return response()->json($response->toArray(), 422);
+        } catch (\Exception $e) {
+            $response = BaseResponseDto::failure('An error occurred while updating user');
+            return response()->json($response->toArray(), 500);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        try {
+            $perPage = $request->query('per_page', 15);
+            $page = $request->query('page', 1);
+
+            $perPage = max(1, min((int)$perPage, 100));
+            $page = max(1, (int)$page);
+
+            $data = $this->userService->getUserListFormatted($perPage, $page);
+
+            $response = BaseResponseDto::success('Users retrieved successfully', $data);
+            return response()->json($response->toArray(), 200);
+        } catch (\Exception $e) {
+            $response = BaseResponseDto::failure('An error occurred while retrieving users');
+            return response()->json($response->toArray(), 500);
+        }
+    }
+
+    public function destroy(string $nik)
+    {
+        try {
+            $deleted = $this->userService->deleteUserByNik($nik);
+
+            if (!$deleted) {
+                $response = BaseResponseDto::failure('User not found');
+                return response()->json($response->toArray(), 404);
+            }
+
+            $response = BaseResponseDto::success('User deleted successfully');
+            return response()->json($response->toArray(), 200);
+        } catch (\Exception $e) {
+            $response = BaseResponseDto::failure('An error occurred while deleting user');
+            return response()->json($response->toArray(), 500);
+        }
+    }
+}

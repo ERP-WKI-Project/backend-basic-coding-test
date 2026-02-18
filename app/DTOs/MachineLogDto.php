@@ -12,8 +12,7 @@ readonly class MachineLogDto
         public string $machineCode,
         public \App\Enums\MachineLog\EventEnum $event,
         public string $logMessage,
-    )
-    {
+    ) {
         //
     }
 
