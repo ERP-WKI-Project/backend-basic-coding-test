@@ -27,13 +27,26 @@ class MachineLogService
 
     public function getActiveShift(User $user): ?UserShift
     {
+        $nowDate = now()->toDateString();
+        $nowTime = now()->format('H:i:s');
+
+        $shifts = $this->userShiftModel
+            ->where('user_id', $user->id)
+            ->whereDate('shift_date', $nowDate)
+            ->get();
+
+        \Illuminate\Support\Facades\Log::info("Checking Active Shift for User {$user->id}. Date: $nowDate, Time: $nowTime");
+        foreach ($shifts as $s) {
+            $s->load('shift');
+            \Illuminate\Support\Facades\Log::info("Candidate Shift: ID {$s->id}, Start {$s->shift->start_time}, End {$s->shift->end_time}");
+        }
+
         return $this->userShiftModel
             ->where('user_id', $user->id)
-            ->whereDate('shift_date', now()->toDateString())
-            ->whereHas('shift', function ($query) {
-                $now = now()->format('H:i:s');
-                $query->where('start_time', '<=', $now)
-                    ->where('end_time', '>=', $now);
+            ->whereDate('shift_date', $nowDate)
+            ->whereHas('shift', function ($query) use ($nowTime) {
+                $query->where('start_time', '<=', $nowTime)
+                    ->where('end_time', '>=', $nowTime);
             })
             ->first();
     }
@@ -113,6 +126,7 @@ class MachineLogService
 
     public function getMachineActivityReport(array $filters = [], int $perPage = 50): LengthAwarePaginator
     {
+        \Illuminate\Support\Facades\Log::info('Report Filters:', $filters);
         return $this->model
             ->with(['user', 'machine', 'userShift.shift'])
             ->latest()

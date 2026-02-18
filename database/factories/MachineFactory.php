@@ -17,6 +17,7 @@ class MachineFactory extends Factory
     public function definition(): array
     {
         return [
+            'ulid' => (string) str()->ulid(),
             'code' => $this->faker->unique()->bothify('MCH-#####'),
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->sentence(),

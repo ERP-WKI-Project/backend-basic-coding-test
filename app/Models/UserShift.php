@@ -4,11 +4,12 @@ namespace App\Models;
 
 use \App\Models\BaseModel as Model;
 use App\Traits\HasUlidColumn;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserShift extends Model
 {
-    use HasUlidColumn, SoftDeletes;
+    use HasUlidColumn, SoftDeletes, HasFactory;
 
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 

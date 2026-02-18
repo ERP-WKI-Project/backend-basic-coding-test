@@ -92,7 +92,7 @@ class ShiftService
             $this->validateMachineAvailability($machine->id, $dto->shiftDate, $shift->id, $userShift->id);
 
             $userShift->update([
-                'user_id'    => $user->id, 
+                'user_id'    => $user->id,
                 'shift_id'   => $shift->id,
                 'machine_id' => $machine->id,
                 'shift_date' => $dto->shiftDate,
