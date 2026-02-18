@@ -63,4 +63,44 @@ class PasswordResetToken extends Model
             'created_at' => 'datetime',
         ];
     }
+
+    /**
+     * Create or replace a reset token for an email
+     */
+    public static function createResetToken(string $email, string $token): self
+    {
+        // Use updateOrCreate to ensure single token per email
+        return self::updateOrCreate(
+            ['email' => $email],
+            ['token' => $token, 'created_at' => now()]
+        );
+    }
+
+    /**
+     * Find token record by token value
+     */
+    public static function getByToken(string $token): ?self
+    {
+        return self::where('token', $token)->first();
+    }
+
+    /**
+     * Delete token record by email
+     */
+    public static function deleteByEmail(string $email): bool
+    {
+        return (bool) self::where('email', $email)->delete();
+    }
+
+    /**
+     * Check if token is valid (exists and not expired)
+     * @param int $minutes valid minutes from created_at
+     */
+    public static function isValidToken(string $token, int $minutes = 60): bool
+    {
+        $row = self::getByToken($token);
+        if (!$row) return false;
+        if (!$row->created_at) return false;
+        return $row->created_at->greaterThanOrEqualTo(now()->subMinutes($minutes));
+    }
 }

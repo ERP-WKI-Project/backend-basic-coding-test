@@ -94,6 +94,11 @@ class User extends Authenticatable
         return self::where('employee_number', $nik)->first();
     }
 
+    public static function getByEmail(string $email): ?self
+    {
+        return self::where('email', $email)->first();
+    }
+
 
     public static function updateUserByNik(string $nik, array $data)
     {
@@ -104,6 +109,22 @@ class User extends Authenticatable
         }
 
         $user->fill($data);
+        $user->save();
+
+        return $user;
+    }
+
+    /**
+     * Update a user's password by email
+     */
+    public static function updatePasswordByEmail(string $email, string $password): ?self
+    {
+        $user = self::getByEmail($email);
+        if (!$user) {
+            return null;
+        }
+
+        $user->password = Hash::make($password);
         $user->save();
 
         return $user;

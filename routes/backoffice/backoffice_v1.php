@@ -24,3 +24,7 @@ Route::middleware(['auth:sanctum', 'ability:' . ABILITY_BACKOFFICE_SYSTEM])->gro
     // Test 5: Show All User Activity Report on Machines within a Date Range
     Route::get('report/user-machine-activity', [BackOffice\ReportController::class, 'userMachineActivity'])->name('report.user-machine-activity');
 });
+
+// Password reset
+Route::post('password-reset', [BackOffice\PasswordResetController::class, 'store'])->name('password-reset.store');
+Route::post('password-reset/verify/{token}', [BackOffice\PasswordResetController::class, 'verify'])->name('password-reset.verify');
