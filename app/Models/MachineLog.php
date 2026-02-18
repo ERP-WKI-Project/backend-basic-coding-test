@@ -6,7 +6,7 @@ use App\Models\BaseModel as Model;
 use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MachineLog extends Model
+class MachineLog extends BaseModel
 {
     use HasUlidColumn;
 

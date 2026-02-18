@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Machine;
 use App\DTOs\MachineLogDto;
 use App\Enums\MachineLog\EventEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Machine\IndexLogEntryRequest;
+use App\Http\Requests\Machine\StoreLogEntryRequest;
+use App\Http\Resources\Machine\MachineLogResource;
 use App\Services\MachineLogService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Services\UserShiftService;
 use Illuminate\Validation\Rule;
 
 class LogEntryController extends Controller
@@ -20,7 +22,7 @@ class LogEntryController extends Controller
      *
      * @tag Machine Log Entries
      */
-    public function index(Request $request): JsonResponse
+    public function index(IndexLogEntryRequest $request)
     {
         $validated = $request->validate([
             'limit' => ['nullable', 'integer', 'min:1', 'max:100'],
@@ -32,17 +34,14 @@ class LogEntryController extends Controller
         $user = $request->user();
 
         // Get active user shift
-        $userShift = $this->getActiveUserShift($user);
-
-        abort_if(!$userShift, 404, 'Shift tidak ditemukan');
+        $userShift = UserShiftService::getActiveUserShift($user);
 
         $logs = MachineLogService::getMachineLogs(
             userShift: $userShift,
             limit: $request->query('limit', 15),
-            filters: $validated['filter'] ?? []
         );
 
-        return response()->json($logs);
+        return MachineLogResource::collection($logs);
     }
 
     /**
@@ -52,25 +51,15 @@ class LogEntryController extends Controller
      *
      * @tag Machine Log Entries
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreLogEntryRequest $request)
     {
-        $validated = $request->validate([
-            'event' => ['required', 'string', Rule::in(['login_success', 'login_failed', 'start_work', 'end_work', 'machine_error', 'maintenance'])],
-            'log_message' => ['required', 'string', 'max:1000'],
-        ], [
-            'event.required' => 'Event type is required',
-            'event.in' => 'Invalid event type',
-            'log_message.required' => 'Log message is required',
-            'log_message.max' => 'Log message cannot exceed 1000 characters',
-        ]);
+        $validated = $request->validated();
 
         $user = $request->user();
 
         // Get active user shift
-        $userShift = $this->getActiveUserShift($user);
+        $userShift = UserShiftService::getActiveUserShift($user);
 
-        abort_if(!$userShift, 404, 'Shift tidak ditemukan');
-        
         $dto = new MachineLogDto(
             user: $user,
             machineCode: $userShift->machine_code,
@@ -80,29 +69,12 @@ class LogEntryController extends Controller
 
         MachineLogService::addLog($dto);
 
-        return response()->json([
-            'message' => 'Log entry created successfully'
-        ], 201);
-    }
+        // Get the newly created log entry
+        $logs = $user->machineLogs()
+            ->latest()
+            ->first();
 
-    /**
-     * Get the currently active user shift based on time
-     */
-    private function getActiveUserShift($user)
-    {
-        $today = now()->toDateString();
-        $yesterday = now()->subDay()->toDateString();
-        $now = now();
-
-        $shifts = $user->userShifts()
-            ->whereIn('shift_date', [$today, $yesterday])
-            ->whereNotNull('machine_code')
-            ->with(['machine', 'shift'])
-            ->get();
-
-        return $shifts->first(function ($userShift) use ($now) {
-            return $now->between($userShift->shift_start, $userShift->shift_end);
-        });
+        return new MachineLogResource($logs);
     }
 }
 

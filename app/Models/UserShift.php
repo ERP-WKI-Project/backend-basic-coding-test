@@ -7,7 +7,7 @@ use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
-class UserShift extends Model
+class UserShift extends BaseModel
 {
     use HasUlidColumn;
 

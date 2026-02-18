@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserShift::class, 'user_id', 'id');
     }
+
+    public function machineLogs(): HasMany
+    {
+        return $this->hasMany(MachineLog::class, 'user_id', 'id');
+    }
 }

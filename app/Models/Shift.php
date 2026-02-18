@@ -6,7 +6,7 @@ use App\Models\BaseModel as Model;
 use App\Traits\HasUlidColumn;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Shift extends Model
+class Shift extends BaseModel
 {
     use HasUlidColumn;
 

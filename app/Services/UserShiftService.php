@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\UserShiftDto;
 use App\Models\Shift;
+use App\Models\User;
 use App\Models\UserShift;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,6 +14,31 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class UserShiftService
 {
+    /**
+     * Get the currently active user shift based on time
+     * Aborts with 404 if no active shift is found
+     */
+    public static function getActiveUserShift(User $user): UserShift
+    {
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+        $now = now();
+
+        $shifts = $user->userShifts()
+            ->whereIn('shift_date', [$today, $yesterday])
+            ->whereNotNull('machine_code')
+            ->with(['machine', 'shift'])
+            ->get();
+
+        $activeShift = $shifts->first(function ($userShift) use ($now) {
+            return $now->between($userShift->shift_start, $userShift->shift_end);
+        });
+
+        abort_if(!$activeShift, 404, 'Shift tidak ditemukan');
+
+        return $activeShift;
+    }
+
     /**
      * Get all user shift assignments with optional filters
      */
