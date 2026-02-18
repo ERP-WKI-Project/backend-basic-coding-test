@@ -2,25 +2,19 @@
 
 namespace App\Services;
 
-use App\DTOs\MachineLogDto;
 use App\Models\MachineLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class MachineLogService
+class ReportService
 {
-    public static function addLog(MachineLogDto $dto): MachineLog
-    {
-        $log = MachineLog::create($dto->toArray());
-
-        return $log->load(['user', 'machine']);
-    }
-
-    public function getAll(int $perPage = 15, ?array $filters = [], ?string $search = null): LengthAwarePaginator
+    public function getUserMachineActivity(array $filters, ?string $search = null, int $perPage = 15): LengthAwarePaginator
     {
         return MachineLog::query()
             ->with(['user', 'machine'])
-            ->when($filters['machine_code'] ?? null, fn ($query, $code) => $query->where('machine_code', $code))
-            ->when($filters['date'] ?? null, fn ($query, $date) => $query->whereDate('created_at', $date))
+            ->when($filters['start_date'] ?? null, fn ($query, $startDate) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($filters['end_date'] ?? null, fn ($query, $endDate) => $query->whereDate('created_at', '<=', $endDate))
+            ->when($filters['user_id'] ?? null, fn ($query, $userId) => $query->where('user_id', $userId))
+            ->when($filters['machine_code'] ?? null, fn ($query, $machineCode) => $query->where('machine_code', $machineCode))
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('event', 'ilike', "%{$search}%")

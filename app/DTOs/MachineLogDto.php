@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Http\Requests\Machine\StoreLogEntryRequest;
+
 readonly class MachineLogDto
 {
     /**
@@ -10,16 +12,15 @@ readonly class MachineLogDto
     public function __construct(
         public \App\Models\User $user,
         public string $machineCode,
-        public \App\Enums\MachineLog\EventEnum $event,
+        public string $event,
         public string $logMessage,
-    )
-    {
-        //
-    }
+    ) {}
 
     public static function fromAuth(AuthCredentialDto $credDto, AuthDto $authDto): self
     {
-        $event = $authDto->isSuccess() ? \App\Enums\MachineLog\EventEnum::LOGIN_SUCCESS : \App\Enums\MachineLog\EventEnum::LOGIN_FAILED;
+        $event = $authDto->isSuccess()
+            ? \App\Enums\MachineLog\EventEnum::LOGIN_SUCCESS->value
+            : \App\Enums\MachineLog\EventEnum::LOGIN_FAILED->value;
 
         return new self(
             user: $credDto->user,
@@ -27,5 +28,25 @@ readonly class MachineLogDto
             event: $event,
             logMessage: $authDto->isSuccess() ? 'Login successful' : 'Login failed: ' . ($authDto->errorMessage ?? 'Unknown error'),
         );
+    }
+
+    public static function fromRequest(StoreLogEntryRequest $request): self
+    {
+        return new self(
+            user: $request->user(),
+            machineCode: $request->validated('machine_code'),
+            event: $request->validated('event'),
+            logMessage: $request->validated('log_message'),
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => $this->user->id,
+            'machine_code' => $this->machineCode,
+            'event' => $this->event,
+            'log_message' => $this->logMessage,
+        ];
     }
 }
