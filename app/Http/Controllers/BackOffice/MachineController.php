@@ -40,7 +40,7 @@ class MachineController extends Controller
             $response = BaseResponseDto::failure('Validation failed', $e->errors());
             return response()->json($response->toArray(), 422);
         } catch (\Exception $e) {
-            $response = BaseResponseDto::failure('An error occurred while creating machine');
+            $response = BaseResponseDto::failure('An error occurred while creating machine: ' . $e->getMessage());
             return response()->json($response->toArray(), 500);
         }
     }

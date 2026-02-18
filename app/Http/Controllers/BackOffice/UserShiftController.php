@@ -96,7 +96,7 @@ class UserShiftController extends Controller
         try {
             // Validation
             $validator = validator($request->all(), [
-                'nik' => 'required|integer|exists:users,nik',
+                'nik' => 'required|string',
                 'shift_id' => 'required|integer|exists:shifts,id',
                 'machine_code' => 'required|string|max:50',
                 'shift_date' => 'required|date_format:Y-m-d',

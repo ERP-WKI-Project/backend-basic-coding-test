@@ -33,6 +33,9 @@ class UserShiftService
             return null;
         }
 
+        $data['user_id'] = $user->id;
+        unset($data['nik']);
+
         $userShift = UserShift::createUserShift($data);
         return UserShiftDto::fromModel($userShift->load('shift', 'user', 'machine'));
     }
@@ -117,13 +120,6 @@ class UserShiftService
         ?\DateTime $startDate = null,
         ?\DateTime $endDate = null
     ): ?array {
-        // Validate user exists if userId is provided
-        if ($userId !== null) {
-            $user = User::getByNik($userId);
-            if (!$user) {
-                return null;
-            }
-        }
 
         $paginator = UserShift::getWithRelationsPaginated($perPage, $page, $userId, $date, $startDate, $endDate);
 

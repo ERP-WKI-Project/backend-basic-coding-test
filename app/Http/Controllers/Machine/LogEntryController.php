@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Machine;
 
 use App\DTOs\BaseResponseDto;
+use App\Enums\MachineLog\EventEnum;
 use App\Http\Business\MachineLog\MachineLogService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -23,12 +24,13 @@ class LogEntryController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = min((int) $request->get('per_page', 15), 100);
-            $page = (int) $request->get('page', 1);
-            $machineCode = $request->get('machine_code');
-            $userId = $request->get('user_id');
-            $event = $request->get('event');
+            $user = $request->user();
 
+            $perPage = min((int) $request->query('per_page', 15), 100);
+            $page = (int) $request->query('page', 1);
+            $machineCode = $request->query('machine_code');
+            $userId = $user->id;
+            $event = $request->query('event');
             // Call service with optional filters
             $result = $this->machineLogService->getLogsFormatted(
                 $perPage,
@@ -44,15 +46,10 @@ class LogEntryController extends Controller
                 )->setStatusCode(404);
             }
 
-            // Convert DTOs to array
-            $logsData = array_map(
-                fn($dto) => $this->machineLogService->dtoToArray($dto),
-                $result['machine_logs']
-            );
 
             return response()->json(
                 BaseResponseDto::success('Machine logs retrieved successfully', [
-                    'items' => $logsData,
+                    'items' => $result['machine_logs'],
                 ], $result['pagination'])
             );
         } catch (\Exception $e) {
@@ -80,7 +77,7 @@ class LogEntryController extends Controller
             // Validation
             $validator = validator($request->all(), [
                 'machine_code' => 'required|string|max:50',
-                'event' => 'required|string|max:50',
+                'event' => 'required|string|in:' . implode(',', array_column(EventEnum::cases(), 'value')),
                 'log_message' => 'required|string',
             ]);
 
