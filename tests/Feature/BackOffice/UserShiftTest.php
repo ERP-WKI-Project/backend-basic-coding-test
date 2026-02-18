@@ -234,7 +234,6 @@ describe('BackOffice User Shift Management', function () {
 
     test('show returns 404 for non-existent user shift', function () {
         // Use a valid ULID format that definitely doesn't exist
-        // ULID uses Crockford's base32: 0-9 A-Z excluding I, L, O, U
         $nonExistentUlid = '01HZZZZZZZZZZZZZZZZZZZZZZ';
         $response = $this->getJson("/api/backoffice/v1/user-shift/{$nonExistentUlid}");
 
@@ -354,7 +353,6 @@ describe('BackOffice User Shift Management', function () {
 
     test('destroy returns 404 for non-existent user shift', function () {
         // Use a valid ULID format that definitely doesn't exist
-        // ULID uses Crockford's base32: 0-9 A-Z excluding I, L, O, U
         $nonExistentUlid = '01HZZZZZZZZZZZZZZZZZZZZZZ';
         $response = $this->deleteJson("/api/backoffice/v1/user-shift/{$nonExistentUlid}");
 
