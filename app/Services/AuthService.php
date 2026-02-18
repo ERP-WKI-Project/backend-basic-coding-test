@@ -5,9 +5,18 @@ namespace App\Services;
 use App\DTOs\AuthCredentialDto;
 use App\DTOs\AuthDto;
 use App\DTOs\MachineLogDto;
+use App\Jobs\ProcessMachineLog;
 
 class AuthService
-{
+{   
+    public static function authenticateBackOffice(AuthCredentialDto $dto): AuthDto
+    {
+        $user = $dto->user;
+        $auth = AuthDto::success($user->createToken('auth_token', [\App\Enums\SystemAbility::BACKOFFICE->value])->plainTextToken);
+
+        return $auth;
+    }
+
     public static function authenticateUseMachine(AuthCredentialDto $dto): AuthDto
     {
         $user = $dto->user;
@@ -29,7 +38,10 @@ class AuthService
             $auth = AuthDto::success($user->createToken('auth_token', [\App\Enums\SystemAbility::MACHINE->value])->plainTextToken);
         }
 
-        dispatch(fn() => MachineLogService::addLog(MachineLogDto::fromAuth($dto, $auth)))->name('log_machine_auth_' . $user->employee_number . '_' . now()->format('YmdHis'));
+        ProcessMachineLog::dispatch(
+            MachineLogDto::fromAuth($dto, $auth, $userShift),
+            'log_machine_auth_' . $user->employee_number . '_' . now()->format('YmdHis')
+        );
 
         return $auth;
     }

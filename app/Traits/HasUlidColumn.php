@@ -36,4 +36,14 @@ trait HasUlidColumn
     {
         return defined(static::class.'::ULID_COLUMN') ? static::ULID_COLUMN : 'ulid';
     }
+
+    public static function findByUlid(string $ulid)
+    {
+        return static::where((new static)->getUlidColumn(), $ulid)->first();
+    }
+
+    public static function getIdByUlid(string $ulid)
+    {
+        return static::where((new static)->getUlidColumn(), $ulid)->value('id');
+    }
 }

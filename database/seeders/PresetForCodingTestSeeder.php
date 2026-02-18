@@ -23,6 +23,7 @@ class PresetForCodingTestSeeder extends Seeder
         ], [
             'name' => 'Dummy Employee',
             'password' => bcrypt('password'),
+            'ulid'     => (string) str()->ulid()
         ]);
 
         $dateTemplate = '1990-01-%02d';
