@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Machine;
 use App\Models\Shift;
 use App\Models\User;
 use App\Models\UserShift;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -17,6 +17,14 @@ class PresetForCodingTestSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create a preset machine if it doesn't exist
+        Machine::firstOrCreate([
+            'machine_code' => 'FILLING-MACHINE-001',
+        ], [
+            'name' => 'Filling Machine 001',
+            'description' => 'Main filling machine for production line',
+        ]);
+
         // Create a dummy user with employee_number '000001'
         $presetUser = User::firstOrCreate([
             'employee_number' => '000001',
@@ -82,7 +90,7 @@ class PresetForCodingTestSeeder extends Seeder
                 $shift = $shifts->where('day_of_week', $dayOfWeek)
                     ->where('name', $shiftName)
                     ->first();
-                
+
                 if (!$shift) continue;
                 UserShift::create([
                     'user_id' => $presetUser->id,
