@@ -23,8 +23,8 @@ class UserShiftController extends Controller
         $shiftDate = $request->input('shift_date');
 
         $userShifts = UserShift::with(['user', 'shift'])
-            ->when($userId, fn($q) => $q->where('user_id', $userId))
-            ->when($shiftDate, fn($q) => $q->whereDate('shift_date', $shiftDate))
+            ->when($userId, fn ($q) => $q->where('user_id', $userId))
+            ->when($shiftDate, fn ($q) => $q->whereDate('shift_date', $shiftDate))
             ->orderBy('shift_date', 'desc')
             ->paginate($limit);
 
@@ -44,8 +44,6 @@ class UserShiftController extends Controller
 
     public function show(UserShift $userShift): UserShiftResource
     {
-        $userShift->load(['user', 'shift']);
-
         return UserShiftResource::make($userShift);
     }
 
