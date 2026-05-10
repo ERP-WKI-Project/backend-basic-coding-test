@@ -33,7 +33,7 @@ class UserController extends Controller
         $dto = UserDto::fromRequest($request);
         $user = $this->userService->createUser($dto);
 
-        return UserResource::make($user)->response()->setStatusCode(201);
+        return $this->created(new UserResource($user), 'User berhasil dibuat.');
     }
 
     public function show(User $user): UserResource
@@ -53,7 +53,7 @@ class UserController extends Controller
     {
         $this->userService->deleteUser($user);
 
-        return response()->json(['message' => 'User berhasil dihapus.']);
+        return $this->success(message: 'User berhasil dihapus.');
     }
 
     public function restore(int $id): JsonResponse
@@ -61,9 +61,12 @@ class UserController extends Controller
         $user = $this->userService->restoreUser($id);
 
         if (! $user) {
-            return response()->json(['message' => 'User tidak ditemukan.'], 404);
+            return $this->notFound('User tidak ditemukan.');
         }
 
-        return response()->json(['message' => 'User berhasil dipulihkan.', 'data' => new \App\Http\Resources\BackOffice\UserResource($user)]);
+        return $this->success(
+            new UserResource($user),
+            'User berhasil dipulihkan.'
+        );
     }
 }

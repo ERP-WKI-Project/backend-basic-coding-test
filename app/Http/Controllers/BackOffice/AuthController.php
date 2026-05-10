@@ -22,16 +22,13 @@ class AuthController extends Controller
         );
 
         if (!$user) {
-            return response()->json([
-                'message' => 'Email atau password salah.',
-            ], 401);
+            return $this->unauthorized('Email atau password salah.');
         }
 
         $token = $this->authService->createToken($user);
 
-        return response()->json([
-            'message' => 'Login berhasil.',
-            'data' => [
+        return $this->success(
+            [
                 'user' => [
                     'id' => $user->id,
                     'employee_number' => $user->employee_number,
@@ -41,7 +38,8 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
             ],
-        ]);
+            'Login berhasil.'
+        );
     }
 
     public function logout(Request $request): JsonResponse
@@ -49,8 +47,6 @@ class AuthController extends Controller
         $user = $request->user();
         $this->authService->revokeCurrentToken($user);
 
-        return response()->json([
-            'message' => 'Logout berhasil.',
-        ]);
+        return $this->success(message: 'Logout berhasil.');
     }
 }

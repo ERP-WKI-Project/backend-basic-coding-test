@@ -32,8 +32,10 @@ test('login_success', function () {
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
-        'access_token',
-        'token_type',
+        'data' => [
+            'access_token',
+            'token_type',
+        ],
     ]);
 });
 
@@ -49,6 +51,8 @@ test('login_no_shift', function () {
 
     $response->assertStatus(403);
     $response->assertJsonStructure(['message']);
+
+    expect($response->json('data'))->toBeNull();
 });
 
 test('login_shift_out_of_range', function () {
@@ -71,6 +75,8 @@ test('login_shift_out_of_range', function () {
 
     $response->assertStatus(403);
     $response->assertJsonStructure(['message']);
+
+    expect($response->json('data'))->toBeNull();
     $response->assertJsonFragment(['message' => 'login gagal pada ' . now()->format('d-m-Y H:i:s') . ', di luar jam kerja shift. Shift mulai pukul ' . Shift::find($shiftId)->start_time . ' sampai ' . Shift::find($shiftId)->end_time . '.']);
 });
 
