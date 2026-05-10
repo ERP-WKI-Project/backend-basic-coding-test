@@ -14,7 +14,7 @@ Route::middleware(['auth:sanctum', 'ability:'. ABILITY_BACKOFFICE_SYSTEM])->grou
     Route::post('user/{id}/restore', [BackOffice\UserController::class, 'restore'])->name('user.restore');
 
     // Test 2: Manage Machines
-    // Route::apiResource('machine', BackOffice\MachineController::class)->names('machine.');
+    Route::apiResource('machine', BackOffice\Machine\MachineController::class)->names('machine.');
 
     // Test 3: Assign User Shifts
     // Route::apiResource('shift', BackOffice\ShiftController::class)->names('shift.');
