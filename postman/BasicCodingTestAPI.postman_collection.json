@@ -220,6 +220,76 @@
               {"key": "Authorization", "value": "Bearer {{machineToken}}"}
             ]
           }
+        },
+        {
+          "name": "List Log Entries",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Log Entry - Check In",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"in\",\n    \"description\": \"Check in at start of shift\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Check Out",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"out\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Maintenance",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"maintenance\",\n    \"description\": \"Routine maintenance check\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Issue",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"issue\",\n    \"description\": \"Temperature sensor not working\"\n}"
+            }
+          }
         }
       ]
     },
