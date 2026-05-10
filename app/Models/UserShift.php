@@ -10,6 +10,11 @@ class UserShift extends Model
         'shift_date' => 'date',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function shift()
     {
         return $this->belongsTo(Shift::class, 'shift_id', 'id');

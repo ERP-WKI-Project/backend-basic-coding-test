@@ -7,15 +7,15 @@ use Illuminate\Support\Str;
 trait HasUlidColumn
 {
     /**
-     * Boot the soft deleting trait for a model.
+     * Boot the ULID column trait for a model.
      *
      * @return void
      */
     public static function bootHasUlidColumn()
     {
         static::creating(function ($model) {
-            if (is_null($model->getRouteKey())) {
-                $model->{$model->getRouteKeyName()} = Str::ulid();
+            if (is_null($model->{$model->getUlidColumn()})) {
+                $model->{$model->getUlidColumn()} = Str::ulid();
             }
         });
     }
@@ -27,12 +27,7 @@ trait HasUlidColumn
         }
     }
 
-    public function getRouteKeyName()
-    {
-        return $this->getUlidColumn();
-    }
-
-    public function getUlidColumn()
+    public function getUlidColumn(): string
     {
         return defined(static::class.'::ULID_COLUMN') ? static::ULID_COLUMN : 'ulid';
     }

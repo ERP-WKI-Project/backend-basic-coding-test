@@ -17,7 +17,8 @@ Route::middleware(['auth:sanctum', 'ability:'. ABILITY_BACKOFFICE_SYSTEM])->grou
     Route::apiResource('machine', BackOffice\Machine\MachineController::class)->names('machine.');
 
     // Test 3: Assign User Shifts
-    // Route::apiResource('shift', BackOffice\ShiftController::class)->names('shift.');
+    Route::apiResource('shift', BackOffice\Shift\ShiftController::class)->names('shift.');
+    Route::apiResource('user-shift', BackOffice\Shift\UserShiftController::class)->names('user-shift.');
 
     // Test 5: Show All User Activity Report on Machines within a Date Range
     // Route::get('report/user-machine-activity', [BackOffice\ReportController::class, 'userMachineActivity'])->name('report.user-machine-activity');
