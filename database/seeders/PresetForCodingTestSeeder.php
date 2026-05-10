@@ -22,6 +22,7 @@ class PresetForCodingTestSeeder extends Seeder
             'employee_number' => '000001',
         ], [
             'name' => 'Dummy Employee',
+            'email' => 'dummy@example.com',
             'password' => bcrypt('password'),
         ]);
 
