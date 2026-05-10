@@ -367,6 +367,34 @@
           }
         }
       ]
+    },
+    {
+      "name": "BackOffice Report",
+      "item": [
+        {
+          "name": "User Machine Activity",
+          "request": {
+            "url": {
+              "raw": "{{baseUrl}}/api/backoffice/v1/report/user-machine-activity",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backoffice", "v1", "report", "user-machine-activity"],
+              "query": [
+                {"key": "start_date", "value": "2024-01-01"},
+                {"key": "end_date", "value": "2024-01-31"},
+                {"key": "user_id", "value": ""},
+                {"key": "machine_code", "value": ""},
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "15"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        }
+      ]
     }
   ]
 }
