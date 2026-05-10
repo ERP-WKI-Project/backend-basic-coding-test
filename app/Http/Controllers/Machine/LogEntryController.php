@@ -7,11 +7,10 @@ use App\Http\Requests\Machine\LogEntryRequest;
 use App\Http\Resources\Machine\LogEntryResource;
 use App\Models\MachineLog;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LogEntryController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(): JsonResponse
     {
         $userShift = auth()->user()->userShifts()
             ->whereDate('shift_date', now()->format('Y-m-d'))
@@ -23,7 +22,9 @@ class LogEntryController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        return LogEntryResource::collection($logs);
+        $data = LogEntryResource::collection($logs)->resolve();
+
+        return $this->paginated($data, $logs);
     }
 
     public function store(LogEntryRequest $request): JsonResponse

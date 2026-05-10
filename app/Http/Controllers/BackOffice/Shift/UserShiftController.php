@@ -10,13 +10,12 @@ use App\Models\UserShift;
 use App\Services\BackOffice\ShiftService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserShiftController extends Controller
 {
     public function __construct(public ShiftService $shiftService) {}
 
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
         $limit = (int) ($request->input('limit') ?? 10);
         $userId = $request->input('user_id');
@@ -28,7 +27,9 @@ class UserShiftController extends Controller
             ->orderBy('shift_date', 'desc')
             ->paginate($limit);
 
-        return UserShiftResource::collection($userShifts);
+        $data = UserShiftResource::collection($userShifts)->resolve();
+
+        return $this->paginated($data, $userShifts);
     }
 
     public function store(AssignUserShiftRequest $request): JsonResponse
@@ -42,17 +43,17 @@ class UserShiftController extends Controller
         );
     }
 
-    public function show(UserShift $userShift): UserShiftResource
+    public function show(UserShift $userShift): JsonResponse
     {
-        return UserShiftResource::make($userShift);
+        return $this->success(UserShiftResource::make($userShift));
     }
 
-    public function update(AssignUserShiftRequest $request, UserShift $userShift): UserShiftResource
+    public function update(AssignUserShiftRequest $request, UserShift $userShift): JsonResponse
     {
         $dto = UserShiftDto::fromArray($request->validated());
         $updatedUserShift = $this->shiftService->updateUserShift($userShift, $dto);
 
-        return UserShiftResource::make($updatedUserShift->load(['user', 'shift']));
+        return $this->success(UserShiftResource::make($updatedUserShift->load(['user', 'shift'])));
     }
 
     public function destroy(UserShift $userShift): JsonResponse

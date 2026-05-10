@@ -31,7 +31,7 @@ trait ApiResponse
         }
 
         $response['data'] = $data;
-        $response['links'] = $paginator->linkCollection()->toArray();
+        $response['links'] = $this->buildPaginationLinks($paginator);
         $response['meta'] = [
             'current_page' => $paginator->currentPage(),
             'last_page' => $paginator->lastPage(),
@@ -51,6 +51,23 @@ trait ApiResponse
         }
 
         return response()->json($response, $code);
+    }
+
+    private function buildPaginationLinks(LengthAwarePaginator $paginator): array
+    {
+        $currentPage = $paginator->currentPage();
+        $lastPage = $paginator->lastPage();
+        $path = $paginator->path();
+        $perPage = $paginator->perPage();
+
+        $links = [];
+
+        $links['first'] = "{$path}?page=1&per_page={$perPage}";
+        $links['last'] = "{$path}?page={$lastPage}&per_page={$perPage}";
+        $links['prev'] = $currentPage > 1 ? "{$path}?page=".($currentPage - 1)."&per_page={$perPage}" : null;
+        $links['next'] = $currentPage < $lastPage ? "{$path}?page=".($currentPage + 1)."&per_page={$perPage}" : null;
+
+        return $links;
     }
 
     protected function created(mixed $data = null, string $message = 'Created successfully'): JsonResponse
