@@ -1,0 +1,400 @@
+{
+  "info": {
+    "name": "Backend Basic Coding Test API",
+    "description": "API collection for Backend Basic Coding Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "backofficeToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "machineToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "url": "{{baseUrl}}/api",
+        "method": "GET",
+        "header": []
+      }
+    },
+    {
+      "name": "BackOffice Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/auth/login",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.access_token) {",
+                  "        pm.collectionVariables.set('backofficeToken', jsonData.data.access_token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/auth/logout",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{backofficeToken}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "BackOffice User",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "url": {
+              "raw": "{{baseUrl}}/api/backoffice/v1/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backoffice", "v1", "user"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/user",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"employee_number\": \"123456\",\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/user/:userId",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/user/:userId",
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Updated\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/user/:userId",
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore User",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/user/:userId/restore",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Machine Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/auth/login",
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"MACHINE001\",\n    \"pin\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.access_token) {",
+                  "        pm.collectionVariables.set('machineToken', jsonData.data.access_token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/auth/logout",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Machine Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/profile",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "List Log Entries",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Log Entry - Check In",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"in\",\n    \"description\": \"Check in at start of shift\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Check Out",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"out\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Maintenance",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"maintenance\",\n    \"description\": \"Routine maintenance check\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Log Entry - Issue",
+          "request": {
+            "url": "{{baseUrl}}/api/machine/v1/log-entry",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{machineToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"machine_code\": \"FILLING-MACHINE-001\",\n    \"type\": \"issue\",\n    \"description\": \"Temperature sensor not working\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BackOffice Machine",
+      "item": [
+        {
+          "name": "List Machines",
+          "request": {
+            "url": {
+              "raw": "{{baseUrl}}/api/backoffice/v1/machine",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backoffice", "v1", "machine"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""},
+                {"key": "is_active", "value": ""}
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"code\": \"MCH-001\",\n    \"name\": \"CNC Machine 1\",\n    \"location\": \"Factory Floor A\",\n    \"is_active\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Update Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"CNC Machine Updated\",\n    \"location\": \"Factory Floor B\",\n    \"is_active\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "BackOffice Report",
+      "item": [
+        {
+          "name": "User Machine Activity",
+          "request": {
+            "url": {
+              "raw": "{{baseUrl}}/api/backoffice/v1/report/user-machine-activity",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backoffice", "v1", "report", "user-machine-activity"],
+              "query": [
+                {"key": "start_date", "value": "2024-01-01"},
+                {"key": "end_date", "value": "2024-01-31"},
+                {"key": "user_id", "value": ""},
+                {"key": "machine_code", "value": ""},
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "15"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -22,12 +22,15 @@ class AuthController extends Controller
         abort_unless($user, 404, 'PIN tidak ditemukan.');
         $auth = $this->authService->authenticateUseMachine(AuthCredentialDto::usingMachine($user, $request->machine_code));
         abort_unless($auth->isSuccess(), 403, $auth->errorMessage);
-        return response()->json(['access_token' => $auth->token, 'token_type' => 'Bearer']);
+        return $this->success([
+            'access_token' => $auth->token,
+            'token_type' => 'Bearer',
+        ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Berhasil logout.']);
+        return $this->success(message: 'Berhasil logout.');
     }
 }
