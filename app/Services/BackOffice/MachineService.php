@@ -62,7 +62,7 @@ class MachineService
     {
         $payload = $dto->toArray();
 
-        if (empty($payload['is_active'])) {
+        if (!array_key_exists('is_active', $payload)) {
             $payload['is_active'] = true;
         }
 
