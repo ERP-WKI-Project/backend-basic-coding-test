@@ -19,4 +19,9 @@ class UserShift extends Model
     {
         return $this->belongsTo(Shift::class, 'shift_id', 'id');
     }
+
+    public function machineLogs()
+    {
+        return $this->hasMany(MachineLog::class, 'user_id', 'user_id');
+    }
 }
