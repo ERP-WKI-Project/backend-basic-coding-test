@@ -222,6 +222,81 @@
           }
         }
       ]
+    },
+    {
+      "name": "BackOffice Machine",
+      "item": [
+        {
+          "name": "List Machines",
+          "request": {
+            "url": {
+              "raw": "{{baseUrl}}/api/backoffice/v1/machine",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backoffice", "v1", "machine"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""},
+                {"key": "is_active", "value": ""}
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine",
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"code\": \"MCH-001\",\n    \"name\": \"CNC Machine 1\",\n    \"location\": \"Factory Floor A\",\n    \"is_active\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        },
+        {
+          "name": "Update Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"CNC Machine Updated\",\n    \"location\": \"Factory Floor B\",\n    \"is_active\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Machine",
+          "request": {
+            "url": "{{baseUrl}}/api/backoffice/v1/machine/:machineId",
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{backofficeToken}}"}
+            ]
+          }
+        }
+      ]
     }
   ]
 }
